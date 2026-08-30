@@ -1,0 +1,2289 @@
+/* =========================================
+   RESET
+========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* =========================================
+   BODY
+========================================= */
+
+body {
+
+    background:
+        radial-gradient(
+            circle at 50% 50%,
+            #10102a 0%,
+            #070719 45%,
+            #03030d 100%
+        );
+
+    color: white;
+
+    overflow: hidden;
+
+    font-family: Arial, sans-serif;
+
+}
+
+
+/* =========================================
+   SKY
+========================================= */
+
+#sky {
+
+    width: 100vw;
+    height: 100vh;
+
+    position: relative;
+
+    overflow: hidden;
+
+    cursor: grab;
+
+}
+
+
+#sky:active {
+    cursor: grabbing;
+}
+
+
+/* =========================================
+   SPACE
+========================================= */
+
+#space {
+
+    position: absolute;
+
+    width: 300vw;
+    height: 300vh;
+
+    left: -100vw;
+    top: -100vh;
+
+    will-change: transform;
+
+}
+
+
+/* =========================================
+   STARS
+========================================= */
+
+.star {
+
+    position: absolute;
+
+    background: white;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+}
+
+
+.twinkle {
+
+    animation:
+        twinkle 3s ease-in-out infinite;
+
+}
+
+
+@keyframes twinkle {
+
+    0% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: scale(1.8);
+    }
+
+    100% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+
+}
+
+
+.bright-star {
+
+    box-shadow:
+        0 0 8px rgba(255,255,255,0.7);
+
+}
+
+
+.special-star {
+
+    box-shadow:
+        0 0 5px rgba(255,255,255,0.8),
+        0 0 12px rgba(255,255,255,0.35);
+
+}
+
+
+/* =========================================
+   NEBULA
+========================================= */
+
+.nebula {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    filter: blur(80px);
+
+    pointer-events: none;
+
+    opacity: 0.08;
+
+}
+
+
+.nebula-one {
+
+    width: 500px;
+    height: 300px;
+
+    left: 15%;
+    top: 20%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(100,80,255,0.8),
+            rgba(100,80,255,0)
+        );
+
+}
+
+
+.nebula-two {
+
+    width: 600px;
+    height: 350px;
+
+    left: 60%;
+    top: 55%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(180,80,255,0.6),
+            rgba(180,80,255,0)
+        );
+
+}
+
+
+/* =========================================
+   MOON
+========================================= */
+
+.moon {
+
+    position: absolute;
+
+    width: 110px;
+    height: 110px;
+
+    border-radius: 50%;
+
+    left: 45%;
+    top: 35%;
+
+    opacity: 0.5;
+
+    background:
+        radial-gradient(
+            circle at 35% 35%,
+            #ffffff,
+            #d8d8e8 55%,
+            #a9a9bd
+        );
+
+    box-shadow:
+        0 0 20px rgba(255,255,255,0.15),
+        0 0 60px rgba(200,200,255,0.08);
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================
+   SHOOTING STAR
+========================================= */
+
+.shooting-star {
+
+    position: absolute;
+
+    width: 2px;
+    height: 80px;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(255,255,255,0),
+            rgba(255,255,255,0.9)
+        );
+
+    transform: rotate(-45deg);
+
+    animation:
+        shooting 1.5s linear forwards;
+
+    pointer-events: none;
+
+}
+
+
+@keyframes shooting {
+
+    0% {
+
+        transform:
+            translate(0,0)
+            rotate(-45deg);
+
+        opacity: 0;
+
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    100% {
+
+        transform:
+            translate(-300px,300px)
+            rotate(-45deg);
+
+        opacity: 0;
+
+    }
+
+}
+
+
+/* =========================================
+   STATISTICS
+========================================= */
+
+.statistics {
+
+    position: fixed;
+
+    left: 30px;
+    bottom: 30px;
+
+    display: flex;
+
+    gap: 22px;
+
+    padding:
+        14px
+        20px;
+
+    background:
+        rgba(255,255,255,0.07);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
+    border-radius: 18px;
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+
+    z-index: 100;
+
+    user-select: none;
+
+}
+
+
+.stat-item {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    min-width: 55px;
+
+}
+
+
+.stat-item span {
+
+    font-size: 18px;
+
+}
+
+
+.stat-item small {
+
+    margin-top: 4px;
+
+    font-size: 10px;
+
+    opacity: 0.55;
+
+    letter-spacing: 0.5px;
+
+}
+
+
+/* =========================================
+   ADD WISH
+========================================= */
+
+#addWish {
+
+    position: fixed;
+
+    right: 35px;
+    bottom: 35px;
+
+    width: 58px;
+    height: 58px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,0.18);
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: white;
+
+    font-size: 30px;
+
+    cursor: pointer;
+
+    backdrop-filter:
+        blur(12px);
+
+    -webkit-backdrop-filter:
+        blur(12px);
+
+    z-index: 100;
+
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease;
+
+}
+
+
+#addWish:hover {
+
+    transform:
+        scale(1.08);
+
+    background:
+        rgba(255,255,255,0.13);
+
+}
+
+
+/* =========================================
+   WISH STUDIO
+========================================= */
+
+#wishStudio {
+
+    position: fixed;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 25px;
+
+    background:
+        rgba(2,2,12,0.40);
+
+    backdrop-filter:
+        blur(7px);
+
+    -webkit-backdrop-filter:
+        blur(7px);
+
+    z-index: 200;
+
+}
+
+
+#wishStudio.hidden {
+    display: none;
+}
+
+
+/* =========================================
+   WISH WINDOW
+========================================= */
+
+.wish-window {
+
+    width:
+        min(1160px,95vw);
+
+    max-height: 93vh;
+
+    overflow-y: auto;
+
+    padding: 38px;
+
+    border-radius: 34px;
+
+    background:
+        rgba(17,17,35,0.63);
+
+    border:
+        1px solid rgba(255,255,255,0.12);
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,0.45),
+        0 0 70px rgba(140,110,255,0.08);
+
+    backdrop-filter:
+        blur(28px);
+
+    -webkit-backdrop-filter:
+        blur(28px);
+
+    position: relative;
+
+    animation:
+        studioAppear 0.4s ease;
+
+}
+
+
+@keyframes studioAppear {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(20px)
+            scale(0.97);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+/* =========================================
+   CLOSE
+========================================= */
+
+.close-button {
+
+    position: absolute;
+
+    top: 17px;
+    right: 19px;
+
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid rgba(255,255,255,0.1);
+
+    background:
+        rgba(255,255,255,0.05);
+
+    color: white;
+
+    font-size: 24px;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+
+}
+
+
+.close-button:hover {
+
+    transform:
+        rotate(90deg);
+
+    background:
+        rgba(255,255,255,0.12);
+
+}
+
+
+/* =========================================
+   HEADING
+========================================= */
+
+.studio-heading {
+
+    padding-right: 50px;
+
+    margin-bottom: 28px;
+
+}
+
+
+.eyebrow {
+
+    font-size: 10px;
+
+    letter-spacing: 2.1px;
+
+    opacity: 0.35;
+
+    margin-bottom: 8px;
+
+}
+
+
+.studio-heading h1 {
+
+    font-size: 35px;
+
+    font-weight: 400;
+
+    letter-spacing: -0.6px;
+
+}
+
+
+.studio-heading p {
+
+    margin-top: 8px;
+
+    font-size: 14px;
+
+    opacity: 0.45;
+
+}
+
+
+/* =========================================
+   LAYOUT
+========================================= */
+
+.studio-layout {
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(370px,0.95fr)
+        minmax(420px,1.05fr);
+
+    gap: 34px;
+
+    align-items: start;
+
+}
+
+
+/* =========================================
+   EDITOR
+========================================= */
+
+.creator-panel {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 18px;
+
+}
+
+
+.editor-section {
+
+    padding-bottom: 17px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,0.06);
+
+}
+
+
+.editor-section:last-child {
+    border-bottom: none;
+}
+
+
+.section-heading {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1.6px;
+
+    font-size: 11px;
+
+    opacity: 0.5;
+
+    margin-bottom: 13px;
+
+}
+
+
+.section-heading span {
+
+    font-size: 9px;
+
+    opacity: 0.45;
+
+}
+
+
+.creator-panel label {
+
+    display: block;
+
+    font-size: 11px;
+
+    opacity: 0.55;
+
+    margin-top: 11px;
+
+    margin-bottom: 7px;
+
+}
+
+
+.creator-panel input[type="text"],
+.creator-panel textarea,
+.creator-panel select {
+
+    width: 100%;
+
+    border:
+        1px solid rgba(255,255,255,0.09);
+
+    border-radius: 13px;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    color: white;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+}
+
+
+.creator-panel input[type="text"] {
+
+    height: 44px;
+
+    padding: 0 13px;
+
+}
+
+
+.creator-panel textarea {
+
+    height: 125px;
+
+    resize: vertical;
+
+    padding: 13px;
+
+    line-height: 1.6;
+
+}
+
+
+.creator-panel select {
+
+    height: 34px;
+
+    padding: 0 9px;
+
+}
+
+
+.creator-panel input[type="text"]::placeholder,
+.creator-panel textarea::placeholder {
+
+    color:
+        rgba(255,255,255,0.24);
+
+}
+
+
+.creator-panel input[type="text"]:focus,
+.creator-panel textarea:focus,
+.creator-panel select:focus {
+
+    border-color:
+        rgba(255,255,255,0.22);
+
+    background:
+        rgba(255,255,255,0.06);
+
+}
+
+
+/* =========================================
+   TEXT SETTINGS
+========================================= */
+
+.text-settings {
+
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.2fr;
+
+    gap: 8px;
+
+    margin-top: 7px;
+
+}
+
+
+.text-settings input[type="range"] {
+
+    width: 100%;
+
+}
+
+
+/* =========================================
+   SUB LABEL
+========================================= */
+
+.sub-label {
+
+    font-size: 10px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+
+    opacity: 0.35;
+
+    margin-bottom: 8px;
+
+}
+
+
+.background-label {
+
+    margin-top: 17px;
+
+}
+
+
+.color-label {
+
+    margin-top: 17px;
+
+}
+
+
+/* =========================================
+   THEMES
+========================================= */
+
+.theme-options {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+}
+
+
+.theme-option {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding:
+        8px 10px;
+
+    border-radius: 999px;
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    background:
+        rgba(255,255,255,0.035);
+
+    color:
+        rgba(255,255,255,0.65);
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+}
+
+
+.theme-option:hover {
+
+    background:
+        rgba(255,255,255,0.08);
+
+}
+
+
+.theme-option.active {
+
+    color: white;
+
+    border-color:
+        rgba(255,255,255,0.3);
+
+    background:
+        rgba(255,255,255,0.09);
+
+}
+
+
+.theme-dot {
+
+    width: 10px;
+
+    height: 10px;
+
+    border-radius: 50%;
+
+}
+
+
+.midnight {
+    background: #8178d2;
+}
+
+
+.blossom {
+    background: #ee99c6;
+}
+
+
+.ocean {
+    background: #5dc4dc;
+}
+
+
+.sunset {
+    background: #f2a06e;
+}
+
+
+.cosmic {
+    background: #aa77e8;
+}
+
+
+.candy {
+    background: #e77ca9;
+}
+
+
+/* =========================================
+   BACKGROUND BUTTONS
+========================================= */
+
+.background-options {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+}
+
+
+.background-option {
+
+    padding:
+        7px 10px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,0.02);
+
+    color:
+        rgba(255,255,255,0.5);
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    cursor: pointer;
+
+}
+
+
+.background-option:hover {
+
+    background:
+        rgba(255,255,255,0.06);
+
+    color: white;
+
+}
+
+
+.background-option.active {
+
+    background:
+        rgba(255,255,255,0.1);
+
+    color: white;
+
+    border-color:
+        rgba(255,255,255,0.24);
+
+}
+
+
+/* =========================================
+   COLORS
+========================================= */
+
+.color-row {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+}
+
+
+.color-swatch {
+
+    width: 27px;
+
+    height: 27px;
+
+    border-radius: 50%;
+
+    border:
+        2px solid transparent;
+
+    background:
+        var(--swatch);
+
+    cursor: pointer;
+
+}
+
+
+.color-swatch:hover {
+
+    transform:
+        scale(1.08);
+
+}
+
+
+.color-swatch.active {
+
+    border-color: white;
+
+}
+
+
+.custom-color {
+
+    position: relative;
+
+    width: 27px;
+
+    height: 27px;
+
+    border:
+        1px dashed rgba(255,255,255,0.3);
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+}
+
+
+.custom-color span {
+
+    font-size: 15px;
+
+    opacity: 0.7;
+
+}
+
+
+.custom-color input {
+
+    position: absolute;
+
+    inset: 0;
+
+    opacity: 0;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================
+   STICKER TABS
+========================================= */
+
+.sticker-tabs {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-bottom: 8px;
+
+}
+
+
+.sticker-tab {
+
+    padding:
+        6px 9px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 999px;
+
+    background: transparent;
+
+    color:
+        rgba(255,255,255,0.4);
+
+    font-size: 10px;
+
+    cursor: pointer;
+
+}
+
+
+.sticker-tab.active {
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: white;
+
+}
+
+
+/* =========================================
+   STICKER TRAY
+========================================= */
+
+.sticker-tray {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(8, 1fr);
+
+    gap: 7px;
+
+    padding: 9px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,0.025);
+
+}
+
+
+.sticker-button,
+.upload-sticker {
+
+    min-height: 40px;
+
+    border:
+        1px solid rgba(255,255,255,0.04);
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,0.035);
+
+    cursor: pointer;
+
+    font-size: 20px;
+
+}
+
+
+.sticker-button:hover,
+.upload-sticker:hover {
+
+    background:
+        rgba(255,255,255,0.09);
+
+    transform:
+        translateY(-2px)
+        scale(1.04);
+
+}
+
+
+.upload-sticker {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: white;
+
+}
+
+
+.upload-sticker span {
+
+    font-size: 7px;
+
+    opacity: 0.45;
+
+}
+
+
+/* =========================================
+   PREVIEW
+========================================= */
+
+.preview-panel {
+
+    position: sticky;
+
+    top: 0;
+
+}
+
+
+.preview-heading {
+
+    margin-bottom: 10px;
+
+}
+
+
+.wish-preview {
+
+    --accent:
+        #B89CFF;
+
+    min-height: 535px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    border-radius: 29px;
+
+    padding:
+        75px 55px 62px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    isolation: isolate;
+
+    transition:
+        background 0.45s ease,
+        box-shadow 0.45s ease;
+
+    box-shadow:
+        inset 0 0 70px rgba(255,255,255,0.03),
+        0 20px 60px rgba(0,0,0,0.15);
+
+}
+
+
+/* =========================================
+   ATMOSPHERE LAYER
+========================================= */
+
+.wish-preview.theme-midnight {
+
+    background:
+        radial-gradient(
+            circle at 82% 14%,
+            rgba(125,105,235,0.42),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 12% 86%,
+            rgba(73,65,176,0.24),
+            transparent 36%
+        ),
+        linear-gradient(
+            135deg,
+            #14132c,
+            #2b2752
+        );
+
+}
+
+
+.wish-preview.theme-blossom {
+
+    background:
+        radial-gradient(
+            circle at 82% 14%,
+            rgba(255,177,215,0.48),
+            transparent 37%
+        ),
+        radial-gradient(
+            circle at 12% 86%,
+            rgba(217,118,177,0.28),
+            transparent 37%
+        ),
+        linear-gradient(
+            135deg,
+            #422337,
+            #7c4568
+        );
+
+}
+
+
+.wish-preview.theme-ocean {
+
+    background:
+        radial-gradient(
+            circle at 82% 14%,
+            rgba(100,215,235,0.46),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 12% 86%,
+            rgba(52,137,169,0.3),
+            transparent 37%
+        ),
+        linear-gradient(
+            135deg,
+            #0c2b38,
+            #1d6175
+        );
+
+}
+
+
+.wish-preview.theme-sunset {
+
+    background:
+        radial-gradient(
+            circle at 82% 14%,
+            rgba(255,185,110,0.5),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 12% 86%,
+            rgba(220,98,91,0.3),
+            transparent 38%
+        ),
+        linear-gradient(
+            135deg,
+            #4b2631,
+            #8d5038
+        );
+
+}
+
+
+.wish-preview.theme-cosmic {
+
+    background:
+        radial-gradient(
+            circle at 82% 14%,
+            rgba(190,125,255,0.5),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 12% 86%,
+            rgba(94,67,192,0.3),
+            transparent 37%
+        ),
+        linear-gradient(
+            135deg,
+            #18132f,
+            #482263
+        );
+
+}
+
+
+.wish-preview.theme-candy {
+
+    background:
+        radial-gradient(
+            circle at 82% 14%,
+            rgba(255,167,215,0.5),
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 12% 86%,
+            rgba(236,103,168,0.3),
+            transparent 38%
+        ),
+        linear-gradient(
+            135deg,
+            #4b2038,
+            #883f68
+        );
+
+}
+
+
+/* =========================================
+   TEXTURE LAYER
+========================================= */
+
+.background-texture {
+
+    position: absolute;
+
+    inset: 0;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    transition:
+        opacity 0.35s ease;
+
+}
+
+
+/* =========================================
+   PLAIN
+========================================= */
+
+.background-plain
+.background-texture {
+
+    opacity: 0;
+
+}
+
+
+/* =========================================
+   PAPER
+========================================= */
+
+.background-paper
+.background-texture {
+
+    opacity: 1;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,0.14) 0.7px,
+            transparent 0.8px
+        ),
+        linear-gradient(
+            115deg,
+            rgba(255,255,255,0.05),
+            transparent 40%,
+            rgba(0,0,0,0.04)
+        );
+
+    background-size:
+        7px 7px,
+        100% 100%;
+
+}
+
+
+/* =========================================
+   NOTEBOOK
+========================================= */
+
+.background-notebook
+.background-texture {
+
+    opacity: 1;
+
+    background-image:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0,
+            transparent 31px,
+            rgba(255,255,255,0.12) 32px,
+            transparent 33px
+        ),
+        linear-gradient(
+            to right,
+            transparent 0,
+            transparent 47px,
+            rgba(255,120,145,0.3) 48px,
+            transparent 49px
+        );
+
+    background-size:
+        100% 33px,
+        100% 100%;
+
+}
+
+
+.background-notebook {
+
+    border-radius: 20px;
+
+}
+
+
+/* =========================================
+   FLORAL
+========================================= */
+
+.background-floral
+.background-texture {
+
+    opacity: 1;
+
+    background-image:
+        radial-gradient(
+            circle at 12% 18%,
+            rgba(255,200,225,0.28) 0 5px,
+            transparent 6px
+        ),
+        radial-gradient(
+            circle at 17% 18%,
+            rgba(255,200,225,0.22) 0 5px,
+            transparent 6px
+        ),
+        radial-gradient(
+            circle at 14.5% 14%,
+            rgba(255,200,225,0.18) 0 5px,
+            transparent 6px
+        ),
+        radial-gradient(
+            circle at 84% 76%,
+            rgba(255,200,225,0.23) 0 5px,
+            transparent 6px
+        ),
+        radial-gradient(
+            circle at 88% 76%,
+            rgba(255,200,225,0.18) 0 5px,
+            transparent 6px
+        ),
+        linear-gradient(
+            135deg,
+            transparent,
+            rgba(255,255,255,0.025)
+        );
+
+    background-size:
+        120px 120px,
+        120px 120px,
+        120px 120px,
+        170px 170px,
+        170px 170px,
+        100% 100%;
+
+}
+
+
+/* =========================================
+   STARDUST
+========================================= */
+
+.background-stardust
+.background-texture {
+
+    opacity: 1;
+
+    background-image:
+        radial-gradient(
+            rgba(255,255,255,0.3) 0.8px,
+            transparent 1px
+        ),
+        radial-gradient(
+            rgba(255,255,255,0.16) 1.2px,
+            transparent 1.5px
+        ),
+        radial-gradient(
+            rgba(255,255,255,0.08) 2px,
+            transparent 2.5px
+        );
+
+    background-size:
+        25px 25px,
+        53px 53px,
+        87px 87px;
+
+}
+
+
+/* =========================================
+   CONFETTI
+========================================= */
+
+.background-confetti
+.background-texture {
+
+    opacity: 1;
+
+    background-image:
+        linear-gradient(
+            35deg,
+            transparent 0 47%,
+            rgba(255,215,120,0.26) 48% 51%,
+            transparent 52%
+        ),
+        linear-gradient(
+            110deg,
+            transparent 0 46%,
+            rgba(255,150,190,0.28) 47% 50%,
+            transparent 51%
+        ),
+        linear-gradient(
+            70deg,
+            transparent 0 46%,
+            rgba(110,210,240,0.25) 47% 51%,
+            transparent 52%
+        );
+
+    background-size:
+        42px 51px,
+        58px 63px,
+        73px 47px;
+
+}
+
+
+/* =========================================
+   PAPER DETAILS
+========================================= */
+
+.paper-corner {
+
+    position: absolute;
+
+    width: 42px;
+
+    height: 42px;
+
+    opacity: 0.48;
+
+    z-index: 5;
+
+    border-color:
+        var(--accent);
+
+    pointer-events: none;
+
+}
+
+
+.paper-corner.top-left {
+
+    left: 29px;
+
+    top: 29px;
+
+    border-left:
+        1px solid;
+
+    border-top:
+        1px solid;
+
+    border-radius:
+        10px 0 0 0;
+
+}
+
+
+.paper-corner.bottom-right {
+
+    right: 29px;
+
+    bottom: 29px;
+
+    border-right:
+        1px solid;
+
+    border-bottom:
+        1px solid;
+
+    border-radius:
+        0 0 10px 0;
+
+}
+
+
+/* =========================================
+   TOP DECORATION
+========================================= */
+
+.card-decoration-top {
+
+    position: absolute;
+
+    top: 46px;
+
+    color:
+        var(--accent);
+
+    font-size: 17px;
+
+    opacity: 0.75;
+
+    z-index: 5;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================
+   CARD TEXT
+========================================= */
+
+.card-title {
+
+    position: relative;
+
+    z-index: 5;
+
+    max-width: 86%;
+
+    margin-bottom: 25px;
+
+    color:
+        color-mix(
+            in srgb,
+            var(--accent) 60%,
+            white
+        );
+
+    font-size: 32px;
+
+    line-height: 1.2;
+
+}
+
+
+.card-body {
+
+    position: relative;
+
+    z-index: 5;
+
+    max-width: 79%;
+
+    font-size: 18px;
+
+    line-height: 1.8;
+
+    white-space: pre-wrap;
+
+    overflow-wrap: anywhere;
+
+}
+
+
+.card-from {
+
+    position: absolute;
+
+    right: 58px;
+
+    bottom: 43px;
+
+    z-index: 5;
+
+    font-size: 17px;
+
+    opacity: 0.75;
+
+}
+
+
+.accent-line {
+
+    position: absolute;
+
+    bottom: 76px;
+
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    width: 45px;
+
+    height: 1px;
+
+    background:
+        var(--accent);
+
+    opacity: 0.55;
+
+    z-index: 5;
+
+}
+
+
+/* =========================================
+   FONTS
+========================================= */
+
+.font-elegant {
+
+    font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+
+}
+
+
+.font-modern {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+.font-playful {
+
+    font-family:
+        "Trebuchet MS",
+        Arial,
+        sans-serif;
+
+}
+
+
+.font-handwritten {
+
+    font-family:
+        "Comic Sans MS",
+        "Segoe Print",
+        cursive;
+
+}
+
+
+.font-cursive {
+
+    font-family:
+        "Brush Script MT",
+        "Segoe Script",
+        cursive;
+
+}
+
+
+.font-typewriter {
+
+    font-family:
+        "Courier New",
+        monospace;
+
+}
+
+
+/* =========================================
+   CARD STICKERS
+========================================= */
+
+.card-sticker {
+
+    position: absolute;
+
+    line-height: 1;
+
+    user-select: none;
+
+    cursor: grab;
+
+    touch-action: none;
+
+    transform-origin:
+        center center;
+
+}
+
+
+.card-sticker.selected {
+
+    filter:
+        drop-shadow(
+            0 0 10px var(--accent)
+        );
+
+}
+
+
+.card-sticker:active {
+
+    cursor: grabbing;
+
+}
+
+
+/* =========================================
+   STICKER TOOLBAR
+========================================= */
+
+.sticker-toolbar {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 10px;
+
+    padding: 8px;
+
+    border:
+        1px solid rgba(255,255,255,0.08);
+
+    border-radius: 15px;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    backdrop-filter:
+        blur(12px);
+
+}
+
+
+.sticker-toolbar.hidden {
+
+    display: none;
+
+}
+
+
+.sticker-toolbar button {
+
+    width: 31px;
+
+    height: 31px;
+
+    border:
+        1px solid rgba(255,255,255,0.07);
+
+    border-radius: 9px;
+
+    background:
+        rgba(255,255,255,0.045);
+
+    color: white;
+
+    cursor: pointer;
+
+}
+
+
+.sticker-toolbar button:hover {
+
+    background:
+        rgba(255,255,255,0.12);
+
+}
+
+
+.sticker-toolbar .danger:hover {
+
+    background:
+        rgba(255,80,100,0.18);
+
+}
+
+
+.tool-divider {
+
+    width: 1px;
+
+    height: 18px;
+
+    background:
+        rgba(255,255,255,0.1);
+
+}
+
+
+/* =========================================
+   PREVIEW TIP
+========================================= */
+
+.preview-tip {
+
+    text-align: center;
+
+    margin-top: 9px;
+
+    font-size: 10px;
+
+    opacity: 0.28;
+
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.studio-footer {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 23px;
+
+    padding-top: 19px;
+
+    border-top:
+        1px solid rgba(255,255,255,0.07);
+
+}
+
+
+.footer-text {
+
+    font-size: 10px;
+
+    opacity: 0.3;
+
+}
+
+
+.continue-button {
+
+    border:
+        1px solid rgba(255,255,255,0.14);
+
+    border-radius: 999px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    color: white;
+
+    padding:
+        11px 17px;
+
+    font-family: inherit;
+
+    font-size: 11px;
+
+    cursor: pointer;
+
+}
+
+
+.continue-button:hover {
+
+    background:
+        rgba(255,255,255,0.14);
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================================
+   SCROLLBAR
+========================================= */
+
+.wish-window::-webkit-scrollbar {
+
+    width: 7px;
+
+}
+
+
+.wish-window::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+
+.wish-window::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border-radius: 99px;
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 900px) {
+
+    .studio-layout {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .preview-panel {
+
+        order: -1;
+
+        position: relative;
+
+    }
+
+
+    .wish-preview {
+
+        min-height: 400px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    #addWish {
+
+        right: 17px;
+
+        bottom: 17px;
+
+        width: 52px;
+
+        height: 52px;
+
+    }
+
+
+    .statistics {
+
+        left: 13px;
+
+        bottom: 13px;
+
+        gap: 8px;
+
+        padding:
+            9px 11px;
+
+    }
+
+
+    .stat-item {
+
+        min-width: 40px;
+
+    }
+
+
+    .stat-item span {
+
+        font-size: 14px;
+
+    }
+
+
+    .stat-item small {
+
+        font-size: 7px;
+
+    }
+
+
+    #wishStudio {
+
+        padding: 8px;
+
+    }
+
+
+    .wish-window {
+
+        padding:
+            25px 17px;
+
+        border-radius: 24px;
+
+    }
+
+
+    .studio-heading h1 {
+
+        font-size: 27px;
+
+    }
+
+
+    .wish-preview {
+
+        min-height: 330px;
+
+        padding:
+            55px 25px 60px;
+
+    }
+
+
+    .card-title {
+
+        font-size: 27px;
+
+    }
+
+
+    .card-body {
+
+        max-width: 88%;
+
+        font-size: 16px;
+
+    }
+
+
+    .card-from {
+
+        right: 35px;
+
+        bottom: 35px;
+
+    }
+
+
+    .sticker-tray {
+
+        grid-template-columns:
+            repeat(5, 1fr);
+
+    }
+
+
+    .studio-footer {
+
+        flex-direction: column;
+
+        align-items: flex-end;
+
+    }
+
+}
