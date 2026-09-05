@@ -5,10 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Birthday Sky</title>
 
@@ -19,987 +16,698 @@
 
 <body>
 
-<div id="sky">
+    <div id="sky">
 
 
-    <!-- =========================================
+        <!-- =========================================
          MOVABLE UNIVERSE
     ========================================== -->
 
-    <div id="space">
+        <div id="space">
 
-        <div class="nebula nebula-one"></div>
+            <div class="nebula nebula-one"></div>
 
-        <div class="nebula nebula-two"></div>
+            <div class="nebula nebula-two"></div>
 
-        <div class="moon"></div>
+            <div class="moon"></div>
 
-    </div>
+        </div>
 
 
-    <!-- =========================================
+        <!-- =========================================
          STATISTICS
     ========================================== -->
 
-    <div class="statistics">
+        <div class="statistics">
 
-        <div class="stat-item">
-            <span id="wishCount">0</span>
-            <small>Wishes</small>
+            <div class="stat-item">
+                <span id="wishCount">0</span>
+                <small>Wishes</small>
+            </div>
+
+            <div class="stat-item">
+                <span id="constellationCount">0</span>
+                <small>Constellations</small>
+            </div>
+
+            <div class="stat-item">
+                <span id="friendCount">0</span>
+                <small>Friends</small>
+            </div>
+
+            <div class="stat-item">
+                <span id="unopenedCount">0</span>
+                <small>Unopened</small>
+            </div>
+
         </div>
 
-        <div class="stat-item">
-            <span id="constellationCount">0</span>
-            <small>Constellations</small>
-        </div>
 
-        <div class="stat-item">
-            <span id="friendCount">0</span>
-            <small>Friends</small>
-        </div>
-
-        <div class="stat-item">
-            <span id="unopenedCount">0</span>
-            <small>Unopened</small>
-        </div>
-
-    </div>
-
-
-    <!-- =========================================
+        <!-- =========================================
          ADD WISH
     ========================================== -->
 
-    <button
-        id="addWish"
-        type="button"
-        aria-label="Create wish"
-    >
-        +
-    </button>
+        <button id="addWish" type="button" aria-label="Create wish">
+            +
+        </button>
 
 
-    <!-- =========================================
+        <!-- =========================================
          WISH STUDIO
     ========================================== -->
 
-    <div
-        id="wishStudio"
-        class="hidden"
-    >
+        <div id="wishStudio" class="hidden">
 
-        <div class="wish-window">
+            <div class="wish-window">
 
 
-            <!-- CLOSE -->
+                <!-- CLOSE -->
 
-            <button
-                id="closeWishStudio"
-                class="close-button"
-                type="button"
-                aria-label="Close"
-            >
-                ×
-            </button>
+                <button id="closeWishStudio" class="close-button" type="button" aria-label="Close">
+                    ×
+                </button>
 
 
-            <!-- HEADER -->
+                <!-- HEADER -->
 
-            <div class="studio-heading">
+                <div class="studio-heading">
 
-                <div class="eyebrow">
-                    CREATE SOMETHING SPECIAL
+                    <div class="eyebrow">
+                        CREATE SOMETHING SPECIAL
+                    </div>
+
+                    <h1>
+                        Create your wish ✦
+                    </h1>
+
+                    <p>
+                        Design a little birthday card of your own.
+                    </p>
+
                 </div>
 
-                <h1>
-                    Create your wish ✦
-                </h1>
 
-                <p>
-                    Design a little birthday card of your own.
-                </p>
-
-            </div>
-
-
-            <!-- =====================================
+                <!-- =====================================
                  TWO COLUMN EDITOR
             ====================================== -->
 
-            <div class="studio-layout">
+                <div class="studio-layout">
 
 
-                <!-- =================================
+                    <!-- =================================
                      LEFT SIDE
                 ================================== -->
 
-                <div class="creator-panel">
+                    <div class="creator-panel">
 
 
-                    <!-- CARD -->
+                        <!-- CARD -->
 
-                    <section class="editor-section">
+                        <section class="editor-section">
 
-                        <div class="section-heading">
-                            <span>01</span>
-                            Card
-                        </div>
+                            <div class="section-heading">
+                                <span>01</span>
+                                Card
+                            </div>
 
 
-                        <!-- SHORT GREETING -->
+                            <!-- SHORT GREETING -->
 
-                        <label for="wishTitle">
-                            Short greeting
-                        </label>
-
-                        <input
-                            type="text"
-                            id="wishTitle"
-                            maxlength="80"
-                            placeholder="Happy Birthday! ✨"
-                        >
-
-
-                        <div class="text-settings">
-
-                            <select id="titleFont">
-
-                                <option value="elegant">
-                                    Elegant
-                                </option>
-
-                                <option value="modern">
-                                    Modern
-                                </option>
-
-                                <option value="playful">
-                                    Playful
-                                </option>
-
-                                <option value="handwritten">
-                                    Handwritten
-                                </option>
-
-                                <option value="cursive">
-                                    Cursive
-                                </option>
-
-                                <option value="typewriter">
-                                    Typewriter
-                                </option>
-
-                            </select>
-
-
-                            <input
-                                type="range"
-                                id="titleSize"
-                                min="20"
-                                max="48"
-                                value="32"
-                            >
-
-                        </div>
-
-
-                        <!-- MAIN MESSAGE -->
-
-                        <label for="wishBody">
-                            Main message
-                        </label>
-
-                        <textarea
-                            id="wishBody"
-                            maxlength="1200"
-                            placeholder="Write your birthday message here..."
-                        ></textarea>
-
-
-                        <div class="text-settings">
-
-                            <select id="bodyFont">
-
-                                <option value="modern">
-                                    Modern
-                                </option>
-
-                                <option value="elegant">
-                                    Elegant
-                                </option>
-
-                                <option value="playful">
-                                    Playful
-                                </option>
-
-                                <option value="handwritten">
-                                    Handwritten
-                                </option>
-
-                                <option value="cursive">
-                                    Cursive
-                                </option>
-
-                                <option value="typewriter">
-                                    Typewriter
-                                </option>
-
-                            </select>
-
-
-                            <input
-                                type="range"
-                                id="bodySize"
-                                min="12"
-                                max="28"
-                                value="18"
-                            >
-
-                        </div>
-
-
-                        <!-- FROM -->
-
-                        <label for="wishFrom">
-                            From whom
-                        </label>
-
-                        <input
-                            type="text"
-                            id="wishFrom"
-                            maxlength="60"
-                            placeholder="— Your bestie ♡"
-                        >
-
-
-                        <div class="text-settings">
-
-                            <select id="fromFont">
-
-                                <option value="cursive">
-                                    Cursive
-                                </option>
-
-                                <option value="handwritten">
-                                    Handwritten
-                                </option>
-
-                                <option value="elegant">
-                                    Elegant
-                                </option>
-
-                                <option value="modern">
-                                    Modern
-                                </option>
-
-                                <option value="playful">
-                                    Playful
-                                </option>
-
-                                <option value="typewriter">
-                                    Typewriter
-                                </option>
-
-                            </select>
-
-
-                            <input
-                                type="range"
-                                id="fromSize"
-                                min="12"
-                                max="24"
-                                value="17"
-                            >
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- STYLE -->
-
-                    <section class="editor-section">
-
-                        <div class="section-heading">
-                            <span>02</span>
-                            Style
-                        </div>
-
-
-                        <div class="sub-label">
-                            Atmosphere
-                        </div>
-
-
-                        <div class="theme-options">
-
-                            <button
-                                class="theme-option active"
-                                data-theme="midnight"
-                                type="button"
-                            >
-                                <span class="theme-dot midnight"></span>
-                                Midnight
-                            </button>
-
-
-                            <button
-                                class="theme-option"
-                                data-theme="blossom"
-                                type="button"
-                            >
-                                <span class="theme-dot blossom"></span>
-                                Blossom
-                            </button>
-
-
-                            <button
-                                class="theme-option"
-                                data-theme="ocean"
-                                type="button"
-                            >
-                                <span class="theme-dot ocean"></span>
-                                Ocean
-                            </button>
-
-
-                            <button
-                                class="theme-option"
-                                data-theme="sunset"
-                                type="button"
-                            >
-                                <span class="theme-dot sunset"></span>
-                                Sunset
-                            </button>
-
-
-                            <button
-                                class="theme-option"
-                                data-theme="cosmic"
-                                type="button"
-                            >
-                                <span class="theme-dot cosmic"></span>
-                                Cosmic
-                            </button>
-
-
-                            <button
-                                class="theme-option"
-                                data-theme="candy"
-                                type="button"
-                            >
-                                <span class="theme-dot candy"></span>
-                                Candy
-                            </button>
-
-                        </div>
-
-
-                        <!-- BACKGROUND -->
-
-                        <div class="sub-label background-label">
-                            Background texture
-                        </div>
-
-
-                        <div class="background-options">
-
-                            <button
-                                class="background-option active"
-                                data-background="plain"
-                                type="button"
-                            >
-                                Plain
-                            </button>
-
-
-                            <button
-                                class="background-option"
-                                data-background="paper"
-                                type="button"
-                            >
-                                Paper
-                            </button>
-
-
-                            <button
-                                class="background-option"
-                                data-background="notebook"
-                                type="button"
-                            >
-                                Notebook
-                            </button>
-
-
-                            <button
-                                class="background-option"
-                                data-background="floral"
-                                type="button"
-                            >
-                                Floral
-                            </button>
-
-
-                            <button
-                                class="background-option"
-                                data-background="stardust"
-                                type="button"
-                            >
-                                Stardust
-                            </button>
-
-
-                            <button
-                                class="background-option"
-                                data-background="confetti"
-                                type="button"
-                            >
-                                Confetti
-                            </button>
-
-                        </div>
-
-
-                        <!-- COLORS -->
-
-                        <div class="sub-label color-label">
-                            Accent colour
-                        </div>
-
-
-                        <div class="color-row">
-
-                            <button
-                                class="color-swatch active"
-                                data-color="#B89CFF"
-                                style="--swatch:#B89CFF"
-                                type="button"
-                            ></button>
-
-
-                            <button
-                                class="color-swatch"
-                                data-color="#FF9FCB"
-                                style="--swatch:#FF9FCB"
-                                type="button"
-                            ></button>
-
-
-                            <button
-                                class="color-swatch"
-                                data-color="#73D4E7"
-                                style="--swatch:#73D4E7"
-                                type="button"
-                            ></button>
-
-
-                            <button
-                                class="color-swatch"
-                                data-color="#FFB27D"
-                                style="--swatch:#FFB27D"
-                                type="button"
-                            ></button>
-
-
-                            <button
-                                class="color-swatch"
-                                data-color="#A7E89B"
-                                style="--swatch:#A7E89B"
-                                type="button"
-                            ></button>
-
-
-                            <button
-                                class="color-swatch"
-                                data-color="#FFE58A"
-                                style="--swatch:#FFE58A"
-                                type="button"
-                            ></button>
-
-
-                            <label class="custom-color">
-
-                                <span>+</span>
-
-                                <input
-                                    type="color"
-                                    id="customColor"
-                                    value="#B89CFF"
-                                >
-
+                            <label for="wishTitle">
+                                Short greeting
                             </label>
 
-                        </div>
+                            <input type="text" id="wishTitle" maxlength="80" placeholder="Happy Birthday! ✨">
 
-                    </section>
 
+                            <div class="text-settings">
 
-                    <!-- DECORATE -->
+                                <select id="titleFont">
 
-                    <section class="editor-section">
+                                    <option value="elegant">
+                                        Elegant
+                                    </option>
 
-                        <div class="section-heading">
-                            <span>03</span>
-                            Decorate
-                        </div>
+                                    <option value="modern">
+                                        Modern
+                                    </option>
 
+                                    <option value="playful">
+                                        Playful
+                                    </option>
 
-                        <div class="sub-label">
-                            Decorations
-                        </div>
+                                    <option value="handwritten">
+                                        Handwritten
+                                    </option>
 
+                                    <option value="cursive">
+                                        Cursive
+                                    </option>
 
-                        <div class="sticker-tabs">
+                                    <option value="typewriter">
+                                        Typewriter
+                                    </option>
 
-                            <button
-                                class="sticker-tab active"
-                                data-category="all"
-                                type="button"
-                            >
-                                All
-                            </button>
+                                </select>
 
 
-                            <button
-                                class="sticker-tab"
-                                data-category="small"
-                                type="button"
-                            >
-                                Small
-                            </button>
+                                <input type="range" id="titleSize" min="20" max="48" value="32">
 
+                            </div>
 
-                            <button
-                                class="sticker-tab"
-                                data-category="birthday"
-                                type="button"
-                            >
-                                Birthday
-                            </button>
 
+                            <!-- MAIN MESSAGE -->
 
-                            <button
-                                class="sticker-tab"
-                                data-category="flowers"
-                                type="button"
-                            >
-                                Flowers
-                            </button>
+                            <label for="wishBody">
+                                Main message
+                            </label>
 
+                            <textarea id="wishBody" maxlength="1200"
+                                placeholder="Write your birthday message here..."></textarea>
 
-                            <button
-                                class="sticker-tab"
-                                data-category="cosmic"
-                                type="button"
-                            >
-                                Cosmic
-                            </button>
 
-                        </div>
+                            <div class="text-settings">
 
+                                <select id="bodyFont">
 
-                        <div class="sticker-tray">
+                                    <option value="modern">
+                                        Modern
+                                    </option>
 
+                                    <option value="elegant">
+                                        Elegant
+                                    </option>
 
-                            <button
-                                class="sticker-button"
-                                data-category="small"
-                                data-sticker="🌸"
-                                type="button"
-                            >🌸</button>
+                                    <option value="playful">
+                                        Playful
+                                    </option>
 
+                                    <option value="handwritten">
+                                        Handwritten
+                                    </option>
 
-                            <button
-                                class="sticker-button"
-                                data-category="small"
-                                data-sticker="🦋"
-                                type="button"
-                            >🦋</button>
+                                    <option value="cursive">
+                                        Cursive
+                                    </option>
 
+                                    <option value="typewriter">
+                                        Typewriter
+                                    </option>
 
-                            <button
-                                class="sticker-button"
-                                data-category="small"
-                                data-sticker="🎀"
-                                type="button"
-                            >🎀</button>
+                                </select>
 
 
-                            <button
-                                class="sticker-button"
-                                data-category="small"
-                                data-sticker="💗"
-                                type="button"
-                            >💗</button>
-
-
-                            <button
-                                class="sticker-button"
-                                data-category="small"
-                                data-sticker="✨"
-                                type="button"
-                            >✨</button>
-
-
-                            <button
-                                class="sticker-button"
-                                data-category="birthday"
-                                data-sticker="🎂"
-                                data-big="true"
-                                type="button"
-                            >🎂</button>
-
-
-                            <button
-                                class="sticker-button"
-                                data-category="birthday"
-                                data-sticker="🎈"
-                                data-big="true"
-                                type="button"
-                            >🎈</button>
-
-
-                            <button
-                                class="sticker-button"
-                                data-category="birthday"
-                                data-sticker="🎁"
-                                data-big="true"
-                                type="button"
-                            >🎁</button>
-
-
-                            <button
-                                class="sticker-button"
-                                data-category="birthday"
-                                data-sticker="🎊"
-                                data-big="true"
-                                type="button"
-                            >🎊</button>
-
-
-                            <button
-                                class="sticker-button"
-                                data-category="birthday"
-                                data-sticker="🧁"
-                                data-big="true"
-                                type="button"
-                            >🧁</button>
+                                <input type="range" id="bodySize" min="12" max="28" value="18">
 
+                            </div>
 
-                            <button
-                                class="sticker-button"
-                                data-category="birthday"
-                                data-sticker="🕯️"
-                                data-big="true"
-                                type="button"
-                            >🕯️</button>
 
+                            <!-- FROM -->
 
-                            <button
-                                class="sticker-button"
-                                data-category="flowers"
-                                data-sticker="💐"
-                                data-big="true"
-                                type="button"
-                            >💐</button>
+                            <label for="wishFrom">
+                                From whom
+                            </label>
 
+                            <input type="text" id="wishFrom" maxlength="60" placeholder="— Your bestie ♡">
 
-                            <button
-                                class="sticker-button"
-                                data-category="flowers"
-                                data-sticker="🌷"
-                                type="button"
-                            >🌷</button>
 
+                            <div class="text-settings">
 
-                            <button
-                                class="sticker-button"
-                                data-category="flowers"
-                                data-sticker="🌹"
-                                type="button"
-                            >🌹</button>
+                                <select id="fromFont">
 
+                                    <option value="cursive">
+                                        Cursive
+                                    </option>
 
-                            <button
-                                class="sticker-button"
-                                data-category="flowers"
-                                data-sticker="🌿"
-                                type="button"
-                            >🌿</button>
+                                    <option value="handwritten">
+                                        Handwritten
+                                    </option>
 
+                                    <option value="elegant">
+                                        Elegant
+                                    </option>
 
-                            <button
-                                class="sticker-button"
-                                data-category="cosmic"
-                                data-sticker="⭐"
-                                type="button"
-                            >⭐</button>
+                                    <option value="modern">
+                                        Modern
+                                    </option>
 
+                                    <option value="playful">
+                                        Playful
+                                    </option>
 
-                            <button
-                                class="sticker-button"
-                                data-category="cosmic"
-                                data-sticker="🌙"
-                                type="button"
-                            >🌙</button>
+                                    <option value="typewriter">
+                                        Typewriter
+                                    </option>
 
+                                </select>
 
-                            <button
-                                class="sticker-button"
-                                data-category="cosmic"
-                                data-sticker="💫"
-                                type="button"
-                            >💫</button>
 
+                                <input type="range" id="fromSize" min="12" max="24" value="17">
 
-                            <button
-                                class="sticker-button"
-                                data-category="cosmic"
-                                data-sticker="🪐"
-                                type="button"
-                            >🪐</button>
+                            </div>
 
+                        </section>
 
-                            <button
-                                id="uploadStickerButton"
-                                class="upload-sticker"
-                                type="button"
-                            >
-                                +
-                                <span>My Sticker</span>
-                            </button>
 
+                        <!-- STYLE -->
 
-                            <input
-                                type="file"
-                                id="stickerUpload"
-                                accept="image/png,image/webp,image/jpeg"
-                                hidden
-                            >
+                        <section class="editor-section">
 
-                        </div>
+                            <div class="section-heading">
+                                <span>02</span>
+                                Style
+                            </div>
 
-                    </section>
 
-                </div>
+                            <div class="sub-label">
+                                Atmosphere
+                            </div>
 
 
-                <!-- =================================
+                            <div class="theme-options">
+
+                                <button class="theme-option active" data-theme="midnight" type="button">
+                                    <span class="theme-dot midnight"></span>
+                                    Midnight
+                                </button>
+
+
+                                <button class="theme-option" data-theme="blossom" type="button">
+                                    <span class="theme-dot blossom"></span>
+                                    Blossom
+                                </button>
+
+
+                                <button class="theme-option" data-theme="ocean" type="button">
+                                    <span class="theme-dot ocean"></span>
+                                    Ocean
+                                </button>
+
+
+                                <button class="theme-option" data-theme="sunset" type="button">
+                                    <span class="theme-dot sunset"></span>
+                                    Sunset
+                                </button>
+
+
+                                <button class="theme-option" data-theme="cosmic" type="button">
+                                    <span class="theme-dot cosmic"></span>
+                                    Cosmic
+                                </button>
+
+
+                                <button class="theme-option" data-theme="candy" type="button">
+                                    <span class="theme-dot candy"></span>
+                                    Candy
+                                </button>
+
+                            </div>
+
+
+                            <!-- BACKGROUND -->
+
+                            <div class="sub-label background-label">
+                                Background texture
+                            </div>
+
+
+                            <div class="background-options">
+
+                                <button class="background-option active" data-background="plain" type="button">
+                                    Plain
+                                </button>
+
+
+                                <button class="background-option" data-background="paper" type="button">
+                                    Paper
+                                </button>
+
+
+                                <button class="background-option" data-background="notebook" type="button">
+                                    Notebook
+                                </button>
+
+
+                                <button class="background-option" data-background="floral" type="button">
+                                    Floral
+                                </button>
+
+
+                                <button class="background-option" data-background="stardust" type="button">
+                                    Stardust
+                                </button>
+
+
+                                <button class="background-option" data-background="confetti" type="button">
+                                    Confetti
+                                </button>
+
+                            </div>
+
+
+                            <!-- COLORS -->
+
+                            <div class="sub-label color-label">
+                                Accent colour
+                            </div>
+
+
+                            <div class="color-row">
+
+                                <button class="color-swatch active" data-color="#B89CFF" style="--swatch:#B89CFF"
+                                    type="button"></button>
+
+
+                                <button class="color-swatch" data-color="#FF9FCB" style="--swatch:#FF9FCB"
+                                    type="button"></button>
+
+
+                                <button class="color-swatch" data-color="#73D4E7" style="--swatch:#73D4E7"
+                                    type="button"></button>
+
+
+                                <button class="color-swatch" data-color="#FFB27D" style="--swatch:#FFB27D"
+                                    type="button"></button>
+
+
+                                <button class="color-swatch" data-color="#A7E89B" style="--swatch:#A7E89B"
+                                    type="button"></button>
+
+
+                                <button class="color-swatch" data-color="#FFE58A" style="--swatch:#FFE58A"
+                                    type="button"></button>
+
+
+                                <label class="custom-color">
+
+                                    <span>+</span>
+
+                                    <input type="color" id="customColor" value="#B89CFF">
+
+                                </label>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- DECORATE -->
+
+                        <section class="editor-section">
+
+                            <div class="section-heading">
+                                <span>03</span>
+                                Decorate
+                            </div>
+
+
+                            <div class="sub-label">
+                                Decorations
+                            </div>
+
+
+                            <div class="sticker-tabs">
+
+                                <button class="sticker-tab active" data-category="all" type="button">
+                                    All
+                                </button>
+
+
+                                <button class="sticker-tab" data-category="small" type="button">
+                                    Small
+                                </button>
+
+
+                                <button class="sticker-tab" data-category="birthday" type="button">
+                                    Birthday
+                                </button>
+
+
+                                <button class="sticker-tab" data-category="flowers" type="button">
+                                    Flowers
+                                </button>
+
+
+                                <button class="sticker-tab" data-category="cosmic" type="button">
+                                    Cosmic
+                                </button>
+
+                            </div>
+
+
+                            <div class="sticker-tray">
+
+
+                                <button class="sticker-button" data-category="small" data-sticker="🌸"
+                                    type="button">🌸</button>
+
+
+                                <button class="sticker-button" data-category="small" data-sticker="🦋"
+                                    type="button">🦋</button>
+
+
+                                <button class="sticker-button" data-category="small" data-sticker="🎀"
+                                    type="button">🎀</button>
+
+
+                                <button class="sticker-button" data-category="small" data-sticker="💗"
+                                    type="button">💗</button>
+
+
+                                <button class="sticker-button" data-category="small" data-sticker="✨"
+                                    type="button">✨</button>
+
+
+                                <button class="sticker-button" data-category="birthday" data-sticker="🎂"
+                                    data-big="true" type="button">🎂</button>
+
+
+                                <button class="sticker-button" data-category="birthday" data-sticker="🎈"
+                                    data-big="true" type="button">🎈</button>
+
+
+                                <button class="sticker-button" data-category="birthday" data-sticker="🎁"
+                                    data-big="true" type="button">🎁</button>
+
+
+                                <button class="sticker-button" data-category="birthday" data-sticker="🎊"
+                                    data-big="true" type="button">🎊</button>
+
+
+                                <button class="sticker-button" data-category="birthday" data-sticker="🧁"
+                                    data-big="true" type="button">🧁</button>
+
+
+                                <button class="sticker-button" data-category="birthday" data-sticker="🕯️"
+                                    data-big="true" type="button">🕯️</button>
+
+
+                                <button class="sticker-button" data-category="flowers" data-sticker="💐" data-big="true"
+                                    type="button">💐</button>
+
+
+                                <button class="sticker-button" data-category="flowers" data-sticker="🌷"
+                                    type="button">🌷</button>
+
+
+                                <button class="sticker-button" data-category="flowers" data-sticker="🌹"
+                                    type="button">🌹</button>
+
+
+                                <button class="sticker-button" data-category="flowers" data-sticker="🌿"
+                                    type="button">🌿</button>
+
+
+                                <button class="sticker-button" data-category="cosmic" data-sticker="⭐"
+                                    type="button">⭐</button>
+
+
+                                <button class="sticker-button" data-category="cosmic" data-sticker="🌙"
+                                    type="button">🌙</button>
+
+
+                                <button class="sticker-button" data-category="cosmic" data-sticker="💫"
+                                    type="button">💫</button>
+
+
+                                <button class="sticker-button" data-category="cosmic" data-sticker="🪐"
+                                    type="button">🪐</button>
+
+
+                                <button id="uploadStickerButton" class="upload-sticker" type="button">
+                                    +
+                                    <span>My Sticker</span>
+                                </button>
+
+
+                                <input type="file" id="stickerUpload" accept="image/png,image/webp,image/jpeg" hidden>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+
+                    <!-- =================================
                      RIGHT SIDE
                 ================================== -->
 
-                <div class="preview-panel">
+                    <div class="preview-panel">
 
-                    <div class="section-heading preview-heading">
+                        <div class="section-heading preview-heading">
 
-                        <span>04</span>
+                            <span>04</span>
 
-                        Live preview
+                            Live preview
 
-                    </div>
-
-
-                    <div
-                        id="wishPreview"
-                        class="wish-preview theme-midnight background-plain"
-                    >
-
-                        <!-- TEXTURE LAYER -->
-
-                        <div
-                            id="backgroundTexture"
-                            class="background-texture"
-                        ></div>
-
-
-                        <!-- DECORATIVE CORNERS -->
-
-                        <div class="paper-corner top-left"></div>
-
-                        <div class="paper-corner bottom-right"></div>
-
-
-                        <!-- TOP DECORATION -->
-
-                        <div class="card-decoration-top">
-                            ✦
                         </div>
 
 
-                        <!-- TITLE -->
+                        <div id="wishPreview" class="wish-preview theme-midnight background-plain">
 
-                        <div
-                            id="previewTitle"
-                            class="card-title font-elegant"
-                        >
-                            Happy Birthday! ✨
+                            <!-- TEXTURE LAYER -->
+
+                            <div id="backgroundTexture" class="background-texture"></div>
+
+
+                            <!-- DECORATIVE CORNERS -->
+
+                            <div class="paper-corner top-left"></div>
+
+                            <div class="paper-corner bottom-right"></div>
+
+
+                            <!-- TOP DECORATION -->
+
+                            <div class="card-decoration-top">
+                                ✦
+                            </div>
+
+
+                            <!-- TITLE -->
+
+                            <div id="previewTitle" class="card-title font-elegant">
+                                Happy Birthday! ✨
+                            </div>
+
+
+                            <!-- BODY -->
+
+                            <div id="previewBody" class="card-body font-modern">
+                                Your beautiful birthday message
+                                will appear here...
+                            </div>
+
+
+                            <!-- FROM -->
+
+                            <div id="previewFrom" class="card-from font-cursive">
+                                — Your bestie ♡
+                            </div>
+
+
+                            <!-- ACCENT -->
+
+                            <div id="accentLine" class="accent-line"></div>
+
                         </div>
 
 
-                        <!-- BODY -->
+                        <!-- STICKER TOOLBAR -->
 
-                        <div
-                            id="previewBody"
-                            class="card-body font-modern"
-                        >
-                            Your beautiful birthday message
-                            will appear here...
+                        <div id="stickerToolbar" class="sticker-toolbar hidden">
+
+                            <button id="makeSmaller" type="button" title="Smaller">
+                                −
+                            </button>
+
+
+                            <button id="makeLarger" type="button" title="Larger">
+                                +
+                            </button>
+
+
+                            <span class="tool-divider"></span>
+
+
+                            <button id="rotateLeft" type="button" title="Rotate left">
+                                ↺
+                            </button>
+
+
+                            <button id="rotateRight" type="button" title="Rotate right">
+                                ↻
+                            </button>
+
+
+                            <span class="tool-divider"></span>
+
+
+                            <button id="bringForward" type="button" title="Bring forward">
+                                ↑
+                            </button>
+
+
+                            <button id="sendBackward" type="button" title="Send backward">
+                                ↓
+                            </button>
+
+
+                            <span class="tool-divider"></span>
+
+
+                            <button id="duplicateSticker" type="button" title="Duplicate">
+                                ⧉
+                            </button>
+
+
+                            <button id="deleteSticker" class="danger" type="button" title="Delete">
+                                🗑
+                            </button>
+
                         </div>
 
 
-                        <!-- FROM -->
-
-                        <div
-                            id="previewFrom"
-                            class="card-from font-cursive"
-                        >
-                            — Your bestie ♡
+                        <div class="preview-tip">
+                            Select a decoration to move, resize or rotate it.
                         </div>
 
-
-                        <!-- ACCENT -->
-
-                        <div
-                            id="accentLine"
-                            class="accent-line"
-                        ></div>
-
-                    </div>
-
-
-                    <!-- STICKER TOOLBAR -->
-
-                    <div
-                        id="stickerToolbar"
-                        class="sticker-toolbar hidden"
-                    >
-
-                        <button
-                            id="makeSmaller"
-                            type="button"
-                            title="Smaller"
-                        >
-                            −
-                        </button>
-
-
-                        <button
-                            id="makeLarger"
-                            type="button"
-                            title="Larger"
-                        >
-                            +
-                        </button>
-
-
-                        <span class="tool-divider"></span>
-
-
-                        <button
-                            id="rotateLeft"
-                            type="button"
-                            title="Rotate left"
-                        >
-                            ↺
-                        </button>
-
-
-                        <button
-                            id="rotateRight"
-                            type="button"
-                            title="Rotate right"
-                        >
-                            ↻
-                        </button>
-
-
-                        <span class="tool-divider"></span>
-
-
-                        <button
-                            id="bringForward"
-                            type="button"
-                            title="Bring forward"
-                        >
-                            ↑
-                        </button>
-
-
-                        <button
-                            id="sendBackward"
-                            type="button"
-                            title="Send backward"
-                        >
-                            ↓
-                        </button>
-
-
-                        <span class="tool-divider"></span>
-
-
-                        <button
-                            id="duplicateSticker"
-                            type="button"
-                            title="Duplicate"
-                        >
-                            ⧉
-                        </button>
-
-
-                        <button
-                            id="deleteSticker"
-                            class="danger"
-                            type="button"
-                            title="Delete"
-                        >
-                            🗑
-                        </button>
-
-                    </div>
-
-
-                    <div class="preview-tip">
-                        Select a decoration to move, resize or rotate it.
                     </div>
 
                 </div>
 
-            </div>
+
+                <!-- FOOTER -->
+
+                <div class="studio-footer">
+
+                    <div class="footer-text">
+
+                        Your finished card will become a constellation ✦
+
+                    </div>
 
 
-            <!-- FOOTER -->
+                    <button id="continueWish" type="button" class="continue-button">
 
-            <div class="studio-footer">
+                        Continue to constellation
 
-                <div class="footer-text">
+                        <span>✦</span>
 
-                    Your finished card will become a constellation ✦
+                    </button>
 
                 </div>
 
 
-                <button
-                    id="continueWish"
-                    type="button"
-                    class="continue-button"
-                >
-
-                    Continue to constellation
-
-                    <span>✦</span>
-
-                </button>
-
             </div>
-
 
         </div>
 
     </div>
 
-</div>
 
-
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
 </body>
 
