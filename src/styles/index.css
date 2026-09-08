@@ -1403,12 +1403,15 @@ body {
 .animate-fade-in { animation: fadeIn 0.2s ease-out; }
 
 /* Personality nebula */
-.sky-personality-card { position: absolute; z-index: 16; transform: translate(-50%, -50%); max-width: 128px; padding: 8px 12px; border: 1px solid; border-radius: 12px; background: rgba(25, 14, 38, .72); backdrop-filter: blur(10px); font-size: 12px; font-weight: 600; text-align: center; animation: personalityFloat 6s ease-in-out infinite alternate; pointer-events: none; }
+.sky-personality-card { position: absolute; z-index: 16; transform: translate(-50%, -50%); width: max-content; max-width: 128px; padding: 7px 10px; border: 1px solid; border-radius: 12px; background: rgba(25, 14, 38, .72); backdrop-filter: blur(10px); font-size: 12px; font-weight: 600; text-align: center; animation: personalityFloat 6s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes personalityFloat { from { transform: translate(-50%, -50%) translateY(3px); } to { transform: translate(-50%, -50%) translateY(-7px); } }
 .personality-nebula { position: absolute; left: 54%; top: 50%; width: 400px; height: 360px; transform: translate(-50%, -50%); cursor: pointer; z-index: 14; user-select: none; }
-.personality-nebula-aura, .personality-nebula-core { position: absolute; inset: 18%; border-radius: 50%; pointer-events: none; }
-.personality-nebula-aura { background: radial-gradient(ellipse at 48% 42%, rgba(244,114,182,.22), rgba(232,121,249,.1) 38%, transparent 72%); filter: blur(24px); animation: personalityBreathe 7s ease-in-out infinite alternate; }
-.personality-nebula-core { inset: 28% 25%; background: radial-gradient(ellipse at 42% 38%, rgba(251,207,232,.36), rgba(244,114,182,.16) 35%, transparent 70%); filter: blur(14px); transform: rotate(-25deg) skewX(-12deg); }
+.personality-nebula-aura, .personality-nebula-core { position: absolute; inset: 4%; pointer-events: none; }
+.personality-nebula-aura { border-radius: 48% 52% 45% 55%; background: radial-gradient(ellipse at 50% 44%, rgba(244,114,182,.3), rgba(251,113,133,.16) 28%, transparent 68%); filter: blur(28px); animation: personalityBreathe 7s ease-in-out infinite alternate; }
+.personality-nebula-core { inset: 16% 13%; border-radius: 48% 52% 45% 55%; background: radial-gradient(ellipse at 50% 39%, rgba(251,207,232,.28), rgba(244,114,182,.12) 34%, transparent 70%); filter: blur(18px); transform: rotate(-8deg); }
+.personality-nebula-core::before, .personality-nebula-core::after { content: ''; position: absolute; border: 9px solid rgba(249,168,212,.16); border-left-color: transparent; border-bottom-color: transparent; border-radius: 50%; transform: rotate(-30deg); filter: blur(4px); }
+.personality-nebula-core::before { inset: 16% 12% 42% 8%; }
+.personality-nebula-core::after { inset: 37% 8% 12% 30%; transform: rotate(145deg); border-width: 7px; }
 .personality-nebula-particles { position: absolute; inset: 0; pointer-events: none; }
 .personality-nebula-particle { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); transition: left .45s ease-out, top .45s ease-out; }
 .personality-nebula-label { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 13px; border: 1px solid rgba(249,168,212,.28); border-radius: 999px; background: rgba(18,12,34,.72); backdrop-filter: blur(10px); white-space: nowrap; color: #fbcfe8; box-shadow: 0 0 20px rgba(244,114,182,.18); }
@@ -1421,9 +1424,26 @@ body {
 .accounts-dropdown button:hover { background: rgba(255,255,255,.1); }
 .account-menu-wrap { position: relative; }
 .auth-choice-tabs { display: none; }
+.auth-choice-view { display: flex; flex-direction: column; gap: 12px; padding: 12px 22px 22px; }
+.account-choice-pill { width: 100%; border: 0; border-radius: 999px; padding: 13px 18px; background: #ffffff; color: #0D0F18; font: inherit; font-weight: 700; cursor: pointer; }
+.account-choice-pill + .account-choice-pill { background: rgba(255,255,255,.1); color: #ffffff; border: 1px solid rgba(255,255,255,.16); }
+.auth-modal-subtext { max-width: 300px; margin-top: 6px; color: var(--text-muted); font-size: 13px; line-height: 1.45; }
+.auth-modal-window { background: #0D0F18; max-width: 440px; width: min(440px, 100%); }
+.profile-photo-notice { display: block; margin: -2px 0 8px; color: var(--text-muted); font-size: 11px; }
+.auth-forms-container { display: flex; flex-direction: column; padding: 18px 22px 22px; gap: 12px; }
+.auth-form { display: flex; flex-direction: column; gap: 14px; }
+.auth-field-section { display: flex; flex-direction: column; gap: 4px; }
+.avatar-selection-cluster { display: flex; align-items: center; gap: 14px; }
+.upload-photo-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 9px 13px; background: rgba(255,255,255,.08); color: #fff; cursor: pointer; font: inherit; font-size: 12px; }
+.auth-input-wrapper { position: relative; display: flex; align-items: center; }
+.auth-input-icon { position: absolute; left: 10px; color: var(--text-muted); pointer-events: none; }
+.auth-input { width: 100%; padding: 10px 12px 10px 32px !important; border: 1px solid rgba(255,255,255,.14); border-radius: 10px; background: rgba(255,255,255,.05); color: #fff; outline: none; font: inherit; font-size: 13px; }
+.auth-submit-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.auth-runtime-note { color: var(--text-muted); font-size: 11px; }
+
 .preset-avatars-row { display: none; }
 .auth-modal-window { max-width: 440px; width: min(440px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; }
-.personality-universe-window { max-width: 760px; width: min(760px, 100%); max-height: calc(100vh - 32px); overflow: hidden; }
+.personality-universe-window { max-width: 640px; width: min(640px, 100%); max-height: min(620px, calc(100vh - 32px)); overflow: hidden; }
 .personality-universe-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 22px; }
 .personality-header-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .personality-universe-body { min-height: 280px; max-height: calc(100vh - 150px); overflow: auto; }
@@ -1519,8 +1539,11 @@ body {
 .black-hole-input { min-height: 110px; resize: vertical; }
 .black-hole-submit-footer, .black-hole-actions-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .contributor-tag-subtle { color: var(--text-muted); font-size: 12px; }
-@media (max-width: 640px) { .black-hole-header, .black-hole-content-area { padding-left: 14px; padding-right: 14px; } .black-hole-header h2 { font-size: 18px; } .black-hole-submit-footer, .black-hole-actions-row { align-items: stretch; flex-direction: column; } .black-hole-submit-footer > *, .black-hole-actions-row > * { width: 100%; justify-content: center; } }
+@media (max-width: 640px) { .auth-forms-container { padding: 14px; } .auth-submit-row { align-items: stretch; flex-direction: column; } .auth-submit-row > * { width: 100%; justify-content: center; } .avatar-selection-cluster { flex-wrap: wrap; } .black-hole-header, .black-hole-content-area { padding-left: 14px; padding-right: 14px; } .black-hole-header h2 { font-size: 18px; } .black-hole-submit-footer, .black-hole-actions-row { align-items: stretch; flex-direction: column; } .black-hole-submit-footer > *, .black-hole-actions-row > * { width: 100%; justify-content: center; } }
 .modal-backdrop { overscroll-behavior: contain; }
+
+.custom-avatar-thumb, .auth-avatar-img-lg { width: 82px; height: 82px; max-width: 82px; max-height: 82px; display: block; object-fit: cover; border-radius: 50%; flex: 0 0 82px; }
+.avatar-preview-box { width: 90px; height: 90px; min-width: 90px; max-width: 90px; max-height: 90px; overflow: hidden; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
 @media (max-width: 640px) {
   .header-stats-container { top: 12px; left: 12px; right: 12px; }

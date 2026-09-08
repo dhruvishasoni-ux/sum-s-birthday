@@ -147,8 +147,9 @@ export const ProfileModal: React.FC = () => {
         {/* Header */}
         <div className="auth-header">
           <div>
-            <div className="eyebrow">COSMIC IDENTITY · SESSION ONLY</div>
-            <h2>{currentUser ? 'Your Profile' : 'Cosmic Authentication'}</h2>
+            <div className="eyebrow">YOUR LITTLE CORNER OF THE SKY</div>
+            <h2>{currentUser ? 'Your Profile' : 'Your Account'}</h2>
+            {!currentUser && <p className="auth-modal-subtext">{authMode === 'choice' ? 'Create an account or log in to keep your constellations together.' : authMode === 'signup' ? 'Create your account.' : 'Log in to your account.'}</p>}
           </div>
           <button
             type="button"
@@ -229,6 +230,13 @@ export const ProfileModal: React.FC = () => {
         ) : (
           /* Authentication Choices: Login vs Sign Up */
           <div className="auth-forms-container">
+            {authMode === 'choice' ? (
+              <div className="auth-choice-view animate-fade-in">
+                <button type="button" className="account-choice-pill" onClick={() => setAuthMode('signup')}>Sign up</button>
+                <button type="button" className="account-choice-pill" onClick={() => setAuthMode('login')}>Log in</button>
+              </div>
+            ) : null}
+            {authMode !== 'choice' && <>
             <div className="auth-choice-tabs">
               <button
                 type="button"
@@ -260,9 +268,10 @@ export const ProfileModal: React.FC = () => {
                 {/* 1. Compulsory Profile Picture */}
                 <div className="auth-field-section">
                   <label className="input-label required-label">
-                    1. Profile Picture <span className="compulsory-tag">*Compulsory</span>
+                    Choose profile picture <span className="compulsory-tag">*Required</span>
                   </label>
 
+                  <small className="profile-photo-notice">Profile picture is required.</small>
                   <div className="avatar-selection-cluster">
                     <div className="avatar-preview-box">
                       {signupAvatar && !signupAvatar.startsWith('emoji:') ? (
@@ -278,7 +287,7 @@ export const ProfileModal: React.FC = () => {
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Camera size={15} />
-                      <span>{signupAvatar && !signupAvatar.startsWith('emoji:') ? 'Change Photo' : 'Upload Photo'}</span>
+                      <span>{signupAvatar && !signupAvatar.startsWith('emoji:') ? 'Change photo' : 'Choose profile picture'}</span>
                     </button>
                     <input
                       ref={fileInputRef}
@@ -319,7 +328,7 @@ export const ProfileModal: React.FC = () => {
                       className="studio-text-input auth-input"
                       value={signupUsername}
                       onChange={(e) => setSignupUsername(e.target.value)}
-                      placeholder="Choose a username..."
+                      placeholder="Your name"
                       maxLength={30}
                     />
                   </div>
@@ -337,7 +346,7 @@ export const ProfileModal: React.FC = () => {
                       className="studio-text-input auth-input"
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
-                      placeholder="Enter a password..."
+                      placeholder="Create a passcode"
                     />
                   </div>
                 </div>
@@ -345,7 +354,7 @@ export const ProfileModal: React.FC = () => {
                 <div className="auth-submit-row">
                   <span className="auth-runtime-note">Stored for this website session only</span>
                   <button type="submit" className="continue-button">
-                    <span>Complete Sign Up</span>
+                    <span>Create account ✦</span>
                     <UserPlus size={16} />
                   </button>
                 </div>
@@ -377,7 +386,7 @@ export const ProfileModal: React.FC = () => {
                       className="studio-text-input auth-input"
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
-                      placeholder="Your password..."
+                      placeholder="Your passcode"
                     />
                   </div>
                 </div>
@@ -400,6 +409,7 @@ export const ProfileModal: React.FC = () => {
                 </div>
               </form>
             )}
+            </>}
           </div>
         )}
       </div>

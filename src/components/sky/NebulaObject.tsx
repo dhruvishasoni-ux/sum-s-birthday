@@ -3,19 +3,17 @@ import { useSky } from '../../context/SkyContext';
 
 interface Particle { id: number; x: number; y: number; size: number; opacity: number; color: string; }
 
-function makeParticles(count = 90): Particle[] {
+function makeParticles(count = 320): Particle[] {
+  const palette = ['#f9a8d4', '#fbcfe8', '#f472b6', '#ffe4e6', '#fb7185'];
   return Array.from({ length: count }, (_, id) => {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.pow(Math.random(), 0.65) * 150;
-    const spiral = angle + radius * 0.018;
-    return {
-      id,
-      x: Math.cos(spiral) * radius * 0.82 + Math.sin(spiral * 2) * 34,
-      y: Math.sin(spiral) * radius * 0.55 + Math.cos(spiral * 1.4) * 20,
-      size: Math.random() * 3.2 + 0.8,
-      opacity: Math.random() * 0.65 + 0.18,
-      color: ['#f9a8d4', '#fbcfe8', '#f472b6', '#ffe4e6', '#e879f9'][Math.floor(Math.random() * 5)]
-    };
+    const t = Math.random() * Math.PI * 2;
+    const heartX = 16 * Math.sin(t) ** 3;
+    const heartY = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+    const band = Math.random() < 0.68 ? (Math.random() - 0.5) * 15 : (Math.random() - 0.5) * 58;
+    const swirl = (t * 2.4 + id * 0.11) % (Math.PI * 2);
+    const x = heartX * 8.3 + Math.cos(swirl) * band + Math.sin(t * 3) * 5;
+    const y = heartY * 7.2 + Math.sin(swirl) * band * 0.62;
+    return { id, x, y, size: Math.random() * 2.5 + 0.65, opacity: Math.random() * 0.65 + 0.25, color: palette[Math.floor(Math.random() * palette.length)] };
   });
 }
 

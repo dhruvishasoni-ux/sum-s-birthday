@@ -53,7 +53,7 @@ export const SkyCanvas: React.FC = () => {
     lastTouchPos: { x: 0, y: 0 }
   });
 
-  const backgroundStars = useMemo(() => generateBackgroundStars(600), []);
+  const backgroundStars = useMemo(() => generateBackgroundStars(720), []);
 
   const shouldIgnoreTarget = (target: HTMLElement | null) => {
     if (!target) return false;

@@ -62,8 +62,8 @@ interface SkyContextType {
   setActiveModal: (modal: ModalType) => void;
   authNotice: string | null;
   setAuthNotice: (notice: string | null) => void;
-  authMode: 'login' | 'signup';
-  setAuthMode: (mode: 'login' | 'signup') => void;
+  authMode: 'choice' | 'login' | 'signup';
+  setAuthMode: (mode: 'choice' | 'login' | 'signup') => void;
 
   activeWishId: string | null;
   setActiveWishId: (id: string | null) => void;
@@ -94,7 +94,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
   const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>([]);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const [authMode, setAuthMode] = useState<'choice' | 'login' | 'signup'>('choice');
 
   const accentColor = DEFAULT_ACCENT_COLOR;
 

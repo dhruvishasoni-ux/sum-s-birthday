@@ -31,9 +31,9 @@ export const HeaderStats: React.FC = () => {
         <button
           type="button"
           className={`create-profile-btn ${currentUser ? 'logged-in' : 'logged-out'}`}
-          onClick={() => setIsOpen((open) => !open)}
+          onClick={() => { setAuthMode('choice'); setActiveModal('auth'); setIsOpen(false); }}
           title="Accounts"
-          aria-expanded={isOpen}
+          aria-expanded={false}
         >
           {currentUser?.avatarUrl && !currentUser.avatarUrl.startsWith('emoji:') ? (
             <img src={currentUser.avatarUrl} alt="Avatar" className="header-avatar-thumb" />
@@ -49,12 +49,6 @@ export const HeaderStats: React.FC = () => {
           {!currentUser && <LogIn size={14} className="header-login-icon" />}
           <ChevronDown size={14} />
         </button>
-        {isOpen && (
-          <div className="accounts-dropdown animate-fade-in">
-            <button type="button" onClick={() => { setAuthMode('login'); setActiveModal('auth'); setIsOpen(false); }}>Login</button>
-            <button type="button" onClick={() => { setAuthMode('signup'); setActiveModal('auth'); setIsOpen(false); }}>Sign Up</button>
-          </div>
-        )}
       </div>
     </header>
   );
