@@ -10,7 +10,7 @@ import { X, Sparkles, Wand2, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const WishStudioModal: React.FC = () => {
-  const { activeModal, setActiveModal, addWish, accentColor, userProfile } = useSky();
+  const { activeModal, setActiveModal, addWish, accentColor, currentUser } = useSky();
 
   const [activeTab, setActiveTab] = useState<'card' | 'constellation' | 'stickers' | 'frame'>('card');
 
@@ -35,7 +35,7 @@ export const WishStudioModal: React.FC = () => {
     underline: false
   });
 
-  const [from, setFrom] = useState(userProfile ? `— ${userProfile.name}` : '— Your bestie ♡');
+  const [from, setFrom] = useState(currentUser ? `— ${currentUser.username}` : '— Your bestie ♡');
   const [fromStyle, setFromStyle] = useState<TextStyleConfig>({
     font: 'cursive',
     color: '#FF9FCB',
@@ -137,9 +137,9 @@ export const WishStudioModal: React.FC = () => {
 
     const newWish: WishCard = {
       id: `wish-${Date.now()}`,
-      creatorId: userProfile?.id,
-      creatorName: userProfile?.name,
-      creatorAvatar: userProfile?.avatarUrl,
+      creatorId: currentUser?.id,
+      creatorName: currentUser?.username,
+      creatorAvatar: currentUser?.avatarUrl,
       title,
       titleStyle,
       body,

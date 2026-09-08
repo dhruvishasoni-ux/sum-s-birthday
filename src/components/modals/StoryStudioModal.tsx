@@ -21,7 +21,7 @@ const PAGE_THEMES: { id: PageThemeType; label: string; className: string }[] = [
 ];
 
 export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlanetDesign }) => {
-  const { activeModal, setActiveModal, addStory, userProfile } = useSky();
+  const { activeModal, setActiveModal, addStory, currentUser } = useSky();
 
   const [activeTab, setActiveTab] = useState<'content' | 'layout-theme' | 'stickers'>('content');
   const [storyTitle, setStoryTitle] = useState('Relive a Day ✨');
@@ -140,9 +140,9 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
 
     const newStory: Story = {
       id: `story-${Date.now()}`,
-      creatorId: userProfile?.id,
-      creatorName: userProfile?.name,
-      creatorAvatar: userProfile?.avatarUrl,
+      creatorId: currentUser?.id,
+      creatorName: currentUser?.username,
+      creatorAvatar: currentUser?.avatarUrl,
       title: storyTitle || 'Relive a Day',
       planetDesign: initialPlanetDesign || defaultPlanet,
       pages,

@@ -14,6 +14,7 @@ import { StoryViewerModal } from './components/modals/StoryViewerModal';
 import { PersonalityModal } from './components/modals/PersonalityModal';
 import { VoiceProbeModal } from './components/modals/VoiceProbeModal';
 import { SecretStarModal } from './components/modals/SecretStarModal';
+import { BlackHoleModal } from './components/modals/BlackHoleModal';
 import { PlanetDesign } from './types/celestial';
 
 const AppContent: React.FC = () => {
@@ -44,6 +45,7 @@ const AppContent: React.FC = () => {
       <PersonalityModal />
       <VoiceProbeModal />
       <SecretStarModal />
+      <BlackHoleModal />
     </div>
   );
 };

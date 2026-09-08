@@ -1434,3 +1434,114 @@ body {
 @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
 .animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.2s ease-out; }
+
+/* Wish and prayer void */
+.sky-black-hole-wrapper {
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.sky-black-hole-wrapper.unopened {
+  filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5));
+}
+
+.sky-black-hole-wrapper.opened {
+  opacity: 0.72;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.28));
+}
+
+.black-hole-disk-svg {
+  width: 180px;
+  height: 180px;
+  overflow: visible;
+}
+
+.black-hole-lensing-ring {
+  position: absolute;
+  inset: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.22), inset 0 0 16px rgba(168, 85, 247, 0.2);
+  animation: lensPulse 2.4s ease-in-out infinite alternate;
+}
+
+.accretion-disk-spin { transform-origin: 100px 100px; animation: diskSpin 7s linear infinite; }
+.accretion-disk-spin-reverse { transform-origin: 100px 100px; animation: diskSpin 5s linear infinite reverse; }
+.plasma-aura-pulse { transform-origin: 100px 100px; animation: auraPulse 2.8s ease-in-out infinite alternate; }
+
+.black-hole-title-tag {
+  position: absolute;
+  bottom: -4px;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 999px;
+  background: rgba(8, 8, 24, 0.82);
+  color: #fcd34d;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@keyframes lensPulse { from { transform: scale(0.96); opacity: 0.45; } to { transform: scale(1.04); opacity: 0.9; } }
+@keyframes diskSpin { to { transform: rotate(360deg); } }
+@keyframes auraPulse { from { transform: scale(0.96); opacity: 0.78; } to { transform: scale(1.04); opacity: 1; } }
+
+.bottom-right-status-bar {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+}
+
+.status-bar-item { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
+.status-val { color: #ffffff; font-size: 14px; font-weight: 700; }
+.status-lbl, .status-unopened-text { color: var(--text-muted); font-size: 11px; }
+.status-bar-divider { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.14); }
+.status-unopened-dot { width: 7px; height: 7px; border-radius: 50%; background: #ffe58a; box-shadow: 0 0 8px #ffe58a; }
+
+.modal-content { max-height: calc(100vh - 32px); overflow: auto; overscroll-behavior: contain; }
+.black-hole-modal-window { max-width: 760px; background: radial-gradient(circle at 50% 0%, #171536 0%, #0f172a 72%); }
+.black-hole-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.black-hole-header h2 { color: #ffffff; font-size: 21px; }
+.black-hole-content-area { padding: 18px 22px 22px; }
+.black-hole-visual-center { display: flex; justify-content: center; align-items: center; min-height: 150px; }
+.black-hole-auth-required, .black-hole-form, .black-hole-completed-pane { max-width: 620px; margin: 0 auto; }
+.black-hole-auth-required { text-align: center; }
+.auth-prompt-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; padding: 14px; border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; background: rgba(245, 158, 11, 0.08); }
+.auth-prompt-card p { color: var(--text-muted); font-size: 13px; }
+.black-hole-form { display: flex; flex-direction: column; gap: 14px; }
+.black-hole-prompt-desc, .void-quote, .void-blessing-text { color: var(--text-muted); font-size: 13px; line-height: 1.55; }
+.black-hole-input { min-height: 110px; resize: vertical; }
+.black-hole-submit-footer, .black-hole-actions-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.contributor-tag-subtle { color: var(--text-muted); font-size: 12px; }
+@media (max-width: 640px) { .black-hole-header, .black-hole-content-area { padding-left: 14px; padding-right: 14px; } .black-hole-header h2 { font-size: 18px; } .black-hole-submit-footer, .black-hole-actions-row { align-items: stretch; flex-direction: column; } .black-hole-submit-footer > *, .black-hole-actions-row > * { width: 100%; justify-content: center; } }
+.modal-backdrop { overscroll-behavior: contain; }
+
+@media (max-width: 640px) {
+  .header-stats-container { top: 12px; left: 12px; right: 12px; }
+  .statistics { gap: 4px; padding: 5px 8px; }
+  .stat-item { padding: 2px 5px; }
+  .stat-item span { font-size: 13px; }
+  .stat-item small { font-size: 8px; }
+  .header-btn-label { display: none; }
+  .create-profile-btn { padding: 8px 10px; }
+  .bottom-right-status-bar { right: 12px; bottom: 12px; left: 12px; justify-content: space-between; gap: 6px; padding: 8px 10px; }
+  .status-bar-item { gap: 3px; }
+  .status-lbl, .status-unopened-text { font-size: 10px; }
+  .modal-backdrop { align-items: flex-start; padding: 12px; }
+  .modal-content { max-height: calc(100vh - 24px); border-radius: 16px; }
+  .compact-studio-grid { grid-template-columns: 1fr; min-height: 0; gap: 14px; padding: 14px; }
+  .compact-studio-header, .compact-studio-footer { padding-left: 14px; padding-right: 14px; }
+  .compact-right-preview { order: -1; }
+  .compact-wish-card, .compact-flipbook-page { width: min(100%, 330px); height: 230px; }
+  .sky-black-hole-wrapper { transform: translate(-50%, -50%) scale(0.78) !important; }
+}

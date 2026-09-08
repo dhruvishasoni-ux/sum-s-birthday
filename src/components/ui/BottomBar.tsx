@@ -2,7 +2,7 @@ import React from 'react';
 import { useSky } from '../../context/SkyContext';
 
 export const BottomBar: React.FC = () => {
-  const { wishes, friendsCount, unopenedCount } = useSky();
+  const { wishes, stories, friendsCount, unopenedCount } = useSky();
 
   return (
     <div className="bottom-right-status-bar">
@@ -14,7 +14,7 @@ export const BottomBar: React.FC = () => {
       <div className="status-bar-divider" />
 
       <div className="status-bar-item" title="Total Constellations">
-        <span className="status-val">{wishes.length}</span>
+        <span className="status-val">{stories.length}</span>
         <span className="status-lbl">Constellations</span>
       </div>
 

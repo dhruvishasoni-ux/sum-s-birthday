@@ -21,14 +21,14 @@ export const VoiceProbeModal: React.FC = () => {
     activeVoiceNoteId,
     addVoiceNote,
     markVoiceNoteHeard,
-    userProfile
+    currentUser
   } = useSky();
 
   const activeNote = voiceNotes.find((v) => v.id === activeVoiceNoteId);
   const isCreating = !activeNote;
 
   const [title, setTitle] = useState('Happy Birthday Voice Message 🛰️');
-  const [contributor, setContributor] = useState(userProfile ? userProfile.name : '');
+  const [contributor, setContributor] = useState(currentUser ? currentUser.username : '');
   const [selectedColor, setSelectedColor] = useState(activeNote?.noteColor || '#3b82f6');
 
   const [audioUrl, setAudioUrl] = useState<string | null>(activeNote?.audioUrl || null);
@@ -49,9 +49,9 @@ export const VoiceProbeModal: React.FC = () => {
     } else {
       setAudioUrl(null);
       setSelectedColor('#3b82f6');
-      if (userProfile?.name) setContributor(userProfile.name);
+      if (currentUser?.username) setContributor(currentUser.username);
     }
-  }, [activeNote, userProfile]);
+  }, [activeNote, currentUser]);
 
   if (activeModal !== 'voice-probe') return null;
 
@@ -124,10 +124,10 @@ export const VoiceProbeModal: React.FC = () => {
 
     const newProbe: VoiceNote = {
       id: `probe-${Date.now()}`,
-      creatorId: userProfile?.id,
-      creatorAvatar: userProfile?.avatarUrl,
+      creatorId: currentUser?.id,
+      creatorAvatar: currentUser?.avatarUrl,
       title: title || 'Space Probe Voice Note',
-      contributor: contributor || (userProfile ? userProfile.name : 'Cosmic Traveler'),
+      contributor: contributor || (currentUser ? currentUser.username : 'Cosmic Traveler'),
       audioUrl: audioUrl || undefined,
       noteColor: selectedColor,
       x: posX,

@@ -6,6 +6,7 @@ import { PlanetObject } from './PlanetObject';
 import { NebulaObject } from './NebulaObject';
 import { SpaceProbeObject } from './SpaceProbeObject';
 import { SecretStarObject } from './SecretStarObject';
+import { BlackHoleObject } from './BlackHoleObject';
 
 function generateBackgroundStars(count = 600) {
   const stars = [];
@@ -236,6 +237,9 @@ export const SkyCanvas: React.FC = () => {
         {secretStars.map((star) => (
           <SecretStarObject key={star.id} star={star} />
         ))}
+
+        {/* Wish and prayer void */}
+        <BlackHoleObject />
       </div>
     </div>
   );
