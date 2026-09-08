@@ -2,8 +2,11 @@
   "name": "sum's-bithday",
   "version": "1.0.0",
   "description": "",
-  "main": "script.js",
+  "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +22,18 @@
   },
   "homepage": "https://github.com/dhruvishasoni-ux/sum-s-birthday#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "canvas-confetti": "^1.9.4",
+    "express": "^5.2.1",
+    "lucide-react": "^1.41.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2"
   }
 }

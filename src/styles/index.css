@@ -1,0 +1,1436 @@
+/* =====================================================
+   GOOGLE FONTS
+===================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Caveat:wght@400;600;700&family=Dancing+Script:wght@500;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap');
+
+/* =====================================================
+   GLOBAL CSS VARIABLES & DESIGN SYSTEM
+===================================================== */
+:root {
+  --accent-color: #B89CFF;
+  --bg-dark: #070719;
+  --bg-darker: #03030d;
+  --panel-bg: rgba(16, 20, 38, 0.92);
+  --panel-border: rgba(255, 255, 255, 0.12);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --font-base: 'Outfit', sans-serif;
+  --font-elegant: 'Playfair Display', serif;
+  --font-modern: 'Outfit', sans-serif;
+  --font-playful: 'Abril Fatface', cursive;
+  --font-handwritten: 'Caveat', cursive;
+  --font-cursive: 'Dancing Script', cursive;
+  --font-typewriter: 'Courier Prime', monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at 50% 50%, #10102a 0%, #070719 45%, #03030d 100%);
+  color: var(--text-main);
+  overflow: hidden;
+  font-family: var(--font-base);
+  user-select: none;
+  touch-action: none;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* Font Classes */
+.font-elegant { font-family: var(--font-elegant) !important; }
+.font-modern { font-family: var(--font-modern) !important; }
+.font-playful { font-family: var(--font-playful) !important; }
+.font-handwritten { font-family: var(--font-handwritten) !important; }
+.font-cursive { font-family: var(--font-cursive) !important; }
+.font-typewriter { font-family: var(--font-typewriter) !important; }
+
+/* =====================================================
+   APP & SKY VIEWPORT
+===================================================== */
+.birthday-sky-app {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.sky-viewport {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sky-viewport:active {
+  cursor: grabbing;
+}
+
+.space-universe {
+  position: absolute;
+  width: 300vw;
+  height: 300vh;
+  left: -100vw;
+  top: -100vh;
+  will-change: transform;
+}
+
+/* =====================================================
+   BACKGROUND STARS
+===================================================== */
+.star {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.twinkle {
+  animation: twinkleAnim 3.2s ease-in-out infinite;
+}
+
+.twinkle-fast {
+  animation: twinkleAnim 1.8s ease-in-out infinite;
+}
+
+@keyframes twinkleAnim {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.95; transform: scale(1.6); }
+}
+
+.bright-star {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.85);
+}
+
+/* =====================================================
+   SUPPLIED MOON
+===================================================== */
+.simple-moon-interactive {
+  width: 130px;
+  height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.simple-moon-interactive:hover {
+  transform: translate(-50%, -50%) scale(1.06) !important;
+}
+
+.moon-supplied-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 50px rgba(184, 156, 255, 0.25));
+  pointer-events: none;
+}
+
+.moon-ambient-halo {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* =====================================================
+   NEBULA (DENSE STAR CLUSTER REGION)
+===================================================== */
+.nebula-star-cluster-region {
+  transition: opacity 0.4s ease;
+}
+
+.nebula-star-cluster-region.unopened .nebula-gas-glow {
+  opacity: 0.85;
+  filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.6));
+}
+
+.nebula-star-cluster-region.opened .nebula-gas-glow {
+  opacity: 0.35;
+}
+
+.nebula-gas-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.25) 0%, rgba(59, 130, 246, 0.15) 45%, transparent 75%);
+  filter: blur(25px);
+  pointer-events: none;
+  animation: floatNebula 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatNebula {
+  0% { transform: scale(0.95); }
+  100% { transform: scale(1.08); }
+}
+
+.nebula-stars-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.cluster-star {
+  pointer-events: none;
+}
+
+/* =====================================================
+   SECRET STARS (TINY 5-POINT CELESTIAL STARS)
+===================================================== */
+.secret-star-node {
+  transition: transform 0.2s ease;
+}
+
+.secret-star-node:hover {
+  transform: translate(-50%, -50%) scale(1.5) !important;
+}
+
+.secret-star-node.undiscovered svg {
+  animation: starTwinkle 2s infinite alternate;
+}
+
+.secret-star-node.discovered svg {
+  opacity: 0.6;
+}
+
+@keyframes starTwinkle {
+  0% { transform: scale(0.9); opacity: 0.85; }
+  100% { transform: scale(1.2); opacity: 1; }
+}
+
+/* =====================================================
+   CONSTELLATIONS & PLANETS IN SKY
+===================================================== */
+.sky-constellation {
+  transition: all 0.3s ease;
+}
+
+.sky-constellation.unopened-bright {
+  filter: drop-shadow(0 0 16px var(--accent-color)) brightness(1.6);
+  animation: starFlourish 2.5s infinite alternate;
+}
+
+@keyframes starFlourish {
+  0% { filter: drop-shadow(0 0 12px var(--accent-color)) brightness(1.4); }
+  100% { filter: drop-shadow(0 0 28px #ffffff) brightness(2); }
+}
+
+.sky-constellation.opened-subtle {
+  filter: drop-shadow(0 0 5px var(--accent-color)) brightness(0.85);
+  opacity: 0.8;
+}
+
+.pulse-star-halo {
+  animation: haloPulse 2s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.4); opacity: 0.8; }
+}
+
+.sky-planet-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+}
+
+.planet-body {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  box-shadow: inset -8px -8px 16px rgba(0, 0, 0, 0.6);
+}
+
+.planet-texture-img,
+.planet-default-surface {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.planet-3d-shadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+.planet-halo-glow {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.planet-ring {
+  position: absolute;
+  width: 110px;
+  height: 35px;
+  left: -10px;
+  top: 28px;
+  border: 3px solid;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+  pointer-events: none;
+}
+
+/* =====================================================
+   SPACE PROBE OBJECTS
+===================================================== */
+.sky-probe-wrapper {
+  position: relative;
+}
+
+.probe-unheard {
+  filter: drop-shadow(0 0 20px var(--accent-color)) brightness(1.5);
+}
+
+.probe-heard {
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.4)) brightness(0.9);
+  opacity: 0.85;
+}
+
+.probe-status-banner {
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.probe-status-banner.connecting { background: #f59e0b; color: #0f172a; }
+.probe-status-banner.signal { background: #22c55e; color: #ffffff; }
+
+.probe-radar-wave {
+  position: absolute;
+  inset: -15px;
+  pointer-events: none;
+}
+
+.radar-ring {
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid var(--accent-color);
+  border-radius: 50%;
+  animation: radarPulse 1.2s ease-out infinite;
+}
+.radar-ring.r2 { animation-delay: 0.6s; }
+
+@keyframes radarPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.beacon-flash { animation: beaconBlink 1s infinite alternate; }
+@keyframes beaconBlink { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+/* =====================================================
+   HEADER & CREATE PROFILE ACTION
+===================================================== */
+.header-stats-container {
+  position: fixed;
+  top: 18px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.statistics {
+  display: flex;
+  gap: 10px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(12px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  pointer-events: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2px 10px;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item:last-child {
+  border-right: none;
+}
+
+.stat-item span {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.stat-item small {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-profile-action {
+  pointer-events: auto;
+}
+
+.create-profile-btn {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(12px);
+  border-radius: 30px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s;
+}
+
+.create-profile-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-color);
+}
+
+.header-avatar-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.header-avatar-emoji {
+  font-size: 16px;
+}
+
+/* =====================================================
+   BOTTOM-LEFT MINIMAL UNOPENED INDICATOR
+===================================================== */
+.bottom-left-unopened-badge {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 50;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(14px);
+  border-radius: 20px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+}
+
+.unopened-indicator-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ffe58a;
+  box-shadow: 0 0 10px #ffe58a;
+  animation: pulseIndicator 1.8s infinite alternate;
+}
+
+@keyframes pulseIndicator {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.3); opacity: 1; }
+}
+
+.unopened-indicator-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+/* =====================================================
+   FLOATING '+' ACTION BUTTON & MENU
+===================================================== */
+.add-menu-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.floating-add-btn {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-color), #7c3aed);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.45);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.floating-add-btn:hover {
+  transform: scale(1.08);
+}
+
+.floating-add-btn.active {
+  transform: rotate(90deg);
+  background: #334155;
+}
+
+.add-menu-dropdown {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(20px);
+  border-radius: 18px;
+  padding: 10px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 250px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
+.add-menu-header {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 4px 6px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.add-option-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.add-option-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.option-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-icon.star-icon { background: rgba(255, 229, 138, 0.15); color: #ffe58a; }
+.option-icon.planet-icon { background: rgba(115, 212, 231, 0.15); color: #73d4e7; }
+.option-icon.nebula-icon { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+.option-icon.probe-icon { background: rgba(74, 222, 128, 0.15); color: #4ade80; }
+
+.option-title { font-size: 13px; font-weight: 600; }
+.option-desc { font-size: 11px; color: var(--text-muted); }
+
+/* =====================================================
+   COMPACT MODALS (FIT WITHIN NORMAL VIEWPORT)
+===================================================== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.78);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.modal-content {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  width: 100%;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-studio-window {
+  max-width: 880px;
+  max-height: 92vh;
+}
+
+.compact-studio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 22px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header-titles .eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: var(--accent-color);
+}
+
+.header-titles h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.studio-tab-switches {
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 3px;
+  border-radius: 12px;
+}
+
+.studio-tab-pill {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.studio-tab-pill.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.compact-studio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 18px 22px;
+  min-height: 380px;
+  align-items: center;
+}
+
+.compact-left-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.compact-tab-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.studio-text-input.compact,
+.studio-textarea.compact {
+  width: 100%;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.input-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+/* Interactive Constellation Canvas */
+.interactive-constellation-canvas {
+  width: 100%;
+  height: 230px;
+  background: radial-gradient(circle, #101026 0%, #060612 100%);
+  border: 1.5px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  position: relative;
+  cursor: crosshair;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.canvas-instruction-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clear-canvas-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.tab-hint-text {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.canvas-lines-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.canvas-star-node {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1.5px solid;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.8);
+  cursor: pointer;
+  z-index: 5;
+}
+
+.canvas-star-node.selected {
+  border-color: #ffffff !important;
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+.canvas-star-node .star-core {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+/* Compact Wish Card Normal Dimensions */
+.compact-right-preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-card-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.compact-wish-card {
+  position: relative;
+  width: 360px;
+  height: 260px;
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0f172a 70%, #030712 100%);
+  border: 2px solid;
+  border-radius: 14px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.card-frame-overlay-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.card-top-icon {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.card-render-title {
+  margin-bottom: 8px;
+  line-height: 1.2;
+  max-width: 90%;
+}
+
+.card-render-body {
+  margin-bottom: 12px;
+  line-height: 1.45;
+  max-width: 90%;
+  opacity: 0.95;
+}
+
+.card-render-from {
+  line-height: 1.2;
+}
+
+.card-bottom-accent {
+  width: 30px;
+  height: 2px;
+  border-radius: 2px;
+  margin-top: 10px;
+}
+
+.compact-studio-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.footer-info {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.continue-button {
+  background: linear-gradient(135deg, var(--accent-color), #7c3aed);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.continue-button:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+.continue-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.continue-button.small {
+  padding: 8px 16px;
+  font-size: 12px;
+}
+
+.close-modal-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.close-modal-btn.top-right {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+}
+
+/* =====================================================
+   COMPACT STORY STUDIO
+===================================================== */
+.compact-story-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 22px;
+  background: rgba(15, 23, 42, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.story-name-input {
+  max-width: 260px;
+}
+
+.compact-pagination-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compact-page-btn,
+.compact-add-page-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 5px 10px;
+  color: #ffffff;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.compact-add-page-btn {
+  background: rgba(184, 156, 255, 0.18);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.compact-counter-pill {
+  font-size: 12px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.compact-validation-bar {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 6px 16px;
+  margin: 8px 22px 0;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.compact-flipbook-page {
+  position: relative;
+  width: 360px;
+  height: 260px;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.compact-flipbook-page.theme-midnight { background: radial-gradient(circle, #1e1b4b 0%, #090919 100%); border: 1px solid #4338ca; }
+.compact-flipbook-page.theme-stardust { background: radial-gradient(circle, #1e3a8a 0%, #030712 100%); border: 1px solid #3b82f6; }
+.compact-flipbook-page.theme-parchment { background: #fef3c7; color: #451a03 !important; border: 2px solid #d97706; }
+.compact-flipbook-page.theme-blossom { background: radial-gradient(circle, #831843 0%, #0f172a 100%); border: 1px solid #ec4899; }
+.compact-flipbook-page.theme-cosmic { background: radial-gradient(circle, #581c87 0%, #050510 100%); border: 1px solid #a855f7; }
+.compact-flipbook-page.theme-sunset { background: radial-gradient(circle, #7c2d12 0%, #0f172a 100%); border: 1px solid #f97316; }
+
+.page-text-container {
+  line-height: 1.5;
+  text-align: center;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.page-image-container.full-image {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-render-image {
+  max-width: 100%;
+  max-height: 170px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.image-placeholder-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.page-split-container.compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+}
+
+.page-footer-number {
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.layout-selector-row.compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.layout-option-chip {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #cbd5e1;
+  cursor: pointer;
+  text-align: left;
+}
+
+.layout-option-chip.active {
+  border-color: var(--accent-color);
+  background: rgba(184, 156, 255, 0.15);
+  color: #ffffff;
+}
+
+.theme-options-grid.compact {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.theme-chip-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 11px;
+  color: #cbd5e1;
+  cursor: pointer;
+}
+
+.theme-chip-btn.active {
+  border-color: var(--accent-color);
+  color: #ffffff;
+}
+
+.theme-color-dot { width: 8px; height: 8px; border-radius: 50%; }
+.theme-color-dot.theme-midnight { background: #1e1b4b; }
+.theme-color-dot.theme-stardust { background: #3b82f6; }
+.theme-color-dot.theme-parchment { background: #d97706; }
+.theme-color-dot.theme-blossom { background: #ec4899; }
+.theme-color-dot.theme-cosmic { background: #a855f7; }
+.theme-color-dot.theme-sunset { background: #f97316; }
+
+/* =====================================================
+   MINIMAL MOON MESSAGE DIALOG
+===================================================== */
+.moon-minimal-window {
+  max-width: 440px;
+  padding: 40px 30px;
+  text-align: center;
+  position: relative;
+  background: radial-gradient(circle at 50% 30%, #171536 0%, #090915 100%);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+}
+
+.moon-message-content-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.moon-minimal-text {
+  font-size: 20px;
+  color: #f8fafc;
+  font-style: italic;
+  font-family: var(--font-elegant);
+}
+
+/* =====================================================
+   PROFILE MODAL
+===================================================== */
+.profile-modal-window {
+  max-width: 440px;
+}
+
+.profile-form-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar-preview-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-circle-display {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.avatar-emoji-display {
+  font-size: 36px;
+}
+
+.custom-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.upload-avatar-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.preset-avatar-row {
+  display: flex;
+  gap: 6px;
+}
+
+.preset-emoji-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.preset-emoji-btn.active {
+  border-color: var(--accent-color);
+  background: rgba(184, 156, 255, 0.15);
+}
+
+.profile-name-field {
+  width: 100%;
+}
+
+/* =====================================================
+   RICH TEXT, STICKERS, FRAMES
+===================================================== */
+.rich-text-toolbar {
+  margin-top: 6px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.font-select {
+  background: #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 11px;
+}
+
+.formatting-buttons {
+  display: flex;
+  gap: 2px;
+}
+
+.tool-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  border-radius: 4px;
+  padding: 3px 5px;
+  cursor: pointer;
+}
+
+.tool-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+
+.color-palette-small {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.color-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.color-dot.selected {
+  border: 2px solid #ffffff;
+  transform: scale(1.15);
+}
+
+.custom-color-input-btn {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #cbd5e1;
+}
+
+.hidden-color-input {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.color-dot-large {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.color-dot-large.active {
+  border-color: #ffffff;
+  transform: scale(1.2);
+}
+
+.accent-color-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.sticker-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.sticker-tab {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.sticker-tab.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+}
+
+.sticker-tray-scroll {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px 2px;
+  align-items: center;
+}
+
+.sticker-button {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.sticker-button.upload-btn {
+  width: auto;
+  padding: 0 8px;
+  gap: 4px;
+  font-size: 11px;
+  color: #e2e8f0;
+}
+
+.sticker-canvas-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+}
+
+.placed-sticker {
+  position: absolute;
+  touch-action: none;
+  user-select: none;
+}
+
+.placed-sticker.editable {
+  cursor: grab;
+}
+
+.placed-sticker.editable:active {
+  cursor: grabbing;
+}
+
+.sticker-emoji {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.sticker-img {
+  max-width: 50px;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+.sticker-selection-ring {
+  position: absolute;
+  inset: -4px;
+  border: 1.5px dashed var(--accent-color);
+  border-radius: 6px;
+}
+
+.frame-options-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.frame-card-option {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.frame-card-option.active {
+  border-color: var(--accent-color);
+  background: rgba(184, 156, 255, 0.12);
+}
+
+.frame-thumb-box {
+  width: 40px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.frame-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.frame-name {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.image-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.secondary-action-btn.compact {
+  padding: 5px 10px;
+  font-size: 11px;
+}
+
+.danger-text-btn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* Animations */
+@keyframes scaleIn { 0% { transform: scale(0.94); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+.animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-fade-in { animation: fadeIn 0.2s ease-out; }
