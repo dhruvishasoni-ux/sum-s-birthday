@@ -150,10 +150,6 @@ export const SpaceProbeObject: React.FC<SpaceProbeObjectProps> = ({ probe }) => 
         />
       </svg>
 
-      {/* Label */}
-      <div className="probe-title-tag">
-        <span>🛰️ {probe.title || 'Voice Note'}</span>
-      </div>
     </div>
   );
 };

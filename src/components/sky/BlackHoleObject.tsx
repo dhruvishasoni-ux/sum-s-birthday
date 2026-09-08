@@ -118,10 +118,6 @@ export const BlackHoleObject: React.FC = () => {
         />
       </svg>
 
-      {/* Label Badge */}
-      <div className="black-hole-title-tag">
-        <span>🕳️ Black Hole Void</span>
-      </div>
     </div>
   );
 };

@@ -8,7 +8,7 @@ import { SpaceProbeObject } from './SpaceProbeObject';
 import { SecretStarObject } from './SecretStarObject';
 import { BlackHoleObject } from './BlackHoleObject';
 
-function generateBackgroundStars(count = 600) {
+function generateBackgroundStars(count = 900) {
   const stars = [];
   for (let i = 0; i < count; i++) {
     const x = Math.random() * 100;
@@ -53,7 +53,7 @@ export const SkyCanvas: React.FC = () => {
     lastTouchPos: { x: 0, y: 0 }
   });
 
-  const backgroundStars = useMemo(() => generateBackgroundStars(720), []);
+  const backgroundStars = useMemo(() => generateBackgroundStars(900), []);
 
   const shouldIgnoreTarget = (target: HTMLElement | null) => {
     if (!target) return false;
@@ -198,7 +198,7 @@ export const SkyCanvas: React.FC = () => {
           transition: isDraggingRef.current ? 'none' : 'transform 0.08s ease-out'
         }}
       >
-        {/* Background 600 Stars */}
+        {/* Dense background star field */}
         {backgroundStars.map((star) => (
           <div
             key={star.id}

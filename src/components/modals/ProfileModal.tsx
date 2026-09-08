@@ -25,6 +25,7 @@ export const ProfileModal: React.FC = () => {
   const [signupUsername, setSignupUsername] = useState<string>('');
   const [signupPassword, setSignupPassword] = useState<string>('');
   const [selectedEmoji, setSelectedEmoji] = useState<string>('');
+  const [isPhotoPickerOpen, setIsPhotoPickerOpen] = useState(false);
 
   // Login form state
   const [loginUsername, setLoginUsername] = useState<string>('');
@@ -53,6 +54,8 @@ export const ProfileModal: React.FC = () => {
       const dataUrl = event.target?.result as string;
       if (dataUrl) {
         setSignupAvatar(dataUrl);
+        setSelectedEmoji('');
+        setIsPhotoPickerOpen(false);
         setErrorMessage(null);
       }
     };
@@ -63,6 +66,7 @@ export const ProfileModal: React.FC = () => {
   const handleSelectEmojiAvatar = (emoji: string) => {
     setSelectedEmoji(emoji);
     setSignupAvatar(`emoji:${emoji}`);
+    setIsPhotoPickerOpen(false);
     setErrorMessage(null);
   };
 
@@ -271,7 +275,7 @@ export const ProfileModal: React.FC = () => {
                     Choose profile picture <span className="compulsory-tag">*Required</span>
                   </label>
 
-                  <small className="profile-photo-notice">Profile picture is required.</small>
+                  <small className="profile-photo-notice">Choose a photo or avatar icon to make your account yours.</small>
                   <div className="avatar-selection-cluster">
                     <div className="avatar-preview-box">
                       {signupAvatar && !signupAvatar.startsWith('emoji:') ? (
@@ -284,7 +288,7 @@ export const ProfileModal: React.FC = () => {
                     <button
                       type="button"
                       className="upload-photo-btn"
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={() => setIsPhotoPickerOpen(true)}
                     >
                       <Camera size={15} />
                       <span>{signupAvatar && !signupAvatar.startsWith('emoji:') ? 'Change photo' : 'Choose profile picture'}</span>
@@ -298,22 +302,32 @@ export const ProfileModal: React.FC = () => {
                     />
                   </div>
 
-                  {/* Preset Avatar Emojis */}
-                  <div className="preset-avatars-row">
-                    <span className="preset-hint">Or choose an avatar icon:</span>
-                    <div className="preset-buttons-wrap">
-                      {PRESET_AVATARS.map((emoji) => (
-                        <button
-                          key={emoji}
-                          type="button"
-                          className={`preset-avatar-btn ${signupAvatar === `emoji:${emoji}` || (!signupAvatar && selectedEmoji === emoji) ? 'active' : ''}`}
-                          onClick={() => handleSelectEmojiAvatar(emoji)}
-                        >
-                          {emoji}
+                  {isPhotoPickerOpen && (
+                    <div className="photo-picker-popover animate-fade-in" role="dialog" aria-label="Choose profile picture">
+                      <div className="photo-picker-header">
+                        <span>Choose a profile picture</span>
+                        <button type="button" className="photo-picker-close" onClick={() => setIsPhotoPickerOpen(false)} aria-label="Close profile picture picker">
+                          <X size={16} />
                         </button>
-                      ))}
+                      </div>
+                      <div className="preset-buttons-wrap">
+                        {PRESET_AVATARS.map((emoji) => (
+                          <button
+                            key={emoji}
+                            type="button"
+                            className={`preset-avatar-btn ${signupAvatar === `emoji:${emoji}` || (!signupAvatar && selectedEmoji === emoji) ? 'active' : ''}`}
+                            onClick={() => handleSelectEmojiAvatar(emoji)}
+                          >
+                            {emoji}
+                          </button>
+                        ))}
+                      </div>
+                      <button type="button" className="upload-photo-btn picker-upload-btn" onClick={() => fileInputRef.current?.click()}>
+                        <Camera size={15} />
+                        <span>Upload from device</span>
+                      </button>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* 2. Compulsory Username */}

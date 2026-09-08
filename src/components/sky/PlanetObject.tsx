@@ -40,17 +40,6 @@ export const PlanetObject: React.FC<PlanetObjectProps> = ({ story }) => {
         }}
       />
 
-      {/* Rings if enabled */}
-      {design?.hasRings && (
-        <div
-          className="planet-ring"
-          style={{
-            borderColor: accentColor,
-            boxShadow: `0 0 12px ${accentColor}`
-          }}
-        />
-      )}
-
       {/* Circular Planet Body */}
       <div className="planet-body">
         {design?.canvasDataUrl ? (
@@ -71,10 +60,6 @@ export const PlanetObject: React.FC<PlanetObjectProps> = ({ story }) => {
         <div className="planet-3d-shadow" />
       </div>
 
-      {/* Label */}
-      <div className="planet-title-tag">
-        <span>🪐 {story.title || 'Relive a Day'}</span>
-      </div>
     </div>
   );
 };
