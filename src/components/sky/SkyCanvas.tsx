@@ -33,7 +33,8 @@ export const SkyCanvas: React.FC = () => {
     wishes,
     stories,
     voiceNotes,
-    secretStars
+    secretStars,
+    personalityWords
   } = useSky();
 
   const isDraggingRef = useRef(false);
@@ -70,7 +71,8 @@ export const SkyCanvas: React.FC = () => {
       target.closest('.sky-planet-wrapper') ||
       target.closest('.sky-probe-wrapper') ||
       target.closest('.secret-star-node') ||
-      target.closest('.simple-moon-interactive')
+      target.closest('.simple-moon-interactive') ||
+      target.closest('.personality-nebula')
     );
   };
 
@@ -214,6 +216,13 @@ export const SkyCanvas: React.FC = () => {
 
         {/* Dense Star Concentration Nebula */}
         <NebulaObject />
+
+        {/* Floating personality thoughts */}
+        {personalityWords.map((item) => (
+          <div key={item.id} className="sky-personality-card" style={{ left: `${item.x}%`, top: `${item.y}%`, borderColor: `${item.color}66`, color: item.color, boxShadow: `0 0 18px ${item.color}33`, animationDelay: `${item.floatDelay}s`, animationDuration: `${item.floatDuration}s` }} title={`Added by ${item.creatorName}`}>
+            <span>{item.word}</span>
+          </div>
+        ))}
 
         {/* Central Moon */}
         <MoonObject />

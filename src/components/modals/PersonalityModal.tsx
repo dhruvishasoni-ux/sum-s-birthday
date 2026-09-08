@@ -22,7 +22,7 @@ export const PersonalityModal: React.FC = () => {
 
   const handleOpenAdd = () => {
     if (!currentUser) {
-      setAuthNotice('Please Log In or Sign Up to describe Sum in the Heart Nebula.');
+      setAuthNotice('Please Log In or Sign Up to add a personality word.');
       setActiveModal('auth');
       return;
     }
@@ -40,8 +40,8 @@ export const PersonalityModal: React.FC = () => {
       return;
     }
 
-    if (/\s/.test(trimmed)) {
-      setValidationError('Please enter exactly ONE word (no spaces).');
+    if (trimmed.split(/\s+/).filter(Boolean).length > 2) {
+      setValidationError('Please enter one or two words only.');
       return;
     }
 
@@ -71,8 +71,8 @@ export const PersonalityModal: React.FC = () => {
         {/* Header */}
         <div className="personality-universe-header">
           <div className="header-titles">
-            <span className="eyebrow">HEART NEBULA · SOUL OF SUM</span>
-            <h2>Words Describing Sum 💖</h2>
+            <span className="eyebrow">PERSONALITY NEBULA · SOUL OF SUM</span>
+            <h2>Floating Personality</h2>
           </div>
 
           <div className="personality-header-controls">
@@ -93,7 +93,7 @@ export const PersonalityModal: React.FC = () => {
                   onClick={() => setViewMode('list')}
                 >
                   <List size={15} />
-                  <span>List View ({personalityWords.length})</span>
+                  <span>View in List ({personalityWords.length})</span>
                 </button>
 
                 <button
@@ -132,11 +132,11 @@ export const PersonalityModal: React.FC = () => {
                 }}
               >
                 <ArrowLeft size={16} />
-                <span>Back to Nebula</span>
+                <span>Back to Personality</span>
               </button>
 
               <div className="add-word-card">
-                <h3>Write one word describing Sum</h3>
+                <h3>Write one or two words describing Sum</h3>
                 <p className="add-word-subtitle">
                   Choose a single meaningful word that represents her warmth, energy, or spirit.
                 </p>
@@ -199,7 +199,7 @@ export const PersonalityModal: React.FC = () => {
                 <div className="empty-nebula-state animate-fade-in">
                   <div className="empty-floating-heart">💖</div>
                   <h3>No words added yet</h3>
-                  <p>Be the first to release a tribute word into the Heart Nebula!</p>
+                  <p>Be the first to release a personality thought into the sky.</p>
                   <button
                     type="button"
                     className="continue-button"
@@ -207,7 +207,7 @@ export const PersonalityModal: React.FC = () => {
                     style={{ marginTop: '16px' }}
                   >
                     <Plus size={16} />
-                    <span>Write one word describing Sum</span>
+                    <span>Write one or two words describing Sum</span>
                   </button>
                 </div>
               ) : (

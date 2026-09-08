@@ -140,47 +140,6 @@ body {
 }
 
 /* =====================================================
-   NEBULA (DENSE STAR CLUSTER REGION)
-===================================================== */
-.nebula-star-cluster-region {
-  transition: opacity 0.4s ease;
-}
-
-.nebula-star-cluster-region.unopened .nebula-gas-glow {
-  opacity: 0.85;
-  filter: drop-shadow(0 0 20px rgba(192, 132, 252, 0.6));
-}
-
-.nebula-star-cluster-region.opened .nebula-gas-glow {
-  opacity: 0.35;
-}
-
-.nebula-gas-glow {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(168, 85, 247, 0.25) 0%, rgba(59, 130, 246, 0.15) 45%, transparent 75%);
-  filter: blur(25px);
-  pointer-events: none;
-  animation: floatNebula 12s ease-in-out infinite alternate;
-}
-
-@keyframes floatNebula {
-  0% { transform: scale(0.95); }
-  100% { transform: scale(1.08); }
-}
-
-.nebula-stars-container {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.cluster-star {
-  pointer-events: none;
-}
-
-/* =====================================================
    SECRET STARS (TINY 5-POINT CELESTIAL STARS)
 ===================================================== */
 .secret-star-node {
@@ -1434,6 +1393,35 @@ body {
 @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
 .animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-in { animation: fadeIn 0.2s ease-out; }
+
+/* Personality nebula */
+.sky-personality-card { position: absolute; z-index: 16; transform: translate(-50%, -50%); max-width: 128px; padding: 8px 12px; border: 1px solid; border-radius: 12px; background: rgba(25, 14, 38, .72); backdrop-filter: blur(10px); font-size: 12px; font-weight: 600; text-align: center; animation: personalityFloat 6s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes personalityFloat { from { transform: translate(-50%, -50%) translateY(3px); } to { transform: translate(-50%, -50%) translateY(-7px); } }
+.personality-nebula { position: absolute; left: 54%; top: 50%; width: 400px; height: 360px; transform: translate(-50%, -50%); cursor: pointer; z-index: 14; user-select: none; }
+.personality-nebula-aura, .personality-nebula-core { position: absolute; inset: 18%; border-radius: 50%; pointer-events: none; }
+.personality-nebula-aura { background: radial-gradient(ellipse at 48% 42%, rgba(244,114,182,.22), rgba(232,121,249,.1) 38%, transparent 72%); filter: blur(24px); animation: personalityBreathe 7s ease-in-out infinite alternate; }
+.personality-nebula-core { inset: 28% 25%; background: radial-gradient(ellipse at 42% 38%, rgba(251,207,232,.36), rgba(244,114,182,.16) 35%, transparent 70%); filter: blur(14px); transform: rotate(-25deg) skewX(-12deg); }
+.personality-nebula-particles { position: absolute; inset: 0; pointer-events: none; }
+.personality-nebula-particle { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); transition: left .45s ease-out, top .45s ease-out; }
+.personality-nebula-label { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 7px 13px; border: 1px solid rgba(249,168,212,.28); border-radius: 999px; background: rgba(18,12,34,.72); backdrop-filter: blur(10px); white-space: nowrap; color: #fbcfe8; box-shadow: 0 0 20px rgba(244,114,182,.18); }
+.personality-nebula-label span { font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.personality-nebula-label small { color: var(--text-muted); font-size: 10px; }
+.personality-nebula.opened { opacity: .78; }
+@keyframes personalityBreathe { from { transform: scale(.94) rotate(-3deg); opacity: .7; } to { transform: scale(1.08) rotate(4deg); opacity: 1; } }
+.accounts-dropdown { position: absolute; z-index: 80; top: calc(100% + 8px); right: 0; display: flex; flex-direction: column; min-width: 132px; padding: 6px; border: 1px solid var(--panel-border); border-radius: 14px; background: var(--panel-bg); backdrop-filter: blur(16px); box-shadow: 0 14px 30px rgba(0,0,0,.45); }
+.accounts-dropdown button { border: 0; border-radius: 9px; padding: 9px 12px; background: transparent; color: #fff; text-align: left; cursor: pointer; font: inherit; font-size: 13px; }
+.accounts-dropdown button:hover { background: rgba(255,255,255,.1); }
+.account-menu-wrap { position: relative; }
+.auth-choice-tabs { display: none; }
+.preset-avatars-row { display: none; }
+.auth-modal-window { max-width: 440px; width: min(440px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; }
+.personality-universe-window { max-width: 760px; width: min(760px, 100%); max-height: calc(100vh - 32px); overflow: hidden; }
+.personality-universe-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 18px 22px; }
+.personality-header-controls { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.personality-universe-body { min-height: 280px; max-height: calc(100vh - 150px); overflow: auto; }
+.personality-words-list { max-width: 680px; margin: 0 auto; padding: 4px 18px 18px; }
+.words-table-scroll { max-height: 380px; overflow-y: auto; }
+@media (max-width: 640px) { .personality-universe-header { padding: 14px; } .personality-header-controls { width: 100%; justify-content: flex-start; } .personality-universe-body { max-height: calc(100vh - 120px); } }
 
 /* Wish and prayer void */
 .sky-black-hole-wrapper {

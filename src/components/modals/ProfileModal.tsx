@@ -15,16 +15,16 @@ export const ProfileModal: React.FC = () => {
     login,
     logout,
     authNotice,
-    setAuthNotice
+    setAuthNotice,
+    authMode,
+    setAuthMode
   } = useSky();
-
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('signup');
 
   // Sign Up form state (ALL 3 REQUIRED)
   const [signupAvatar, setSignupAvatar] = useState<string>('');
   const [signupUsername, setSignupUsername] = useState<string>('');
   const [signupPassword, setSignupPassword] = useState<string>('');
-  const [selectedEmoji, setSelectedEmoji] = useState<string>('👩‍🚀');
+  const [selectedEmoji, setSelectedEmoji] = useState<string>('');
 
   // Login form state
   const [loginUsername, setLoginUsername] = useState<string>('');
@@ -72,7 +72,7 @@ export const ProfileModal: React.FC = () => {
     setSuccessMessage(null);
 
     // Validation: ALL THREE FIELDS ARE STRICTLY COMPULSORY
-    const avatarToUse = signupAvatar || (selectedEmoji ? `emoji:${selectedEmoji}` : '');
+    const avatarToUse = signupAvatar;
     if (!avatarToUse) {
       setErrorMessage('1. Profile picture is required. Please upload an image or choose an avatar icon.');
       return;

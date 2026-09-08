@@ -1,158 +1,52 @@
-import React, { useState, useRef, useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { useSky } from '../../context/SkyContext';
 
-interface NebulaParticle {
-  id: number;
-  baseX: number;
-  baseY: number;
-  size: number;
-  opacity: number;
-  color: string;
-  twinkle: boolean;
-  delay: number;
-}
+interface Particle { id: number; x: number; y: number; size: number; opacity: number; color: string; }
 
-function generateNebulaParticles(count = 55): NebulaParticle[] {
-  const particles: NebulaParticle[] = [];
-  const colors = ['#f472b6', '#e879f9', '#c084fc', '#ffffff', '#fed7aa', '#fbcfe8'];
-
-  for (let i = 0; i < count; i++) {
-    // Generate around heart shape / cosmic cluster
-    const t = Math.random() * Math.PI * 2;
-    // Parametric heart formula variation for natural distribution
-    const heartX = 16 * Math.pow(Math.sin(t), 3);
-    const heartY = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-
-    // Spread with random scatter
-    const spread = Math.random() * 30 + 5;
-    const x = (heartX * 7.5) + (Math.random() - 0.5) * spread;
-    const y = (heartY * 7.5) + (Math.random() - 0.5) * spread;
-
-    particles.push({
-      id: i,
-      baseX: x,
-      baseY: y,
-      size: Math.random() * 2.8 + 1.2,
-      opacity: Math.random() * 0.6 + 0.35,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      twinkle: Math.random() < 0.35,
-      delay: Math.random() * 4
-    });
-  }
-  return particles;
+function makeParticles(count = 90): Particle[] {
+  return Array.from({ length: count }, (_, id) => {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.pow(Math.random(), 0.65) * 150;
+    const spiral = angle + radius * 0.018;
+    return {
+      id,
+      x: Math.cos(spiral) * radius * 0.82 + Math.sin(spiral * 2) * 34,
+      y: Math.sin(spiral) * radius * 0.55 + Math.cos(spiral * 1.4) * 20,
+      size: Math.random() * 3.2 + 0.8,
+      opacity: Math.random() * 0.65 + 0.18,
+      color: ['#f9a8d4', '#fbcfe8', '#f472b6', '#ffe4e6', '#e879f9'][Math.floor(Math.random() * 5)]
+    };
+  });
 }
 
 export const NebulaObject: React.FC = () => {
-  const { openPersonality, isNebulaOpened } = useSky();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { openPersonality, isNebulaOpened, personalityWords } = useSky();
+  const ref = useRef<HTMLDivElement>(null);
+  const particles = useMemo(() => makeParticles(), []);
+  const [pointer, setPointer] = useState({ x: 1000, y: 1000 });
 
-  const baseParticles = useMemo(() => generateNebulaParticles(55), []);
-  const [offsets, setOffsets] = useState<{ [id: number]: { x: number; y: number } }>({});
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const cursorX = e.clientX - (rect.left + rect.width / 2);
-    const cursorY = e.clientY - (rect.top + rect.height / 2);
-
-    const newOffsets: { [id: number]: { x: number; y: number } } = {};
-    const repelRadius = 130;
-    const maxRepelForce = 35;
-
-    baseParticles.forEach((p) => {
-      const dx = p.baseX - cursorX;
-      const dy = p.baseY - cursorY;
-      const dist = Math.hypot(dx, dy);
-
-      if (dist < repelRadius && dist > 1) {
-        const factor = (1 - dist / repelRadius) * maxRepelForce;
-        const pushX = (dx / dist) * factor;
-        const pushY = (dy / dist) * factor;
-        newOffsets[p.id] = { x: pushX, y: pushY };
-      }
-    });
-
-    setOffsets(newOffsets);
-  }, [baseParticles]);
-
-  const handleMouseLeave = useCallback(() => {
-    setOffsets({});
+  const handleMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    setPointer({ x: event.clientX - (rect.left + rect.width / 2), y: event.clientY - (rect.top + rect.height / 2) });
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={`nebula-heart-interactive-cluster ${isNebulaOpened ? 'opened' : 'unopened'}`}
-      style={{
-        position: 'absolute',
-        left: '28%',
-        top: '32%',
-        transform: 'translate(-50%, -50%)',
-        cursor: 'pointer',
-        zIndex: 14,
-        width: '420px',
-        height: '380px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        userSelect: 'none'
-      }}
-      onClick={(e) => {
-        e.stopPropagation();
-        openPersonality();
-      }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      title="Heart Nebula · Personality Words"
-    >
-      {/* Dynamic Cosmic Back-glow */}
-      <div className="nebula-ambient-magenta-glow" />
-
-      {/* Uploaded Reference Heart Nebula Image with background removed / screen blend and radial alpha mask */}
-      <div className="nebula-image-mask-wrapper">
-        <img
-          src="/images/nebula-raw.jpg"
-          alt="Heart Nebula"
-          className="nebula-isolated-graphic"
-          draggable={false}
-        />
-      </div>
-
-      {/* Surrounding Dynamic Star Field with Interactive Repel Deformation */}
-      <div className="nebula-interactive-stars-field">
-        {baseParticles.map((p) => {
-          const off = offsets[p.id] || { x: 0, y: 0 };
-          const curX = p.baseX + off.x;
-          const curY = p.baseY + off.y;
-
-          return (
-            <div
-              key={p.id}
-              className={`nebula-interactive-star ${p.twinkle ? 'twinkle-pulse' : ''}`}
-              style={{
-                position: 'absolute',
-                left: `calc(50% + ${curX}px)`,
-                top: `calc(50% + ${curY}px)`,
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                borderRadius: '50%',
-                backgroundColor: p.color,
-                opacity: isNebulaOpened ? p.opacity * 0.7 : p.opacity,
-                boxShadow: `0 0 ${p.size * 3}px ${p.color}`,
-                transform: 'translate(-50%, -50%)',
-                transition: 'left 0.35s cubic-bezier(0.1, 0.8, 0.2, 1), top 0.35s cubic-bezier(0.1, 0.8, 0.2, 1)',
-                animationDelay: `${p.delay}s`,
-                pointerEvents: 'none'
-              }}
-            />
-          );
+    <div ref={ref} className={`personality-nebula ${isNebulaOpened ? 'opened' : 'unopened'}`} onMouseMove={handleMove} onMouseLeave={() => setPointer({ x: 1000, y: 1000 })} onClick={(event) => { event.stopPropagation(); openPersonality(); }} title="Personality Nebula">
+      <div className="personality-nebula-aura" />
+      <div className="personality-nebula-core" />
+      <div className="personality-nebula-particles">
+        {particles.map((particle) => {
+          const dx = particle.x - pointer.x;
+          const dy = particle.y - pointer.y;
+          const distance = Math.hypot(dx, dy);
+          const force = distance < 105 ? (1 - distance / 105) * 24 : 0;
+          const x = particle.x + (distance ? (dx / distance) * force : 0);
+          const y = particle.y + (distance ? (dy / distance) * force : 0);
+          return <span key={particle.id} className="personality-nebula-particle" style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)`, width: particle.size, height: particle.size, opacity: particle.opacity, background: particle.color, boxShadow: `0 0 ${particle.size * 4}px ${particle.color}` }} />;
         })}
       </div>
-
-      {/* Label Badge */}
-      <div className="nebula-title-badge">
-        <span>🌌 Heart Nebula</span>
-      </div>
+      <div className="personality-nebula-label"><span>Personality</span><small>{personalityWords.length ? `${personalityWords.length} floating ${personalityWords.length === 1 ? 'thought' : 'thoughts'}` : 'describe Sum'}</small></div>
     </div>
   );
 };

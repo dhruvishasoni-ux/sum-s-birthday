@@ -62,6 +62,8 @@ interface SkyContextType {
   setActiveModal: (modal: ModalType) => void;
   authNotice: string | null;
   setAuthNotice: (notice: string | null) => void;
+  authMode: 'login' | 'signup';
+  setAuthMode: (mode: 'login' | 'signup') => void;
 
   activeWishId: string | null;
   setActiveWishId: (id: string | null) => void;
@@ -92,6 +94,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
   const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>([]);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
+  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
   const accentColor = DEFAULT_ACCENT_COLOR;
 
@@ -227,9 +230,9 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return { success: false, error: 'Please enter a word describing Sum.' };
     }
 
-    // Must be exactly one word
-    if (/\s/.test(trimmed)) {
-      return { success: false, error: 'Please enter exactly ONE word (no spaces).' };
+    const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+    if (wordCount > 2) {
+      return { success: false, error: 'Please enter one or two words only.' };
     }
 
     const randomColor = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
@@ -304,25 +307,13 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   // Distinct friends count (contributors)
-  const contributors = new Set<string>();
-  wishes.forEach((w) => (w.creatorName || w.from) && contributors.add((w.creatorName || w.from).trim().toLowerCase()));
-  stories.forEach((s) => s.creatorName && contributors.add(s.creatorName.trim().toLowerCase()));
-  voiceNotes.forEach((v) => (v.creatorName || v.contributor) && contributors.add((v.creatorName || v.contributor).trim().toLowerCase()));
-  personalityWords.forEach((p) => p.creatorName && contributors.add(p.creatorName.trim().toLowerCase()));
-  blackHoleWishes.forEach((b) => b.creatorName && contributors.add(b.creatorName.trim().toLowerCase()));
-  registeredAccounts.forEach((a) => contributors.add(a.username.trim().toLowerCase()));
-  if (currentUser?.username) contributors.add(currentUser.username.trim().toLowerCase());
-
-  const friendsCount = Math.max(1, contributors.size);
+  const friendsCount = registeredAccounts.length;
 
   // Dynamic unopened count across universe
   const unopenedCount =
     wishes.filter((w) => w.unopened).length +
     stories.filter((s) => s.unopened).length +
-    voiceNotes.filter((v) => !v.heard).length +
-    secretStars.filter((s) => !s.discovered).length +
-    (!isNebulaOpened ? 1 : 0) +
-    (!isBlackHoleOpened ? 1 : 0);
+    voiceNotes.filter((v) => !v.heard).length;
 
   return (
     <SkyContext.Provider
@@ -362,6 +353,8 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveModal,
         authNotice,
         setAuthNotice,
+        authMode,
+        setAuthMode,
         activeWishId,
         setActiveWishId,
         activeStoryId,

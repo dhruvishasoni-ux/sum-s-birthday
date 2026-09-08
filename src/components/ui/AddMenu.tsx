@@ -61,7 +61,7 @@ export const AddMenu: React.FC = () => {
             </div>
             <div className="option-info">
               <span className="option-title">Personality Word</span>
-              <span className="option-desc">Describe Sum in the Heart Nebula</span>
+              <span className="option-desc">Add one or two personality words</span>
             </div>
           </button>
 

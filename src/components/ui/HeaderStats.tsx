@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSky } from '../../context/SkyContext';
-import { User, LogIn } from 'lucide-react';
+import { User, LogIn, ChevronDown } from 'lucide-react';
 
 export const HeaderStats: React.FC = () => {
-  const { currentUser, setActiveModal, authNotice, setAuthNotice } = useSky();
+  const { currentUser, setActiveModal, setAuthMode, authNotice, setAuthNotice } = useSky();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   return (
     <header className="header-bar-container">
@@ -26,12 +27,13 @@ export const HeaderStats: React.FC = () => {
       )}
 
       {/* Top-Right: Authentication / Profile Button */}
-      <div className="header-profile-action">
+      <div className="header-profile-action account-menu-wrap">
         <button
           type="button"
           className={`create-profile-btn ${currentUser ? 'logged-in' : 'logged-out'}`}
-          onClick={() => setActiveModal('auth')}
-          title={currentUser ? `Logged in as ${currentUser.username}` : 'Log In or Sign Up'}
+          onClick={() => setIsOpen((open) => !open)}
+          title="Accounts"
+          aria-expanded={isOpen}
         >
           {currentUser?.avatarUrl && !currentUser.avatarUrl.startsWith('emoji:') ? (
             <img src={currentUser.avatarUrl} alt="Avatar" className="header-avatar-thumb" />
@@ -42,10 +44,17 @@ export const HeaderStats: React.FC = () => {
           )}
 
           <span className="header-btn-label">
-            {currentUser ? currentUser.username : 'Login / Sign Up'}
+            {currentUser ? currentUser.username : 'Accounts'}
           </span>
           {!currentUser && <LogIn size={14} className="header-login-icon" />}
+          <ChevronDown size={14} />
         </button>
+        {isOpen && (
+          <div className="accounts-dropdown animate-fade-in">
+            <button type="button" onClick={() => { setAuthMode('login'); setActiveModal('auth'); setIsOpen(false); }}>Login</button>
+            <button type="button" onClick={() => { setAuthMode('signup'); setActiveModal('auth'); setIsOpen(false); }}>Sign Up</button>
+          </div>
+        )}
       </div>
     </header>
   );
