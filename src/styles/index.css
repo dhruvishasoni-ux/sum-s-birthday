@@ -353,6 +353,14 @@ body {
   letter-spacing: 0.5px;
 }
 
+.header-bar-container {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 60;
+  pointer-events: none;
+}
+
 .header-profile-action {
   pointer-events: auto;
 }
@@ -1476,7 +1484,7 @@ body {
 
 .bottom-right-status-bar {
   position: fixed;
-  right: 24px;
+  left: 24px;
   bottom: 24px;
   z-index: 50;
   display: flex;
@@ -1516,13 +1524,14 @@ body {
 
 @media (max-width: 640px) {
   .header-stats-container { top: 12px; left: 12px; right: 12px; }
+  .header-bar-container { top: 12px; right: 12px; }
   .statistics { gap: 4px; padding: 5px 8px; }
   .stat-item { padding: 2px 5px; }
   .stat-item span { font-size: 13px; }
   .stat-item small { font-size: 8px; }
   .header-btn-label { display: none; }
   .create-profile-btn { padding: 8px 10px; }
-  .bottom-right-status-bar { right: 12px; bottom: 12px; left: 12px; justify-content: space-between; gap: 6px; padding: 8px 10px; }
+  .bottom-right-status-bar { right: auto; bottom: 12px; left: 12px; justify-content: space-between; gap: 6px; padding: 8px 10px; }
   .status-bar-item { gap: 3px; }
   .status-lbl, .status-unopened-text { font-size: 10px; }
   .modal-backdrop { align-items: flex-start; padding: 12px; }
