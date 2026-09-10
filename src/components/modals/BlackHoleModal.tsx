@@ -98,7 +98,7 @@ export const BlackHoleModal: React.FC = () => {
             {/* Suction animation overlay for submitted text */}
             {isSucking && (
               <div className="gravitational-suction-text animate-spiral-suck">
-                "{suckedText}"
+                {suckedText}
               </div>
             )}
           </div>

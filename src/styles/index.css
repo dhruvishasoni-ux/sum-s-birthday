@@ -165,98 +165,28 @@ body {
 }
 
 /* =====================================================
-   PERSONALITY HEART NEBULA
+   PERSONALITY HEART NEBULA (Canvas-based)
 ===================================================== */
 .personality-nebula {
   position: absolute;
-  left: 42%;
-  top: 38%;
+  left: 24%;
+  top: 48%;
   width: 520px;
-  height: 430px;
+  height: 450px;
   transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 10;
   isolation: isolate;
+  user-select: none;
 }
 
-.personality-nebula-aura,
-.personality-nebula-core {
-  position: absolute;
-  inset: 8%;
-  border-radius: 50%;
+.personality-nebula.opened {
+  opacity: 0.82;
+}
+
+.personality-nebula canvas {
+  display: block;
   pointer-events: none;
-}
-
-.personality-nebula-aura {
-  background: radial-gradient(ellipse, rgba(244, 114, 182, 0.2), rgba(190, 24, 93, 0.1) 36%, transparent 72%);
-  filter: blur(34px);
-  animation: heartAuraPulse 5s ease-in-out infinite alternate;
-}
-
-.personality-nebula-core {
-  background: radial-gradient(ellipse, rgba(251, 207, 232, 0.12), transparent 66%);
-  filter: blur(18px);
-}
-
-.personality-nebula-heart {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.8));
-  animation: heartNebulaDrift 9s ease-in-out infinite alternate;
-}
-
-.personality-nebula-heart polyline {
-  fill: none;
-  stroke: rgba(244, 114, 182, 0.55);
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 5 8;
-  vector-effect: non-scaling-stroke;
-}
-
-.personality-nebula-heart polyline:nth-child(2) {
-  stroke: rgba(251, 207, 232, 0.38);
-  stroke-width: 1.5;
-  stroke-dasharray: 2 7;
-}
-
-.personality-nebula-heart polyline:nth-child(3) {
-  stroke: rgba(251, 113, 133, 0.28);
-  stroke-width: 1.2;
-  stroke-dasharray: 1 6;
-}
-
-.personality-nebula-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.personality-nebula-particle {
-  position: absolute;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: heartParticlePulse 3.6s ease-in-out infinite alternate;
-}
-
-@keyframes heartAuraPulse {
-  from { opacity: 0.6; transform: scale(0.94); }
-  to { opacity: 1; transform: scale(1.06); }
-}
-
-@keyframes heartNebulaDrift {
-  from { transform: rotate(-1deg) scale(0.98); }
-  to { transform: rotate(1.5deg) scale(1.02); }
-}
-
-@keyframes heartParticlePulse {
-  from { transform: translate(-50%, -50%) scale(0.72); }
-  to { transform: translate(-50%, -50%) scale(1.28); }
 }
 
 /* =====================================================
@@ -264,11 +194,10 @@ body {
 ===================================================== */
 .secret-star-node {
   transition: transform 0.2s ease;
-  filter: drop-shadow(0 0 6px currentColor);
 }
 
 .secret-star-node:hover {
-  transform: translate(-50%, -50%) scale(1.28) !important;
+  transform: translate(-50%, -50%) scale(1.32) !important;
 }
 
 .secret-star-shape {
@@ -280,19 +209,25 @@ body {
   transition: opacity 0.5s ease, filter 0.5s ease;
 }
 
+/* Undiscovered: strong two-layer glow + animated twinkle */
 .secret-star-node.undiscovered .secret-star-shape {
-  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 9px currentColor);
-  animation: starTwinkle 2s infinite alternate;
+  filter:
+    drop-shadow(0 0 5px currentColor)
+    drop-shadow(0 0 12px currentColor)
+    drop-shadow(0 0 22px currentColor);
+  animation: starTwinkle 1.8s ease-in-out infinite alternate;
 }
 
+/* Discovered: barely glowing, clearly "found" */
 .secret-star-node.discovered .secret-star-shape {
-  opacity: 0.62;
+  opacity: 0.48;
   filter: drop-shadow(0 0 3px currentColor);
 }
 
 @keyframes starTwinkle {
-  0% { transform: scale(0.9); opacity: 0.85; }
-  100% { transform: scale(1.2); opacity: 1; }
+  0%   { transform: scale(0.88); opacity: 0.75; }
+  50%  { transform: scale(1.08); opacity: 1.0; }
+  100% { transform: scale(1.18); opacity: 0.85; }
 }
 
 /* =====================================================
@@ -1558,7 +1493,7 @@ body {
 /* Personality nebula */
 .sky-personality-card { position: absolute; z-index: 16; transform: translate(-50%, -50%); width: max-content; max-width: 128px; padding: 7px 10px; border: 1px solid; border-radius: 12px; background: rgba(25, 14, 38, .72); backdrop-filter: blur(10px); font-size: 12px; font-weight: 600; text-align: center; animation: personalityFloat 6s ease-in-out infinite alternate; pointer-events: none; }
 @keyframes personalityFloat { from { transform: translate(-50%, -50%) translateY(3px); } to { transform: translate(-50%, -50%) translateY(-7px); } }
-.personality-nebula { position: absolute; left: 54%; top: 50%; width: 400px; height: 360px; transform: translate(-50%, -50%); cursor: pointer; z-index: 14; user-select: none; }
+/* personality-nebula position/sizing is defined in the PERSONALITY HEART NEBULA section above */
 .personality-nebula-aura, .personality-nebula-core { position: absolute; inset: 4%; pointer-events: none; }
 .personality-nebula-aura { border-radius: 48% 52% 45% 55%; background: radial-gradient(ellipse at 50% 44%, rgba(244,114,182,.3), rgba(251,113,133,.16) 28%, transparent 68%); filter: blur(28px); animation: personalityBreathe 7s ease-in-out infinite alternate; }
 .personality-nebula-core { inset: 16% 13%; border-radius: 48% 52% 45% 55%; background: radial-gradient(ellipse at 50% 39%, rgba(251,207,232,.28), rgba(244,114,182,.12) 34%, transparent 70%); filter: blur(18px); transform: rotate(-8deg); }
@@ -1610,56 +1545,24 @@ body {
 @media (max-width: 640px) { .word-list-row { grid-template-columns: 28px minmax(0, 1fr); } .row-creator, .row-time { grid-column: 2; } .row-time { margin-top: -6px; } }
 @media (max-width: 640px) { .personality-universe-header { padding: 14px; } .personality-header-controls { width: 100%; justify-content: flex-start; } .personality-universe-body { max-height: calc(100vh - 120px); } }
 
-/* Wish and prayer void */
+/* Wish and prayer void — Canvas Black Hole */
 .sky-black-hole-wrapper {
-  transition: filter 0.3s ease, opacity 0.3s ease;
+  transition: opacity 0.4s ease;
 }
 
 .sky-black-hole-wrapper.unopened {
-  filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.5));
+  /* subtle amber haze around the hole when not yet clicked */
+  filter: drop-shadow(0 0 32px rgba(245, 158, 11, 0.35));
 }
 
 .sky-black-hole-wrapper.opened {
-  opacity: 0.72;
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.28));
+  opacity: 0.85;
 }
 
-.black-hole-disk-svg {
-  width: 180px;
-  height: 180px;
-  overflow: visible;
+.sky-black-hole-wrapper canvas {
+  display: block;
+  pointer-events: none;
 }
-
-.black-hole-lensing-ring {
-  position: absolute;
-  inset: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 50%;
-  box-shadow: 0 0 28px rgba(245, 158, 11, 0.22), inset 0 0 16px rgba(168, 85, 247, 0.2);
-  animation: lensPulse 2.4s ease-in-out infinite alternate;
-}
-
-.accretion-disk-spin { transform-origin: 100px 100px; animation: diskSpin 7s linear infinite; }
-.accretion-disk-spin-reverse { transform-origin: 100px 100px; animation: diskSpin 5s linear infinite reverse; }
-.plasma-aura-pulse { transform-origin: 100px 100px; animation: auraPulse 2.8s ease-in-out infinite alternate; }
-
-.black-hole-title-tag {
-  position: absolute;
-  bottom: -4px;
-  white-space: nowrap;
-  padding: 5px 10px;
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  border-radius: 999px;
-  background: rgba(8, 8, 24, 0.82);
-  color: #fcd34d;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-@keyframes lensPulse { from { transform: scale(0.96); opacity: 0.45; } to { transform: scale(1.04); opacity: 0.9; } }
-@keyframes diskSpin { to { transform: rotate(360deg); } }
-@keyframes auraPulse { from { transform: scale(0.96); opacity: 0.78; } to { transform: scale(1.04); opacity: 1; } }
 
 .bottom-right-status-bar {
   position: fixed;
@@ -1684,6 +1587,157 @@ body {
 .status-unopened-dot { width: 7px; height: 7px; border-radius: 50%; background: #ffe58a; box-shadow: 0 0 8px #ffe58a; }
 
 .modal-content { max-height: calc(100vh - 32px); overflow: auto; overscroll-behavior: contain; }
+
+/* ── Creator badge — always a small thumbnail, never grows ── */
+.creator-profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+}
+.creator-badge-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.18);
+}
+.creator-badge-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  max-width: 36px;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.creator-badge-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f8fafc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+.creator-badge-icon { color: var(--text-muted); flex-shrink: 0; }
+.card-view-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.wish-card-view-window {
+  max-width: 480px;
+  width: min(92vw, 480px);
+  background: #0D0F18;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.wish-card-canvas-standalone {
+  margin: 16px auto;
+  text-align: center;
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0f172a 70%, #030712 100%);
+  border: 2px solid;
+  border-radius: 14px;
+  width: 360px;
+  max-width: calc(100% - 32px);
+  height: 260px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ── Gravitational suction text animation ── */
+.gravitational-suction-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffe58a;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  max-width: 260px;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  z-index: 5;
+  text-shadow: 0 0 12px rgba(255,220,80,0.9);
+}
+
+@keyframes spiralSuck {
+  0%   { transform: translate(-50%, -50%) scale(1)    rotate(0deg);   opacity: 1; }
+  40%  { transform: translate(-50%, -50%) scale(0.85) rotate(120deg); opacity: 0.9; }
+  80%  { transform: translate(-50%, -50%) scale(0.35) rotate(300deg); opacity: 0.45; }
+  100% { transform: translate(-50%, -50%) scale(0.02) rotate(420deg); opacity: 0; }
+}
+
+.animate-spiral-suck {
+  animation: spiralSuck 2.4s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+/* ── Singularity visual in black-hole modal ── */
+.singularity-core {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.singularity-glow-outer {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245,158,11,0.3) 0%, rgba(168,85,247,0.12) 50%, transparent 80%);
+  animation: singularityPulse 2.8s ease-in-out infinite alternate;
+}
+.singularity-event-horizon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #000000;
+  border: 2px solid rgba(255,220,80,0.7);
+  box-shadow: 0 0 20px rgba(245,158,11,0.6), inset 0 0 12px rgba(0,0,0,0.9);
+  z-index: 2;
+}
+.singularity-spiral-rays {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(245,158,11,0.3);
+  animation: diskSpin 4s linear infinite;
+}
+.singularity-core.active-vortex .singularity-event-horizon {
+  box-shadow: 0 0 40px rgba(245,158,11,0.9), inset 0 0 18px rgba(0,0,0,0.9);
+  animation: vortexPulse 0.4s ease-in-out infinite alternate;
+}
+@keyframes singularityPulse {
+  from { transform: scale(0.9); opacity: 0.7; }
+  to   { transform: scale(1.1); opacity: 1;   }
+}
+@keyframes vortexPulse {
+  from { transform: scale(0.95); }
+  to   { transform: scale(1.05); }
+}
+@keyframes diskSpin { to { transform: rotate(360deg); } }
 .black-hole-modal-window { max-width: 760px; background: radial-gradient(circle at 50% 0%, #171536 0%, #0f172a 72%); }
 .black-hole-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
 .black-hole-header h2 { color: #ffffff; font-size: 21px; }

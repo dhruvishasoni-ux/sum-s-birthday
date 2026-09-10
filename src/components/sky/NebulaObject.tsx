@@ -1,83 +1,313 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { useSky } from '../../context/SkyContext';
 
-interface Particle { id: number; x: number; y: number; size: number; opacity: number; color: string; }
+// ─────────────────────────────────────────────
+// Heart-Spiral Nebula — Canvas Particle Engine
+// ─────────────────────────────────────────────
 
-function heartPoint(t: number, scale = 1) {
+const PARTICLE_COUNT = 1100;
+const STAR_COUNT     = 90;
+
+// parametric heart
+function heartXY(t: number) {
   return {
-    x: 16 * Math.sin(t) ** 3 * scale,
-    y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * scale
+    x:  16 * Math.pow(Math.sin(t), 3),
+    y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))
   };
 }
 
-function makeParticles(count = 520): Particle[] {
-  const palette = ['#f9a8d4', '#fbcfe8', '#f472b6', '#ffe4e6', '#fb7185', '#fda4af'];
-  return Array.from({ length: count }, (_, id) => {
-    const t = Math.random() * Math.PI * 2;
-    const point = heartPoint(t, 1);
-    const fill = Math.random() ** 0.58;
-    const spread = 0.8 + fill * 1.6;
-    const swirl = t * 2.6 + id * 0.15;
-    return {
-      id,
-      x: point.x * 8.1 * spread + Math.cos(swirl) * (Math.random() * 34),
-      y: point.y * 7.4 * spread + Math.sin(swirl) * (Math.random() * 23),
-      size: Math.random() * 2.8 + 0.55,
-      opacity: Math.random() * 0.62 + 0.22,
-      color: palette[Math.floor(Math.random() * palette.length)]
-    };
-  });
+// Nebula colour palette
+const PALETTE = [
+  [36,  19, 63],   // deep violet
+  [59,  36, 92],   // dark purple
+  [142, 112, 199], // lavender
+  [168, 139, 232], // soft violet
+  [215, 123, 174], // rose
+  [233, 164, 200], // pink
+  [244, 197, 220], // light blush
+  [248, 221, 240], // pale pink
+  [255, 244, 250], // near white
+];
+
+// Typed arrays
+const pOrigX  = new Float32Array(PARTICLE_COUNT);
+const pOrigY  = new Float32Array(PARTICLE_COUNT);
+const pX      = new Float32Array(PARTICLE_COUNT);
+const pY      = new Float32Array(PARTICLE_COUNT);
+const pVX     = new Float32Array(PARTICLE_COUNT);
+const pVY     = new Float32Array(PARTICLE_COUNT);
+const pSize   = new Float32Array(PARTICLE_COUNT);
+const pAlpha  = new Float32Array(PARTICLE_COUNT);
+const pPhase  = new Float32Array(PARTICLE_COUNT);
+const pSpeed  = new Float32Array(PARTICLE_COUNT);
+const pR      = new Uint8Array(PARTICLE_COUNT);
+const pG      = new Uint8Array(PARTICLE_COUNT);
+const pB      = new Uint8Array(PARTICLE_COUNT);
+
+// Stars
+const sX     = new Float32Array(STAR_COUNT);
+const sY     = new Float32Array(STAR_COUNT);
+const sSz    = new Float32Array(STAR_COUNT);
+const sAlpha = new Float32Array(STAR_COUNT);
+const sPhase = new Float32Array(STAR_COUNT);
+
+function initParticles(W: number, H: number) {
+  const cx = W / 2;
+  const cy = H / 2;
+  const scale = W * 0.027; // heart scale to canvas
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    // Stratified random t to ensure coverage of the full heart
+    const t = (i / PARTICLE_COUNT) * Math.PI * 2 + Math.random() * (Math.PI * 2 / PARTICLE_COUNT);
+    const hp = heartXY(t);
+
+    // Radial fill factor — density higher near the center
+    const fill  = Math.pow(Math.random(), 0.55);
+    const spread = 0.6 + fill * 1.8;
+
+    // Spiral swirl displacement
+    const spiralAngle = t * 2.4 + i * 0.012;
+    const dispR = Math.random() * 32;
+
+    const x = cx + hp.x * scale * spread + Math.cos(spiralAngle) * dispR;
+    const y = cy + hp.y * scale * spread + Math.sin(spiralAngle) * dispR * 0.7;
+
+    pOrigX[i] = x;
+    pOrigY[i] = y;
+    pX[i]     = x;
+    pY[i]     = y;
+    pVX[i]    = 0;
+    pVY[i]    = 0;
+
+    // Radial distance from center determines color
+    const dist = Math.hypot(x - cx, y - cy);
+    const maxDist = W * 0.46;
+    const colorFrac = Math.min(1, dist / maxDist);
+    const cIdx = Math.floor(colorFrac * (PALETTE.length - 1));
+    const cIdx2 = Math.min(PALETTE.length - 1, cIdx + 1);
+    const blend = colorFrac * (PALETTE.length - 1) - cIdx;
+    const [r1, g1, b1] = PALETTE[cIdx];
+    const [r2, g2, b2] = PALETTE[cIdx2];
+    pR[i] = Math.round(r1 + (r2 - r1) * blend);
+    pG[i] = Math.round(g1 + (g2 - g1) * blend);
+    pB[i] = Math.round(b1 + (b2 - b1) * blend);
+
+    pSize[i]  = 0.7 + Math.random() * 2.4 * (1 - colorFrac * 0.5);
+    pAlpha[i] = 0.18 + Math.random() * 0.55 * (1 - colorFrac * 0.4);
+    pPhase[i] = Math.random() * Math.PI * 2;
+    pSpeed[i] = 0.00015 + Math.random() * 0.00045;
+  }
+
+  // Stars scattered around the nebula zone
+  for (let i = 0; i < STAR_COUNT; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const r     = (0.1 + Math.random() * 0.85) * (W * 0.46);
+    sX[i]     = cx + Math.cos(angle) * r;
+    sY[i]     = cy + Math.sin(angle) * r * 0.85;
+    sSz[i]    = 0.4 + Math.random() * 1.6;
+    sAlpha[i] = 0.3 + Math.random() * 0.7;
+    sPhase[i] = Math.random() * Math.PI * 2;
+  }
 }
 
-function makeHeartStroke(id: string, scale: number, rotation: number) {
-  const points = Array.from({ length: 70 }, (_, index) => {
-    const t = (index / 69) * Math.PI * 2;
-    const point = heartPoint(t, scale);
-    return `${point.x.toFixed(1)},${point.y.toFixed(1)}`;
-  }).join(' ');
-  return { id, points, rotation };
-}
-
+// ─────────────────────────────────────────────
+// Component
+// ─────────────────────────────────────────────
 export const NebulaObject: React.FC = () => {
   const { openPersonality, isNebulaOpened } = useSky();
-  const ref = useRef<HTMLDivElement>(null);
-  const particles = useMemo(() => makeParticles(), []);
-  const heartStrokes = useMemo(
-    () => [
-      makeHeartStroke('outer', 8.4, 0),
-      makeHeartStroke('middle', 6.7, 12),
-      makeHeartStroke('inner', 5.1, -10)
-    ],
-    []
-  );
-  const [pointer, setPointer] = useState({ x: 1000, y: 1000 });
 
-  const handleMove = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
+  const canvasRef  = useRef<HTMLCanvasElement>(null);
+  const rafRef     = useRef<number>(0);
+  const timeRef    = useRef<number>(0);
+  const pointerRef = useRef<{ x: number; y: number } | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dpr  = Math.min(window.devicePixelRatio || 1, 2);
+    const W    = 520;
+    const H    = 450;
+
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = `${W}px`;
+    canvas.style.height = `${H}px`;
+
+    const ctx = canvas.getContext('2d')!;
+    ctx.scale(dpr, dpr);
+
+    initParticles(W, H);
+
+    const cx = W / 2;
+    const cy = H / 2;
+    const REPEL_R  = 120;
+    const REPEL_F  = 38;
+    const SPRING_A = 0.06;
+    const DAMP     = 0.88;
+
+    function drawFrame(t: number) {
+      ctx.clearRect(0, 0, W, H);
+
+      const ptr = pointerRef.current;
+
+      // ── 1. Soft cosmic gas clouds ──────────
+      ctx.globalCompositeOperation = 'source-over';
+
+      const gasPositions = [
+        [cx, cy,          W * 0.38, 'rgba(59,36,92,'],
+        [cx, cy - H*0.15, W * 0.28, 'rgba(142,112,199,'],
+        [cx - W*0.12, cy, W * 0.22, 'rgba(215,123,174,'],
+        [cx + W*0.12, cy, W * 0.22, 'rgba(168,139,232,'],
+      ];
+      for (const [gx, gy, gr, color] of gasPositions) {
+        const g = ctx.createRadialGradient(gx as number, gy as number, 0, gx as number, gy as number, gr as number);
+        g.addColorStop(0,   `${color}0.12)`);
+        g.addColorStop(0.4, `${color}0.06)`);
+        g.addColorStop(1,   `${color}0)`);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle   = g;
+        ctx.beginPath();
+        ctx.arc(gx as number, gy as number, gr as number, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ── 2. Particles ───────────────────────
+      ctx.globalCompositeOperation = 'lighter';
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        // Spring back to original position
+        pVX[i] += (pOrigX[i] - pX[i]) * SPRING_A;
+        pVY[i] += (pOrigY[i] - pY[i]) * SPRING_A;
+        pVX[i] *= DAMP;
+        pVY[i] *= DAMP;
+
+        // Cursor repulsion
+        if (ptr) {
+          const dx   = pX[i] - ptr.x;
+          const dy   = pY[i] - ptr.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < REPEL_R && dist > 0.01) {
+            const force = (1 - dist / REPEL_R) * REPEL_F;
+            pVX[i] += (dx / dist) * force;
+            pVY[i] += (dy / dist) * force;
+          }
+        }
+
+        pX[i] += pVX[i];
+        pY[i] += pVY[i];
+
+        // Slow orbital drift
+        const ang    = Math.atan2(pOrigY[i] - cy, pOrigX[i] - cx);
+        const r      = Math.hypot(pOrigX[i] - cx, pOrigY[i] - cy);
+        const newAng = ang + pSpeed[i];
+        pOrigX[i]   = cx + Math.cos(newAng) * r;
+        pOrigY[i]   = cy + Math.sin(newAng) * r * 0.95;
+
+        // Brightness pulse
+        const alpha = pAlpha[i] * (0.6 + 0.4 * Math.sin(t * 0.0016 + pPhase[i]));
+
+        const sz = pSize[i];
+        const g  = ctx.createRadialGradient(pX[i], pY[i], 0, pX[i], pY[i], sz * 3.2);
+        g.addColorStop(0, `rgba(${pR[i]},${pG[i]},${pB[i]},${alpha})`);
+        g.addColorStop(1, `rgba(${pR[i]},${pG[i]},${pB[i]},0)`);
+        ctx.globalAlpha = 1;
+        ctx.fillStyle   = g;
+        ctx.beginPath();
+        ctx.arc(pX[i], pY[i], sz * 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ── 3. Stars ───────────────────────────
+      ctx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < STAR_COUNT; i++) {
+        const tw = 0.55 + 0.45 * Math.sin(t * 0.003 + sPhase[i]);
+        const sz = sSz[i];
+        const a  = sAlpha[i] * tw;
+        ctx.globalAlpha = a;
+        ctx.fillStyle   = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(sX[i], sY[i], sz, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // ── 4. Central bright core glow ────────
+      ctx.globalCompositeOperation = 'lighter';
+      const coreG = ctx.createRadialGradient(cx, cy - H * 0.04, 0, cx, cy, W * 0.18);
+      coreG.addColorStop(0,   'rgba(255,244,250,0.22)');
+      coreG.addColorStop(0.25,'rgba(233,164,200,0.16)');
+      coreG.addColorStop(0.6, 'rgba(142,112,199,0.08)');
+      coreG.addColorStop(1,   'rgba(0,0,0,0)');
+      ctx.globalAlpha = 1;
+      ctx.fillStyle   = coreG;
+      ctx.beginPath();
+      ctx.arc(cx, cy, W * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+    }
+
+    function loop() {
+      timeRef.current += 1;
+      drawFrame(timeRef.current);
+      rafRef.current = requestAnimationFrame(loop);
+    }
+    rafRef.current = requestAnimationFrame(loop);
+
+    // Touch: passive so it doesn't interfere with sky panning
+    const handleTouch = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return; // ignore pinch
+      const rect  = canvas.getBoundingClientRect();
+      const touch = e.touches[0];
+      pointerRef.current = {
+        x: (touch.clientX - rect.left) * (W / rect.width),
+        y: (touch.clientY - rect.top)  * (H / rect.height),
+      };
+    };
+    const handleTouchEnd = () => { pointerRef.current = null; };
+
+    canvas.addEventListener('touchmove', handleTouch, { passive: true });
+    canvas.addEventListener('touchend',  handleTouchEnd, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      canvas.removeEventListener('touchmove', handleTouch);
+      canvas.removeEventListener('touchend',  handleTouchEnd);
+    };
+  }, []);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = canvasRef.current?.getBoundingClientRect();
     if (!rect) return;
-    setPointer({ x: event.clientX - (rect.left + rect.width / 2), y: event.clientY - (rect.top + rect.height / 2) });
+    const W = 520;
+    const H = 450;
+    pointerRef.current = {
+      x: (e.clientX - rect.left) * (W / rect.width),
+      y: (e.clientY - rect.top)  * (H / rect.height),
+    };
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    pointerRef.current = null;
   }, []);
 
   return (
-    <div ref={ref} className={`personality-nebula ${isNebulaOpened ? 'opened' : 'unopened'}`} style={{ left: '24%', top: '48%' }} onMouseMove={handleMove} onMouseLeave={() => setPointer({ x: 1000, y: 1000 })} onClick={(event) => { event.stopPropagation(); openPersonality(); }} title="Personality Nebula" aria-label="Open personality nebula" role="button" tabIndex={0}>
-      <div className="personality-nebula-aura" />
-      <div className="personality-nebula-core" />
-      <svg className="personality-nebula-heart" viewBox="-170 -145 340 290" aria-hidden="true">
-        {heartStrokes.map((stroke) => (
-          <polyline key={stroke.id} points={stroke.points} transform={`rotate(${stroke.rotation})`} />
-        ))}
-      </svg>
-      <div className="personality-nebula-particles">
-        {particles.map((particle) => {
-          const dx = particle.x - pointer.x;
-          const dy = particle.y - pointer.y;
-          const distance = Math.hypot(dx, dy);
-          const force = distance < 105 ? (1 - distance / 105) * 24 : 0;
-          const x = particle.x + (distance ? (dx / distance) * force : 0);
-          const y = particle.y + (distance ? (dy / distance) * force : 0);
-          return <span key={particle.id} className="personality-nebula-particle" style={{ left: `calc(50% + ${x}px)`, top: `calc(50% + ${y}px)`, width: particle.size, height: particle.size, opacity: particle.opacity, background: particle.color, boxShadow: `0 0 ${particle.size * 4}px ${particle.color}` }} />;
-        })}
-      </div>
+    <div
+      className={`personality-nebula ${isNebulaOpened ? 'opened' : 'unopened'}`}
+      style={{ left: '24%', top: '48%' }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={(e) => { e.stopPropagation(); openPersonality(); }}
+      title="Personality Nebula"
+      aria-label="Open personality nebula"
+      role="button"
+      tabIndex={0}
+    >
+      <canvas
+        ref={canvasRef}
+        style={{ display: 'block', pointerEvents: 'none' }}
+      />
     </div>
   );
 };
