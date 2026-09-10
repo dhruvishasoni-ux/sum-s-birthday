@@ -23,10 +23,35 @@
   --font-typewriter: 'Courier Prime', monospace;
 }
 
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+img,
+svg,
+canvas,
+video {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  box-sizing: border-box;
+}
+
+p,
+span,
+label,
+textarea,
+input,
+button {
+  overflow-wrap: anywhere;
 }
 
 body {
@@ -239,18 +264,30 @@ body {
 ===================================================== */
 .secret-star-node {
   transition: transform 0.2s ease;
+  filter: drop-shadow(0 0 6px currentColor);
 }
 
 .secret-star-node:hover {
-  transform: translate(-50%, -50%) scale(1.5) !important;
+  transform: translate(-50%, -50%) scale(1.28) !important;
 }
 
-.secret-star-node.undiscovered svg {
+.secret-star-shape {
+  display: block;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+  color: var(--secret-star-color, #ffffff);
+  transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+.secret-star-node.undiscovered .secret-star-shape {
+  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 9px currentColor);
   animation: starTwinkle 2s infinite alternate;
 }
 
-.secret-star-node.discovered svg {
-  opacity: 0.6;
+.secret-star-node.discovered .secret-star-shape {
+  opacity: 0.62;
+  filter: drop-shadow(0 0 3px currentColor);
 }
 
 @keyframes starTwinkle {
@@ -648,16 +685,30 @@ body {
   margin: auto;
   max-height: calc(100dvh - 32px);
   overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .modal-content {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 20px;
-  width: 100%;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
-  display: flex;
-  flex-direction: column;
+  margin: auto;
+  width: min(92vw, 850px);
+  max-width: 100%;
+  max-height: min(90dvh, 900px);
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+.modal-content > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.modal-content img,
+.modal-content canvas,
+.modal-content video {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
 }
 
 .compact-studio-window {

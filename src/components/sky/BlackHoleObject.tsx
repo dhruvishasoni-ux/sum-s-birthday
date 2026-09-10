@@ -9,8 +9,8 @@ export const BlackHoleObject: React.FC = () => {
       className={`sky-black-hole-wrapper ${isBlackHoleOpened ? 'opened' : 'unopened'}`}
       style={{
         position: 'absolute',
-        left: '72%',
-        top: '65%',
+            left: '78%',
+        top: '72%',
         transform: 'translate(-50%, -50%)',
         cursor: 'pointer',
         zIndex: 16,

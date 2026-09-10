@@ -9,8 +9,8 @@ export const MoonObject: React.FC = () => {
       className="moon-wrapper simple-moon-interactive"
       style={{
         position: 'absolute',
-        left: '50%',
-        top: '40%',
+        left: '52%',
+        top: '18%',
         transform: 'translate(-50%, -50%)',
         cursor: 'pointer',
         zIndex: 20

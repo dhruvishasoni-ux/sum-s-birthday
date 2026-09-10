@@ -8,9 +8,10 @@ import { StickerCanvasOverlay } from '../shared/StickerCanvasOverlay';
 import { FramePicker, AVAILABLE_FRAMES } from '../shared/FramePicker';
 import { X, Sparkles, Wand2, RefreshCw } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { findSafeSkyPosition } from '../../utils/objectPlacement';
 
 export const WishStudioModal: React.FC = () => {
-  const { activeModal, setActiveModal, addWish, accentColor, currentUser } = useSky();
+  const { activeModal, setActiveModal, addWish, accentColor, currentUser, wishes, stories, voiceNotes, secretStars } = useSky();
 
   const [activeTab, setActiveTab] = useState<'card' | 'constellation' | 'stickers' | 'frame'>('card');
 
@@ -132,8 +133,14 @@ export const WishStudioModal: React.FC = () => {
   };
 
   const handleCreateWishAndConstellation = () => {
-    const posX = 15 + Math.random() * 70;
-    const posY = 15 + Math.random() * 70;
+    const position = findSafeSkyPosition('wish', [
+      ...wishes.map((item) => ({ x: item.x, y: item.y, kind: 'wish' as const })),
+      ...stories.map((item) => ({ x: item.x, y: item.y, kind: 'story' as const })),
+      ...voiceNotes.map((item) => ({ x: item.x, y: item.y, kind: 'voice' as const })),
+      ...secretStars.map((item) => ({ x: item.x, y: item.y, kind: 'secret' as const }))
+    ]);
+    const posX = position.x;
+    const posY = position.y;
 
     const newWish: WishCard = {
       id: `wish-${Date.now()}`,

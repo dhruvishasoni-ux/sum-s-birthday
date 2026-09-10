@@ -11,6 +11,7 @@ import {
 } from '../types/celestial';
 import { DEFAULT_SECRET_STARS } from '../config/secretStars';
 import { DEFAULT_ACCENT_COLOR } from '../services/storage';
+import { findSafeSkyPosition } from '../utils/objectPlacement';
 
 interface SkyContextType {
   // Session Authentication & Current User
@@ -107,7 +108,14 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [stories, setStories] = useState<Story[]>([]);
   const [personalityWords, setPersonalityWords] = useState<PersonalityWordEntry[]>([]);
   const [voiceNotes, setVoiceNotes] = useState<VoiceNote[]>([]);
-  const [secretStars, setSecretStars] = useState<SecretStar[]>(DEFAULT_SECRET_STARS);
+  const [secretStars, setSecretStars] = useState<SecretStar[]>(() => {
+    const placed: { x: number; y: number; kind: 'secret' }[] = [];
+    return DEFAULT_SECRET_STARS.map((star) => {
+      const position = findSafeSkyPosition('secret', placed);
+      placed.push({ ...position, kind: 'secret' });
+      return { ...star, ...position };
+    });
+  });
   const [blackHoleWishes, setBlackHoleWishes] = useState<BlackHoleWish[]>([]);
   const [isNebulaOpened, setIsNebulaOpened] = useState<boolean>(false);
   const [isBlackHoleOpened, setIsBlackHoleOpened] = useState<boolean>(false);

@@ -59,7 +59,7 @@ export const NebulaObject: React.FC = () => {
   }, []);
 
   return (
-    <div ref={ref} className={`personality-nebula ${isNebulaOpened ? 'opened' : 'unopened'}`} onMouseMove={handleMove} onMouseLeave={() => setPointer({ x: 1000, y: 1000 })} onClick={(event) => { event.stopPropagation(); openPersonality(); }} title="Personality Nebula" aria-label="Open personality nebula" role="button" tabIndex={0}>
+    <div ref={ref} className={`personality-nebula ${isNebulaOpened ? 'opened' : 'unopened'}`} style={{ left: '24%', top: '48%' }} onMouseMove={handleMove} onMouseLeave={() => setPointer({ x: 1000, y: 1000 })} onClick={(event) => { event.stopPropagation(); openPersonality(); }} title="Personality Nebula" aria-label="Open personality nebula" role="button" tabIndex={0}>
       <div className="personality-nebula-aura" />
       <div className="personality-nebula-core" />
       <svg className="personality-nebula-heart" viewBox="-170 -145 340 290" aria-hidden="true">

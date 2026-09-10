@@ -55,6 +55,17 @@ export const SkyCanvas: React.FC = () => {
 
   const backgroundStars = useMemo(() => generateBackgroundStars(900), []);
 
+  const clampPan = (next: { x: number; y: number }) => {
+    const maxX = window.innerWidth * 0.92;
+    const minX = -window.innerWidth * 1.92;
+    const maxY = window.innerHeight * 0.92;
+    const minY = -window.innerHeight * 1.92;
+    return {
+      x: Math.min(maxX, Math.max(minX, next.x)),
+      y: Math.min(maxY, Math.max(minY, next.y))
+    };
+  };
+
   const shouldIgnoreTarget = (target: HTMLElement | null) => {
     if (!target) return false;
     return Boolean(
@@ -88,10 +99,10 @@ export const SkyCanvas: React.FC = () => {
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDraggingRef.current) return;
-    setPanOffset({
+    setPanOffset(clampPan({
       x: e.clientX - dragStartRef.current.x,
       y: e.clientY - dragStartRef.current.y
-    });
+    }));
   };
 
   const handleMouseUp = () => {
@@ -135,10 +146,10 @@ export const SkyCanvas: React.FC = () => {
     if (e.touches.length === 1 && isDraggingRef.current && !touchStateRef.current.isPinching) {
       // One-finger Pan
       const touch = e.touches[0];
-      setPanOffset({
+      setPanOffset(clampPan({
         x: touch.clientX - dragStartRef.current.x,
         y: touch.clientY - dragStartRef.current.y
-      });
+      }));
     } else if (e.touches.length === 2 && touchStateRef.current.isPinching) {
       // Two-finger Pinch Zoom (Pinch OUT = zoom IN, Pinch IN = zoom OUT)
       const t1 = e.touches[0];

@@ -6,6 +6,7 @@ import { StickerBar } from '../shared/StickerBar';
 import { StickerCanvasOverlay } from '../shared/StickerCanvasOverlay';
 import { X, ChevronLeft, ChevronRight, Plus, Check, Image as ImageIcon, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { findSafeSkyPosition } from '../../utils/objectPlacement';
 
 interface StoryStudioModalProps {
   initialPlanetDesign?: PlanetDesign | null;
@@ -21,7 +22,7 @@ const PAGE_THEMES: { id: PageThemeType; label: string; className: string }[] = [
 ];
 
 export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlanetDesign }) => {
-  const { activeModal, setActiveModal, addStory, currentUser } = useSky();
+  const { activeModal, setActiveModal, addStory, currentUser, wishes, stories, voiceNotes, secretStars } = useSky();
 
   const [activeTab, setActiveTab] = useState<'content' | 'layout-theme' | 'stickers'>('content');
   const [storyTitle, setStoryTitle] = useState('Relive a Day ✨');
@@ -129,8 +130,14 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
   };
 
   const handleFinalSubmit = () => {
-    const posX = 20 + Math.random() * 60;
-    const posY = 20 + Math.random() * 60;
+    const position = findSafeSkyPosition('story', [
+      ...wishes.map((item) => ({ x: item.x, y: item.y, kind: 'wish' as const })),
+      ...stories.map((item) => ({ x: item.x, y: item.y, kind: 'story' as const })),
+      ...voiceNotes.map((item) => ({ x: item.x, y: item.y, kind: 'voice' as const })),
+      ...secretStars.map((item) => ({ x: item.x, y: item.y, kind: 'secret' as const }))
+    ]);
+    const posX = position.x;
+    const posY = position.y;
 
     const defaultPlanet: PlanetDesign = {
       canvasDataUrl: '',
