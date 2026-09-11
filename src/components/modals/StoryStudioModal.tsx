@@ -173,7 +173,7 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
 
   return (
     <div className="modal-backdrop">
-      <div className="modal-content compact-studio-window story-studio animate-scale-in">
+      <div className="modal-content compact-studio-window story-studio glass-panel animate-scale-in">
         {/* Header */}
         <div className="compact-studio-header">
           <div className="header-titles">

@@ -158,7 +158,7 @@ export const VoiceProbeModal: React.FC = () => {
 
   return (
     <div className="modal-backdrop">
-      <div className="modal-content voice-probe-window animate-scale-in">
+      <div className="modal-content voice-probe-window glass-panel animate-scale-in">
         <div className="probe-modal-header">
           <div className="probe-header-title">
             <Radio size={22} color={selectedColor} />

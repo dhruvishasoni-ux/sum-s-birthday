@@ -16,17 +16,19 @@ function heartXY(t: number) {
   };
 }
 
-// Nebula colour palette
+// Nebula colour palette per specification:
+// Core: white-gold #FFF8E7, soft #F8BBD0
+// Main gas: dusty pink #D81B60, magenta #E91E63
+// Outer transition: lavender #B388FF, deep indigo #283593
+// Dark dust: #1A002C
 const PALETTE = [
-  [36,  19, 63],   // deep violet
-  [59,  36, 92],   // dark purple
-  [142, 112, 199], // lavender
-  [168, 139, 232], // soft violet
-  [215, 123, 174], // rose
-  [233, 164, 200], // pink
-  [244, 197, 220], // light blush
-  [248, 221, 240], // pale pink
-  [255, 244, 250], // near white
+  [26,   0,  44],  // dark dust #1A002C
+  [40,  53, 147],  // deep indigo #283593
+  [179, 136, 255], // lavender #B388FF
+  [216,  27,  96], // dusty pink #D81B60
+  [233,  30,  99], // vibrant magenta #E91E63
+  [248, 187, 208], // soft rose #F8BBD0
+  [255, 248, 231], // white-gold core #FFF8E7
 ];
 
 // Typed arrays
@@ -155,15 +157,15 @@ export const NebulaObject: React.FC = () => {
       ctx.globalCompositeOperation = 'source-over';
 
       const gasPositions = [
-        [cx, cy,          W * 0.38, 'rgba(59,36,92,'],
-        [cx, cy - H*0.15, W * 0.28, 'rgba(142,112,199,'],
-        [cx - W*0.12, cy, W * 0.22, 'rgba(215,123,174,'],
-        [cx + W*0.12, cy, W * 0.22, 'rgba(168,139,232,'],
+        [cx, cy,          W * 0.40, 'rgba(40,53,147,'],   // deep indigo #283593
+        [cx, cy - H*0.14, W * 0.30, 'rgba(179,136,255,'], // lavender #B388FF
+        [cx - W*0.12, cy, W * 0.24, 'rgba(216,27,96,'],   // dusty pink #D81B60
+        [cx + W*0.12, cy, W * 0.24, 'rgba(233,30,99,'],   // magenta #E91E63
       ];
       for (const [gx, gy, gr, color] of gasPositions) {
         const g = ctx.createRadialGradient(gx as number, gy as number, 0, gx as number, gy as number, gr as number);
-        g.addColorStop(0,   `${color}0.12)`);
-        g.addColorStop(0.4, `${color}0.06)`);
+        g.addColorStop(0,   `${color}0.14)`);
+        g.addColorStop(0.4, `${color}0.07)`);
         g.addColorStop(1,   `${color}0)`);
         ctx.globalAlpha = 1;
         ctx.fillStyle   = g;
@@ -218,7 +220,7 @@ export const NebulaObject: React.FC = () => {
         ctx.fill();
       }
 
-      // ── 3. Stars ───────────────────────────
+      // ── 3. Stars with 4-Point Lens Flares ───
       ctx.globalCompositeOperation = 'lighter';
       for (let i = 0; i < STAR_COUNT; i++) {
         const tw = 0.55 + 0.45 * Math.sin(t * 0.003 + sPhase[i]);
@@ -229,19 +231,32 @@ export const NebulaObject: React.FC = () => {
         ctx.beginPath();
         ctx.arc(sX[i], sY[i], sz, 0, Math.PI * 2);
         ctx.fill();
+
+        // 4-point lens flares for a few prominent stars (first 8)
+        if (i < 8) {
+          const flareLen = sz * 6 * tw;
+          ctx.strokeStyle = 'rgba(255, 248, 231, ' + (a * 0.75) + ')';
+          ctx.lineWidth   = 0.75;
+          ctx.beginPath();
+          ctx.moveTo(sX[i] - flareLen, sY[i]);
+          ctx.lineTo(sX[i] + flareLen, sY[i]);
+          ctx.moveTo(sX[i], sY[i] - flareLen);
+          ctx.lineTo(sX[i], sY[i] + flareLen);
+          ctx.stroke();
+        }
       }
 
       // ── 4. Central bright core glow ────────
       ctx.globalCompositeOperation = 'lighter';
-      const coreG = ctx.createRadialGradient(cx, cy - H * 0.04, 0, cx, cy, W * 0.18);
-      coreG.addColorStop(0,   'rgba(255,244,250,0.22)');
-      coreG.addColorStop(0.25,'rgba(233,164,200,0.16)');
-      coreG.addColorStop(0.6, 'rgba(142,112,199,0.08)');
+      const coreG = ctx.createRadialGradient(cx, cy - H * 0.04, 0, cx, cy, W * 0.20);
+      coreG.addColorStop(0,   'rgba(255,248,231,0.28)'); // #FFF8E7
+      coreG.addColorStop(0.3, 'rgba(248,187,208,0.18)'); // #F8BBD0
+      coreG.addColorStop(0.65,'rgba(216,27,96,0.08)');   // #D81B60
       coreG.addColorStop(1,   'rgba(0,0,0,0)');
       ctx.globalAlpha = 1;
       ctx.fillStyle   = coreG;
       ctx.beginPath();
-      ctx.arc(cx, cy, W * 0.18, 0, Math.PI * 2);
+      ctx.arc(cx, cy, W * 0.20, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.globalCompositeOperation = 'source-over';

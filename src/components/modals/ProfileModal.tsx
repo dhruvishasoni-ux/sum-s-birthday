@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useSky } from '../../context/SkyContext';
-import { X, Camera, Lock, User, LogIn, UserPlus, LogOut, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Camera, Lock, User, LogIn, UserPlus, LogOut, CheckCircle, AlertCircle, Trash2, Star, BookOpen, Radio, MessageSquare, CircleDot } from 'lucide-react';
 
 const PRESET_AVATARS = [
   '👩‍🚀', '👨‍🚀', '⭐', '✨', '🪐', '🌙', '🌌', '🎈', '💖', '👑', '🚀', '🌟'
@@ -17,7 +17,20 @@ export const ProfileModal: React.FC = () => {
     authNotice,
     setAuthNotice,
     authMode,
-    setAuthMode
+    setAuthMode,
+    wishes,
+    deleteWish,
+    stories,
+    deleteStory,
+    voiceNotes,
+    deleteVoiceNote,
+    personalityWords,
+    deletePersonalityWord,
+    blackHoleWishes,
+    deleteBlackHoleWish,
+    openWish,
+    openStory,
+    openVoiceNote
   } = useSky();
 
   // Sign Up form state (ALL 3 REQUIRED)
@@ -43,7 +56,6 @@ export const ProfileModal: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check size limit ~5MB
     if (file.size > 5 * 1024 * 1024) {
       setErrorMessage('Image size is too large. Please select an image under 5MB.');
       return;
@@ -75,22 +87,21 @@ export const ProfileModal: React.FC = () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    // Validation: ALL THREE FIELDS ARE STRICTLY COMPULSORY
-    const avatarToUse = signupAvatar;
-    if (!avatarToUse) {
-      setErrorMessage('1. Profile picture is required. Please upload an image or choose an avatar icon.');
+    // ALL THREE FIELDS ARE STRICTLY COMPULSORY
+    if (!signupAvatar) {
+      setErrorMessage('1. Profile photo is COMPULSORY. Please upload a picture or pick an avatar.');
       return;
     }
     if (!signupUsername.trim()) {
-      setErrorMessage('2. Username is required. Please enter a username.');
+      setErrorMessage('2. Username/Name is COMPULSORY. Please enter your name.');
       return;
     }
     if (!signupPassword.trim()) {
-      setErrorMessage('3. Password is required. Please enter a password.');
+      setErrorMessage('3. Password is COMPULSORY. Please create a password.');
       return;
     }
 
-    const res = signUp(signupUsername, signupPassword, avatarToUse);
+    const res = signUp(signupUsername, signupPassword, signupAvatar);
     if (!res.success) {
       setErrorMessage(res.error || 'Failed to create account.');
     } else {
@@ -136,6 +147,21 @@ export const ProfileModal: React.FC = () => {
     }, 1200);
   };
 
+  // Filter content owned by current user
+  const userWishes = currentUser ? wishes.filter((w) => w.creatorId === currentUser.id) : [];
+  const userStories = currentUser ? stories.filter((s) => s.creatorId === currentUser.id) : [];
+  const userVoiceNotes = currentUser ? voiceNotes.filter((v) => v.creatorId === currentUser.id) : [];
+  const userWords = currentUser ? personalityWords.filter((p) => p.creatorId === currentUser.id) : [];
+  const userBlackHoles = currentUser ? blackHoleWishes.filter((b) => b.creatorId === currentUser.id) : [];
+  const userStickers = currentUser?.uploadedStickers || [];
+
+  const totalUserCreations =
+    userWishes.length +
+    userStories.length +
+    userVoiceNotes.length +
+    userWords.length +
+    userBlackHoles.length;
+
   return (
     <div
       className="modal-backdrop"
@@ -145,15 +171,23 @@ export const ProfileModal: React.FC = () => {
       }}
     >
       <div
-        className="modal-content auth-modal-window animate-scale-in"
+        className="modal-content auth-modal-window glass-panel animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="auth-header">
           <div>
-            <div className="eyebrow">YOUR LITTLE CORNER OF THE SKY</div>
-            <h2>{currentUser ? 'Your Profile' : 'Your Account'}</h2>
-            {!currentUser && <p className="auth-modal-subtext">{authMode === 'choice' ? 'Create an account or log in to keep your constellations together.' : authMode === 'signup' ? 'Create your account.' : 'Log in to your account.'}</p>}
+            <div className="eyebrow">ASTRONOMICAL CITIZEN PROFILE</div>
+            <h2>{currentUser ? 'Your Account & Creations' : 'Account'}</h2>
+            {!currentUser && (
+              <p className="auth-modal-subtext">
+                {authMode === 'choice'
+                  ? 'Sign up or log in to manage your own creations across the sky.'
+                  : authMode === 'signup'
+                  ? 'Create your account with a required profile picture.'
+                  : 'Log in to access your existing creations.'}
+              </p>
+            )}
           </div>
           <button
             type="button"
@@ -192,7 +226,7 @@ export const ProfileModal: React.FC = () => {
         )}
 
         {currentUser ? (
-          /* Currently Logged In View */
+          /* Currently Logged In View: Profile + Content Ownership */
           <div className="auth-logged-in-view animate-fade-in">
             <div className="auth-user-card">
               <div className="auth-avatar-display-lg">
@@ -204,13 +238,184 @@ export const ProfileModal: React.FC = () => {
               </div>
               <div className="auth-user-info">
                 <h3>{currentUser.username}</h3>
-                <span className="auth-session-badge">Active Session Member ✦</span>
+                <span className="auth-session-badge">Verified Creator ✦</span>
               </div>
             </div>
 
-            <p className="auth-session-explainer">
-              You are logged in for this website session. You can now create Wish Constellations, Stories, Voice Notes, and submit Black Hole prayers.
-            </p>
+            {/* OWNED CONTENT SECTION (Ownership enforced) */}
+            <div className="user-creations-manager">
+              <div className="creations-header">
+                <h4>Your Cosmic Creations ({totalUserCreations})</h4>
+                <span className="creations-subtitle">You can view and delete items created by your account</span>
+              </div>
+
+              {totalUserCreations === 0 && userStickers.length === 0 ? (
+                <div className="empty-creations-box">
+                  <p>You haven't placed any celestial objects in the sky yet. Click <strong>+</strong> in the sky to begin!</p>
+                </div>
+              ) : (
+                <div className="creations-list-scroll">
+                  {/* Constellations */}
+                  {userWishes.map((w) => (
+                    <div key={w.id} className="creation-row-item">
+                      <div className="creation-meta">
+                        <Star size={16} className="creation-icon star-icon" />
+                        <div>
+                          <strong className="creation-title">{w.title || 'Wish Constellation'}</strong>
+                          <span className="creation-detail">{w.points?.length || 0} stars · Created {new Date(w.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                      </div>
+                      <div className="creation-actions">
+                        <button
+                          type="button"
+                          className="sub-action-btn view-btn"
+                          onClick={() => {
+                            setActiveModal(null);
+                            openWish(w.id);
+                          }}
+                        >
+                          View
+                        </button>
+                        <button
+                          type="button"
+                          className="sub-action-btn delete-btn"
+                          onClick={() => deleteWish(w.id)}
+                          title="Delete this constellation"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Stories */}
+                  {userStories.map((s) => (
+                    <div key={s.id} className="creation-row-item">
+                      <div className="creation-meta">
+                        <BookOpen size={16} className="creation-icon planet-icon" />
+                        <div>
+                          <strong className="creation-title">{s.title || 'Relive a Day Story'}</strong>
+                          <span className="creation-detail">{s.pages?.length || 1} pages · Created {new Date(s.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        </div>
+                      </div>
+                      <div className="creation-actions">
+                        <button
+                          type="button"
+                          className="sub-action-btn view-btn"
+                          onClick={() => {
+                            setActiveModal(null);
+                            openStory(s.id);
+                          }}
+                        >
+                          View
+                        </button>
+                        <button
+                          type="button"
+                          className="sub-action-btn delete-btn"
+                          onClick={() => deleteStory(s.id)}
+                          title="Delete this story"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Voice Notes / Probes */}
+                  {userVoiceNotes.map((v) => (
+                    <div key={v.id} className="creation-row-item">
+                      <div className="creation-meta">
+                        <Radio size={16} className="creation-icon probe-icon" />
+                        <div>
+                          <strong className="creation-title">{v.title || 'Space Probe'}</strong>
+                          <span className="creation-detail">{v.heard ? 'Signal Heard' : 'Unopened Transmission'}</span>
+                        </div>
+                      </div>
+                      <div className="creation-actions">
+                        <button
+                          type="button"
+                          className="sub-action-btn view-btn"
+                          onClick={() => {
+                            setActiveModal(null);
+                            openVoiceNote(v.id);
+                          }}
+                        >
+                          Play
+                        </button>
+                        <button
+                          type="button"
+                          className="sub-action-btn delete-btn"
+                          onClick={() => deleteVoiceNote(v.id)}
+                          title="Delete this probe"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Nebula Words */}
+                  {userWords.map((p) => (
+                    <div key={p.id} className="creation-row-item">
+                      <div className="creation-meta">
+                        <MessageSquare size={16} className="creation-icon nebula-icon" />
+                        <div>
+                          <strong className="creation-title">"{p.word}"</strong>
+                          <span className="creation-detail">{p.explanation}</span>
+                        </div>
+                      </div>
+                      <div className="creation-actions">
+                        <button
+                          type="button"
+                          className="sub-action-btn delete-btn"
+                          onClick={() => deletePersonalityWord(p.id)}
+                          title="Delete this word"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Black Hole Prayers */}
+                  {userBlackHoles.map((b) => (
+                    <div key={b.id} className="creation-row-item">
+                      <div className="creation-meta">
+                        <CircleDot size={16} className="creation-icon black-hole-icon" />
+                        <div>
+                          <strong className="creation-title">Void Prayer</strong>
+                          <span className="creation-detail">"{b.wishText}"</span>
+                        </div>
+                      </div>
+                      <div className="creation-actions">
+                        <button
+                          type="button"
+                          className="sub-action-btn delete-btn"
+                          onClick={() => deleteBlackHoleWish(b.id)}
+                          title="Delete this prayer"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Uploaded Personal Stickers */}
+                  {userStickers.length > 0 && (
+                    <div className="user-stickers-cluster">
+                      <span className="cluster-title">Your Saved Custom Stickers ({userStickers.length})</span>
+                      <div className="saved-stickers-row">
+                        {userStickers.map((stk, idx) => (
+                          <div key={`stk-${idx}`} className="saved-sticker-thumb">
+                            <img src={stk} alt="Custom sticker" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <div className="auth-actions-row">
               <button

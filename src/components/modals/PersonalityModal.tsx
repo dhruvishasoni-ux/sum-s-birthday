@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSky } from '../../context/SkyContext';
-import { X, Plus, List, Sparkles, User, AlertCircle, ArrowLeft } from 'lucide-react';
+import { X, Plus, List, Sparkles, User, AlertCircle, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const PersonalityModal: React.FC = () => {
@@ -13,9 +13,11 @@ export const PersonalityModal: React.FC = () => {
     setAuthNotice
   } = useSky();
 
-  const [viewMode, setViewMode] = useState<'floating' | 'list'>('floating');
+  const [viewMode, setViewMode] = useState<'list' | 'floating'>('list');
   const [isAdding, setIsAdding] = useState(false);
   const [wordInput, setWordInput] = useState('');
+  const [explanationInput, setExplanationInput] = useState('');
+  const [expandedEntryId, setExpandedEntryId] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
 
   if (activeModal !== 'personality') return null;
@@ -34,26 +36,33 @@ export const PersonalityModal: React.FC = () => {
     e.preventDefault();
     setValidationError(null);
 
-    const trimmed = wordInput.trim();
-    if (!trimmed) {
-      setValidationError('Please enter a word describing Sum.');
+    const trimmedWord = wordInput.trim();
+    if (!trimmedWord) {
+      setValidationError('1. Word is required. Please enter one or two words describing her.');
       return;
     }
 
-    if (trimmed.split(/\s+/).filter(Boolean).length > 2) {
-      setValidationError('Please enter one or two words only.');
+    if (trimmedWord.split(/\s+/).filter(Boolean).length > 2) {
+      setValidationError('Please enter ONE or TWO words only.');
       return;
     }
 
-    const res = addPersonalityWord(trimmed);
+    const trimmedExpl = explanationInput.trim();
+    if (!trimmedExpl) {
+      setValidationError('2. Explanation is COMPULSORY. Why did you choose this word?');
+      return;
+    }
+
+    const res = addPersonalityWord(trimmedWord, trimmedExpl);
     if (!res.success) {
       setValidationError(res.error || 'Failed to add word.');
       return;
     }
 
     setWordInput('');
+    setExplanationInput('');
     setIsAdding(false);
-    setViewMode('floating');
+    setViewMode('list');
 
     confetti({
       particleCount: 70,
@@ -62,17 +71,21 @@ export const PersonalityModal: React.FC = () => {
     });
   };
 
+  const toggleExpand = (id: string) => {
+    setExpandedEntryId((prev) => (prev === id ? null : id));
+  };
+
   return (
     <div className="modal-backdrop" onClick={() => setActiveModal(null)}>
       <div
-        className="modal-content personality-universe-window animate-scale-in"
+        className="modal-content personality-universe-window glass-panel animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="personality-universe-header">
           <div className="header-titles">
-            <span className="eyebrow">PERSONALITY NEBULA · SOUL OF SUM</span>
-            <h2>Floating Personality</h2>
+            <span className="eyebrow">PERSONALITY NEBULA · HEART & SOUL</span>
+            <h2>Nebula Words</h2>
           </div>
 
           <div className="personality-header-controls">
@@ -80,20 +93,20 @@ export const PersonalityModal: React.FC = () => {
               <>
                 <button
                   type="button"
-                  className={`sub-nav-btn ${viewMode === 'floating' ? 'active' : ''}`}
-                  onClick={() => setViewMode('floating')}
-                >
-                  <Sparkles size={15} />
-                  <span>Floating Field</span>
-                </button>
-
-                <button
-                  type="button"
                   className={`sub-nav-btn ${viewMode === 'list' ? 'active' : ''}`}
                   onClick={() => setViewMode('list')}
                 >
                   <List size={15} />
-                  <span>View in List ({personalityWords.length})</span>
+                  <span>Entries ({personalityWords.length})</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`sub-nav-btn ${viewMode === 'floating' ? 'active' : ''}`}
+                  onClick={() => setViewMode('floating')}
+                >
+                  <Sparkles size={15} />
+                  <span>Sky Field</span>
                 </button>
 
                 <button
@@ -121,7 +134,7 @@ export const PersonalityModal: React.FC = () => {
         {/* Modal Body */}
         <div className="personality-universe-body">
           {isAdding ? (
-            /* Add Word Form */
+            /* Add Word Form (Compulsory Word + Compulsory Explanation) */
             <div className="add-word-dialog-pane animate-fade-in">
               <button
                 type="button"
@@ -132,13 +145,13 @@ export const PersonalityModal: React.FC = () => {
                 }}
               >
                 <ArrowLeft size={16} />
-                <span>Back to Personality</span>
+                <span>Back to Nebula Words</span>
               </button>
 
               <div className="add-word-card">
-                <h3>Write one or two words describing Sum</h3>
+                <h3>One or Two Words Describing Her</h3>
                 <p className="add-word-subtitle">
-                  Choose a single meaningful word that represents her warmth, energy, or spirit.
+                  Choose a meaningful word (e.g. <em>Kind, Fearless, Creative, Sunshine, Brilliant</em>) and tell her why you chose it.
                 </p>
 
                 {validationError && (
@@ -149,19 +162,36 @@ export const PersonalityModal: React.FC = () => {
                 )}
 
                 <form onSubmit={handleWordSubmit} className="single-word-form">
-                  <div className="word-input-container">
+                  <div className="nebula-form-group">
+                    <label className="input-label required-label">
+                      1. Word <span className="compulsory-tag">*1 or 2 words only</span>
+                    </label>
                     <input
                       type="text"
                       className="studio-text-input word-input"
                       value={wordInput}
                       onChange={(e) => setWordInput(e.target.value)}
-                      placeholder="e.g. Radiant, Brilliant, Sunshine..."
-                      maxLength={25}
+                      placeholder="e.g. Brilliant, Sunshine, Fearless..."
+                      maxLength={30}
                       autoFocus
                     />
                   </div>
 
-                  <div className="word-creator-info">
+                  <div className="nebula-form-group" style={{ marginTop: '14px' }}>
+                    <label className="input-label required-label">
+                      2. Why did you choose this word? <span className="compulsory-tag">*Compulsory</span>
+                    </label>
+                    <textarea
+                      className="studio-textarea compact"
+                      rows={3}
+                      value={explanationInput}
+                      onChange={(e) => setExplanationInput(e.target.value)}
+                      placeholder="Share a heartfelt reason or memory behind this word..."
+                      maxLength={350}
+                    />
+                  </div>
+
+                  <div className="word-creator-info" style={{ marginTop: '12px' }}>
                     <span>Contributing as:</span>
                     <div className="creator-pill">
                       {currentUser?.avatarUrl.startsWith('emoji:') ? (
@@ -173,7 +203,7 @@ export const PersonalityModal: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="add-word-actions">
+                  <div className="add-word-actions" style={{ marginTop: '16px' }}>
                     <button
                       type="button"
                       className="secondary-action-btn"
@@ -192,14 +222,14 @@ export const PersonalityModal: React.FC = () => {
                 </form>
               </div>
             </div>
-          ) : viewMode === 'floating' ? (
-            /* Floating Words View */
-            <div className="floating-words-universe">
+          ) : viewMode === 'list' ? (
+            /* Glass Entries List: Main Word Prominent, Side Creator + Click to Reveal Reason */
+            <div className="personality-list-view-container animate-fade-in">
               {personalityWords.length === 0 ? (
                 <div className="empty-nebula-state animate-fade-in">
                   <div className="empty-floating-heart">💖</div>
                   <h3>No words added yet</h3>
-                  <p>Be the first to release a personality thought into the sky.</p>
+                  <p>Be the first to describe her in the cosmic heart nebula.</p>
                   <button
                     type="button"
                     className="continue-button"
@@ -207,12 +237,98 @@ export const PersonalityModal: React.FC = () => {
                     style={{ marginTop: '16px' }}
                   >
                     <Plus size={16} />
-                    <span>Write one or two words describing Sum</span>
+                    <span>Add First Word</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="personality-words-list">
+                  <div className="list-heading-meta">
+                    <span>Words for the Birthday Girl ({personalityWords.length})</span>
+                    <small>Preserved in chronological creation order · Click creator to reveal reason</small>
+                  </div>
+
+                  <div className="words-cards-scroll">
+                    {personalityWords.map((item, idx) => {
+                      const isExpanded = expandedEntryId === item.id;
+                      return (
+                        <div
+                          key={item.id}
+                          className={`nebula-word-card ${isExpanded ? 'expanded' : ''} animate-fade-in`}
+                        >
+                          <div className="nebula-word-main-row">
+                            <div className="word-index-badge">#{idx + 1}</div>
+
+                            {/* MAIN: Prominent Word */}
+                            <div className="word-prominent-display" style={{ color: item.color }}>
+                              {item.word}
+                            </div>
+
+                            {/* SIDE: Small Circular Profile Photo + Username (Clickable) */}
+                            <button
+                              type="button"
+                              className="creator-reveal-button"
+                              onClick={() => toggleExpand(item.id)}
+                              title="Click to view explanation"
+                            >
+                              <div className="creator-badge-avatar-wrap">
+                                {item.creatorAvatar?.startsWith('emoji:') ? (
+                                  <span className="creator-badge-emoji-small">
+                                    {item.creatorAvatar.replace('emoji:', '')}
+                                  </span>
+                                ) : item.creatorAvatar ? (
+                                  <img
+                                    src={item.creatorAvatar}
+                                    alt={item.creatorName}
+                                    className="creator-badge-avatar-img"
+                                  />
+                                ) : (
+                                  <User size={13} />
+                                )}
+                              </div>
+                              <span className="creator-reveal-name">{item.creatorName}</span>
+                              {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                            </button>
+                          </div>
+
+                          {/* Expandable Section in the same glass interface */}
+                          {isExpanded && (
+                            <div className="nebula-explanation-drawer animate-fade-in">
+                              <div className="drawer-header">Why {item.creatorName} chose "{item.word}":</div>
+                              <p className="drawer-explanation-text">
+                                {item.explanation || 'No reason provided.'}
+                              </p>
+                              <div className="drawer-timestamp">
+                                Added {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Sky Field View */
+            <div className="floating-words-universe">
+              {personalityWords.length === 0 ? (
+                <div className="empty-nebula-state animate-fade-in">
+                  <div className="empty-floating-heart">💖</div>
+                  <h3>No words in the nebula yet</h3>
+                  <button
+                    type="button"
+                    className="continue-button"
+                    onClick={handleOpenAdd}
+                    style={{ marginTop: '16px' }}
+                  >
+                    <Plus size={16} />
+                    <span>Add Word</span>
                   </button>
                 </div>
               ) : (
                 <div className="floating-words-cloud-container">
-                  {personalityWords.map((item, index) => (
+                  {personalityWords.map((item) => (
                     <div
                       key={item.id}
                       className="floating-personality-word-chip animate-float"
@@ -225,7 +341,11 @@ export const PersonalityModal: React.FC = () => {
                         borderColor: `${item.color}55`,
                         boxShadow: `0 0 25px ${item.color}44`
                       }}
-                      title={`Added by ${item.creatorName}`}
+                      onClick={() => {
+                        setViewMode('list');
+                        setExpandedEntryId(item.id);
+                      }}
+                      title={`By ${item.creatorName} — Click to view explanation`}
                     >
                       <span className="word-text">{item.word}</span>
                       <div className="word-contributor-tag">
@@ -243,46 +363,6 @@ export const PersonalityModal: React.FC = () => {
                 </div>
               )}
             </div>
-          ) : (
-            /* Chronological List View */
-            <div className="personality-list-view-container animate-fade-in">
-              {personalityWords.length === 0 ? (
-                <div className="empty-nebula-state">
-                  <p>No words submitted in this session yet.</p>
-                </div>
-              ) : (
-                <div className="personality-words-list">
-                  <div className="list-heading-meta">
-                    <span>Submitted Words ({personalityWords.length})</span>
-                    <small>Preserved in chronological submission order</small>
-                  </div>
-
-                  <div className="words-table-scroll">
-                    {personalityWords.map((item, idx) => (
-                      <div key={item.id} className="word-list-row animate-fade-in">
-                        <div className="row-index">#{idx + 1}</div>
-                        <div className="row-word" style={{ color: item.color }}>
-                          "{item.word}"
-                        </div>
-                        <div className="row-creator">
-                          {item.creatorAvatar?.startsWith('emoji:') ? (
-                            <span className="creator-list-emoji">{item.creatorAvatar.replace('emoji:', '')}</span>
-                          ) : item.creatorAvatar ? (
-                            <img src={item.creatorAvatar} alt={item.creatorName} className="creator-list-avatar" />
-                          ) : (
-                            <User size={16} />
-                          )}
-                          <span className="creator-list-name">{item.creatorName}</span>
-                        </div>
-                        <div className="row-time">
-                          {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
           )}
         </div>
 
@@ -292,23 +372,23 @@ export const PersonalityModal: React.FC = () => {
             <button
               type="button"
               className="footer-list-toggle-btn"
-              onClick={() => setViewMode(viewMode === 'floating' ? 'list' : 'floating')}
+              onClick={() => setViewMode(viewMode === 'list' ? 'floating' : 'list')}
             >
-              {viewMode === 'floating' ? (
+              {viewMode === 'list' ? (
                 <>
-                  <List size={16} />
-                  <span>Open Words List ({personalityWords.length})</span>
+                  <Sparkles size={16} />
+                  <span>Switch to Sky Field</span>
                 </>
               ) : (
                 <>
-                  <Sparkles size={16} />
-                  <span>Return to Floating Nebula</span>
+                  <List size={16} />
+                  <span>Switch to Entries List ({personalityWords.length})</span>
                 </>
               )}
             </button>
 
             <span className="session-memory-note">
-              ✦ Session runtime memory only
+              ✦ Saved in creation order
             </span>
           </div>
         )}

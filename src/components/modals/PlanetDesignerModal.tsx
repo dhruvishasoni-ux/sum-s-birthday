@@ -25,10 +25,12 @@ export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onComp
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [brushMode, setBrushMode] = useState<'spray' | 'smooth'>('smooth');
   const [brushColor, setBrushColor] = useState('#f97316');
   const [brushSize, setBrushSize] = useState(24);
   const [hasRings, setHasRings] = useState(true);
   const [planetAccentColor, setPlanetAccentColor] = useState(accentColor);
+  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
 
   // Initialize white circular canvas
   const initCanvas = () => {
@@ -38,11 +40,13 @@ export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onComp
     if (!ctx) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Fill white
-    ctx.fillStyle = '#ffffff';
+    // Fill circular planet base
+    ctx.save();
     ctx.beginPath();
     ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
     ctx.fill();
+    ctx.restore();
   };
 
   useEffect(() => {
@@ -53,34 +57,55 @@ export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onComp
 
   if (activeModal !== 'planet-designer') return null;
 
-  // Spray paint brush effect
-  const sprayPaint = (x: number, y: number) => {
+  // Painting functions strictly constrained inside circular planet
+  const paintOnCanvas = (x: number, y: number, isMove = false) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const density = brushSize * 1.5;
-    ctx.fillStyle = brushColor;
-
     ctx.save();
-    // Clip to circular planet boundary
+    // Clip strictly to circular planet boundary
     ctx.beginPath();
     ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
     ctx.clip();
 
-    for (let i = 0; i < density; i++) {
-      const offsetX = (Math.random() - 0.5) * brushSize * 2;
-      const offsetY = (Math.random() - 0.5) * brushSize * 2;
-      const dist = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
-      if (dist <= brushSize) {
-        const radius = Math.random() * 2 + 0.5;
+    if (brushMode === 'smooth') {
+      ctx.fillStyle = brushColor;
+      ctx.strokeStyle = brushColor;
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      if (isMove && lastPosRef.current) {
         ctx.beginPath();
-        ctx.arc(x + offsetX, y + offsetY, radius, 0, Math.PI * 2);
+        ctx.moveTo(lastPosRef.current.x, lastPosRef.current.y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      } else {
+        ctx.beginPath();
+        ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
         ctx.fill();
       }
+    } else {
+      // Spray paint brush effect
+      const density = brushSize * 1.5;
+      ctx.fillStyle = brushColor;
+      for (let i = 0; i < density; i++) {
+        const offsetX = (Math.random() - 0.5) * brushSize * 2;
+        const offsetY = (Math.random() - 0.5) * brushSize * 2;
+        const dist = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+        if (dist <= brushSize) {
+          const radius = Math.random() * 2 + 0.5;
+          ctx.beginPath();
+          ctx.arc(x + offsetX, y + offsetY, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
     }
+
     ctx.restore();
+    lastPosRef.current = { x, y };
   };
 
   const getCanvasCoords = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -98,18 +123,20 @@ export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onComp
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
     const { x, y } = getCanvasCoords(e);
-    sprayPaint(x, y);
+    lastPosRef.current = { x, y };
+    paintOnCanvas(x, y, false);
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!isDrawing) return;
     const { x, y } = getCanvasCoords(e);
-    sprayPaint(x, y);
+    paintOnCanvas(x, y, true);
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     setIsDrawing(false);
+    lastPosRef.current = null;
   };
 
   const handleProceedToStory = () => {
@@ -122,17 +149,15 @@ export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onComp
       accentColor: planetAccentColor
     };
 
-    // Stash in session / custom event or call handler
     if (onCompleteDesign) {
       onCompleteDesign(design);
     }
-    // Transition to story studio
     setActiveModal('story-studio');
   };
 
   return (
     <div className="modal-backdrop">
-      <div className="modal-content planet-designer-window animate-scale-in">
+      <div className="modal-content planet-designer-window glass-panel animate-scale-in">
         {/* Header */}
         <div className="studio-header">
           <div>
@@ -178,10 +203,31 @@ export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onComp
               </div>
             </div>
 
-            {/* Spray Brush Size */}
+            {/* Brush Mode Switcher */}
+            <div className="designer-tool-section">
+              <label className="input-label">Brush Type</label>
+              <div className="brush-mode-switches">
+                <button
+                  type="button"
+                  className={`studio-tab-pill ${brushMode === 'smooth' ? 'active' : ''}`}
+                  onClick={() => setBrushMode('smooth')}
+                >
+                  Smooth Brush
+                </button>
+                <button
+                  type="button"
+                  className={`studio-tab-pill ${brushMode === 'spray' ? 'active' : ''}`}
+                  onClick={() => setBrushMode('spray')}
+                >
+                  Cosmic Spray
+                </button>
+              </div>
+            </div>
+
+            {/* Brush Size Slider */}
             <div className="designer-tool-section">
               <div className="label-with-val">
-                <label className="input-label">Spray Brush Size</label>
+                <label className="input-label">{brushMode === 'smooth' ? 'Smooth Brush' : 'Spray Brush'} Size</label>
                 <span className="val-badge">{brushSize}px</span>
               </div>
               <input

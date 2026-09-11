@@ -47,8 +47,8 @@ export const StickerCanvasOverlay: React.FC<StickerCanvasOverlayProps> = ({
       const deltaPercentX = (deltaX / rect.width) * 100;
       const deltaPercentY = (deltaY / rect.height) * 100;
 
-      const newX = Math.min(95, Math.max(5, dragRef.current.initX + deltaPercentX));
-      const newY = Math.min(95, Math.max(5, dragRef.current.initY + deltaPercentY));
+      const newX = Math.min(91, Math.max(9, dragRef.current.initX + deltaPercentX));
+      const newY = Math.min(91, Math.max(9, dragRef.current.initY + deltaPercentY));
 
       onUpdateSticker?.(dragRef.current.id, { x: newX, y: newY });
     };

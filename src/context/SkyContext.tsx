@@ -42,21 +42,29 @@ interface SkyContextType {
   // Actions
   addWish: (wish: WishCard) => void;
   openWish: (id: string) => void;
+  deleteWish: (id: string) => boolean;
+  moveWish: (id: string, x: number, y: number) => boolean;
 
   addStory: (story: Story) => void;
   openStory: (id: string) => void;
+  deleteStory: (id: string) => boolean;
 
-  addPersonalityWord: (word: string) => { success: boolean; error?: string };
+  addPersonalityWord: (word: string, explanation: string) => { success: boolean; error?: string };
+  deletePersonalityWord: (id: string) => boolean;
   openPersonality: () => void;
 
   addVoiceNote: (note: VoiceNote) => void;
   openVoiceNote: (id: string) => void;
   markVoiceNoteHeard: (id: string) => void;
+  deleteVoiceNote: (id: string) => boolean;
 
   discoverSecretStar: (id: string) => void;
 
   addBlackHoleWish: (wishText: string) => { success: boolean; error?: string };
+  deleteBlackHoleWish: (id: string) => boolean;
   openBlackHole: () => void;
+
+  addUploadedSticker: (stickerUrl: string) => void;
 
   // Modals & Active objects
   activeModal: ModalType;
@@ -209,7 +217,8 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   const addWish = (wish: WishCard) => {
-    setWishes((prev) => [wish, ...prev]);
+    // Preserve chronological order
+    setWishes((prev) => [...prev, wish]);
   };
 
   const openWish = (id: string) => {
@@ -218,8 +227,34 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveModal('wish-view');
   };
 
+  // Ownership-enforced Delete Wish
+  const deleteWish = useCallback((id: string) => {
+    if (!currentUser) return false;
+    let deleted = false;
+    setWishes((prev) => {
+      const item = prev.find((w) => w.id === id);
+      if (!item || item.creatorId !== currentUser.id) return prev;
+      deleted = true;
+      return prev.filter((w) => w.id !== id);
+    });
+    return deleted;
+  }, [currentUser]);
+
+  // Ownership-enforced Move Wish
+  const moveWish = useCallback((id: string, x: number, y: number) => {
+    if (!currentUser) return false;
+    let moved = false;
+    setWishes((prev) => {
+      const item = prev.find((w) => w.id === id);
+      if (!item || item.creatorId !== currentUser.id) return prev;
+      moved = true;
+      return prev.map((w) => (w.id === id ? { ...w, x, y } : w));
+    });
+    return moved;
+  }, [currentUser]);
+
   const addStory = (story: Story) => {
-    setStories((prev) => [story, ...prev]);
+    setStories((prev) => [...prev, story]);
   };
 
   const openStory = (id: string) => {
@@ -228,25 +263,45 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setActiveModal('story-view');
   };
 
-  const addPersonalityWord = useCallback((word: string) => {
+  // Ownership-enforced Delete Story
+  const deleteStory = useCallback((id: string) => {
+    if (!currentUser) return false;
+    let deleted = false;
+    setStories((prev) => {
+      const item = prev.find((s) => s.id === id);
+      if (!item || item.creatorId !== currentUser.id) return prev;
+      deleted = true;
+      return prev.filter((s) => s.id !== id);
+    });
+    return deleted;
+  }, [currentUser]);
+
+  // Personality word with compulsory explanation in creation order
+  const addPersonalityWord = useCallback((word: string, explanation: string) => {
     if (!currentUser) {
       return { success: false, error: 'You must be logged in to submit a word.' };
     }
 
-    const trimmed = word.trim();
-    if (!trimmed) {
-      return { success: false, error: 'Please enter a word describing Sum.' };
+    const trimmedWord = word.trim();
+    if (!trimmedWord) {
+      return { success: false, error: 'Please enter a word describing the birthday girl.' };
     }
 
-    const wordCount = trimmed.split(/\s+/).filter(Boolean).length;
+    const wordCount = trimmedWord.split(/\s+/).filter(Boolean).length;
     if (wordCount > 2) {
       return { success: false, error: 'Please enter one or two words only.' };
+    }
+
+    const trimmedExpl = explanation.trim();
+    if (!trimmedExpl) {
+      return { success: false, error: 'An explanation of why you chose this word is required.' };
     }
 
     const randomColor = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
     const newEntry: PersonalityWordEntry = {
       id: `word-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      word: trimmed,
+      word: trimmedWord,
+      explanation: trimmedExpl,
       creatorId: currentUser.id,
       creatorName: currentUser.username,
       creatorAvatar: currentUser.avatarUrl,
@@ -258,8 +313,21 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       floatDuration: 5 + Math.random() * 4
     };
 
+    // Stored strictly in creation order
     setPersonalityWords((prev) => [...prev, newEntry]);
     return { success: true };
+  }, [currentUser]);
+
+  const deletePersonalityWord = useCallback((id: string) => {
+    if (!currentUser) return false;
+    let deleted = false;
+    setPersonalityWords((prev) => {
+      const item = prev.find((w) => w.id === id);
+      if (!item || item.creatorId !== currentUser.id) return prev;
+      deleted = true;
+      return prev.filter((w) => w.id !== id);
+    });
+    return deleted;
   }, [currentUser]);
 
   const openPersonality = () => {
@@ -268,7 +336,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const addVoiceNote = (note: VoiceNote) => {
-    setVoiceNotes((prev) => [note, ...prev]);
+    setVoiceNotes((prev) => [...prev, note]);
   };
 
   const openVoiceNote = (id: string) => {
@@ -279,6 +347,18 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const markVoiceNoteHeard = (id: string) => {
     setVoiceNotes((prev) => prev.map((v) => (v.id === id ? { ...v, heard: true } : v)));
   };
+
+  const deleteVoiceNote = useCallback((id: string) => {
+    if (!currentUser) return false;
+    let deleted = false;
+    setVoiceNotes((prev) => {
+      const item = prev.find((v) => v.id === id);
+      if (!item || item.creatorId !== currentUser.id) return prev;
+      deleted = true;
+      return prev.filter((v) => v.id !== id);
+    });
+    return deleted;
+  }, [currentUser]);
 
   const discoverSecretStar = (id: string) => {
     setSecretStars((prev) => prev.map((s) => (s.id === id ? { ...s, discovered: true } : s)));
@@ -293,11 +373,11 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     const trimmed = wishText.trim();
     if (!trimmed) {
-      return { success: false, error: 'Please enter a wish or prayer.' };
+      return { success: false, error: 'Please enter a wish, prayer, or burden to release.' };
     }
 
     const newWish: BlackHoleWish = {
-      id: `bh-${Date.now()}`,
+      id: `bh-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       wishText: trimmed,
       creatorId: currentUser.id,
       creatorName: currentUser.username,
@@ -305,8 +385,40 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       createdAt: Date.now()
     };
 
-    setBlackHoleWishes((prev) => [newWish, ...prev]);
+    // Kept in creation order (oldest first in list)
+    setBlackHoleWishes((prev) => [...prev, newWish]);
     return { success: true };
+  }, [currentUser]);
+
+  const deleteBlackHoleWish = useCallback((id: string) => {
+    if (!currentUser) return false;
+    let deleted = false;
+    setBlackHoleWishes((prev) => {
+      const item = prev.find((w) => w.id === id);
+      if (!item || item.creatorId !== currentUser.id) return prev;
+      deleted = true;
+      return prev.filter((w) => w.id !== id);
+    });
+    return deleted;
+  }, [currentUser]);
+
+  // Persist user-uploaded sticker in their session account
+  const addUploadedSticker = useCallback((stickerUrl: string) => {
+    if (!currentUser) return;
+    setCurrentUser((prev) => {
+      if (!prev) return prev;
+      const existing = prev.uploadedStickers || [];
+      if (existing.includes(stickerUrl)) return prev;
+      return { ...prev, uploadedStickers: [stickerUrl, ...existing] };
+    });
+    setRegisteredAccounts((prev) =>
+      prev.map((acc) => {
+        if (acc.id !== currentUser.id) return acc;
+        const existing = acc.uploadedStickers || [];
+        if (existing.includes(stickerUrl)) return acc;
+        return { ...acc, uploadedStickers: [stickerUrl, ...existing] };
+      })
+    );
   }, [currentUser]);
 
   const openBlackHole = () => {
@@ -347,16 +459,23 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isBlackHoleOpened,
         addWish,
         openWish,
+        deleteWish,
+        moveWish,
         addStory,
         openStory,
+        deleteStory,
         addPersonalityWord,
+        deletePersonalityWord,
         openPersonality,
         addVoiceNote,
         openVoiceNote,
         markVoiceNoteHeard,
+        deleteVoiceNote,
         discoverSecretStar,
         addBlackHoleWish,
+        deleteBlackHoleWish,
         openBlackHole,
+        addUploadedSticker,
         activeModal,
         setActiveModal,
         authNotice,

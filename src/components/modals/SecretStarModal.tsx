@@ -13,7 +13,7 @@ export const SecretStarModal: React.FC = () => {
   return (
     <div className="modal-backdrop" onClick={() => setActiveModal(null)}>
       <div
-        className="modal-content secret-star-window animate-scale-in"
+        className="modal-content secret-star-window glass-panel animate-scale-in"
         onClick={(e) => e.stopPropagation()}
         style={{
           border: `1.5px solid ${star.hexColor}`,

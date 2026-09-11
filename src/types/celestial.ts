@@ -6,6 +6,7 @@ export interface UserAccount {
   password: string;
   avatarUrl: string;
   createdAt: number;
+  uploadedStickers?: string[];
 }
 
 export interface UserProfile {
@@ -76,8 +77,10 @@ export interface WishCard {
   bodyStyle: TextStyleConfig;
   from: string;
   fromStyle: TextStyleConfig;
-  frame: string;
+  frame?: string;
   accentColor: string;
+  bgGradientFrom?: string;
+  bgGradientTo?: string;
   stickers: StickerItem[];
   // Sky coordinates (percentages within space container)
   x: number;
@@ -105,6 +108,7 @@ export interface Story {
 export interface PersonalityWordEntry {
   id: string;
   word: string;
+  explanation: string;
   creatorId?: string;
   creatorName: string;
   creatorAvatar?: string;

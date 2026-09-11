@@ -44,6 +44,8 @@ const STICKERS_DATA = [
   { symbol: '🌌', category: 'cosmic' }
 ];
 
+import { useSky } from '../../context/SkyContext';
+
 export const StickerBar: React.FC<StickerBarProps> = ({
   onAddSticker,
   selectedSticker,
@@ -51,9 +53,14 @@ export const StickerBar: React.FC<StickerBarProps> = ({
   onDeleteSelectedSticker,
   onDuplicateSelectedSticker
 }) => {
-  const [activeCategory, setActiveCategory] = useState('all');
-  const [customStickers, setCustomStickers] = useState<string[]>([]);
+  const { currentUser, addUploadedSticker } = useSky();
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [localCustomStickers, setLocalCustomStickers] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Combine account-persisted stickers with any local session uploads
+  const savedStickers = currentUser?.uploadedStickers || [];
+  const allCustomStickers = Array.from(new Set([...savedStickers, ...localCustomStickers]));
 
   const filteredStickers =
     activeCategory === 'all'
@@ -68,7 +75,8 @@ export const StickerBar: React.FC<StickerBarProps> = ({
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
       if (dataUrl) {
-        setCustomStickers((prev) => [dataUrl, ...prev]);
+        setLocalCustomStickers((prev) => [dataUrl, ...prev]);
+        addUploadedSticker(dataUrl);
         onAddSticker('custom', true, dataUrl);
       }
     };
@@ -113,7 +121,7 @@ export const StickerBar: React.FC<StickerBarProps> = ({
         />
 
         {/* Uploaded Custom Stickers */}
-        {customStickers.map((url, idx) => (
+        {allCustomStickers.map((url, idx) => (
           <button
             key={`custom-${idx}`}
             type="button"

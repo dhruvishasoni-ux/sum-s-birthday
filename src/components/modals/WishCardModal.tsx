@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSky } from '../../context/SkyContext';
-import { AVAILABLE_FRAMES } from '../shared/FramePicker';
 import { StickerCanvasOverlay } from '../shared/StickerCanvasOverlay';
 import { X, User } from 'lucide-react';
 
@@ -12,8 +11,9 @@ export const WishCardModal: React.FC = () => {
   const wish = wishes.find((w) => w.id === activeWishId);
   if (!wish) return null;
 
-  const frameObj = AVAILABLE_FRAMES.find((f) => f.id === wish.frame);
   const accent = wish.accentColor || '#B89CFF';
+  const gradFrom = wish.bgGradientFrom || '#1e1b4b';
+  const gradTo = wish.bgGradientTo || '#0a0e27';
   const creatorName = wish.creatorName || (wish.from ? wish.from.replace(/^—\s*/, '') : 'Cosmic Friend');
   const creatorAvatar = wish.creatorAvatar;
 
@@ -47,15 +47,13 @@ export const WishCardModal: React.FC = () => {
         </div>
 
         <div
-          className={`wish-card-canvas-standalone ${frameObj?.image ? 'has-image-frame' : ''}`}
+          className="wish-card-canvas-standalone"
           style={{
             borderColor: accent,
-            boxShadow: `0 0 40px ${accent}44`
+            background: `linear-gradient(135deg, ${gradFrom} 0%, ${gradTo} 100%)`,
+            boxShadow: `0 0 40px ${accent}44, inset 0 0 25px rgba(255, 255, 255, 0.06)`
           }}
         >
-          {frameObj?.image && (
-            <img src={frameObj.image} alt="Frame" className="card-frame-overlay-img" />
-          )}
 
           <div className="card-top-icon" style={{ color: accent }}>
             ✦

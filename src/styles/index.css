@@ -1737,44 +1737,524 @@ body {
   from { transform: scale(0.95); }
   to   { transform: scale(1.05); }
 }
-@keyframes diskSpin { to { transform: rotate(360deg); } }
-.black-hole-modal-window { max-width: 760px; background: radial-gradient(circle at 50% 0%, #171536 0%, #0f172a 72%); }
-.black-hole-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; padding: 18px 22px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-.black-hole-header h2 { color: #ffffff; font-size: 21px; }
-.black-hole-content-area { padding: 18px 22px 22px; }
-.black-hole-visual-center { display: flex; justify-content: center; align-items: center; min-height: 150px; }
-.black-hole-auth-required, .black-hole-form, .black-hole-completed-pane { max-width: 620px; margin: 0 auto; }
-.black-hole-auth-required { text-align: center; }
-.auth-prompt-card { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; padding: 14px; border: 1px solid rgba(245, 158, 11, 0.25); border-radius: 12px; background: rgba(245, 158, 11, 0.08); }
-.auth-prompt-card p { color: var(--text-muted); font-size: 13px; }
-.black-hole-form { display: flex; flex-direction: column; gap: 14px; }
-.black-hole-prompt-desc, .void-quote, .void-blessing-text { color: var(--text-muted); font-size: 13px; line-height: 1.55; }
-.black-hole-input { min-height: 110px; resize: vertical; }
-.black-hole-submit-footer, .black-hole-actions-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.contributor-tag-subtle { color: var(--text-muted); font-size: 12px; }
-@media (max-width: 640px) { .auth-forms-container { padding: 14px; } .auth-submit-row { align-items: stretch; flex-direction: column; } .auth-submit-row > * { width: 100%; justify-content: center; } .avatar-selection-cluster { flex-wrap: wrap; } .black-hole-header, .black-hole-content-area { padding-left: 14px; padding-right: 14px; } .black-hole-header h2 { font-size: 18px; } .black-hole-submit-footer, .black-hole-actions-row { align-items: stretch; flex-direction: column; } .black-hole-submit-footer > *, .black-hole-actions-row > * { width: 100%; justify-content: center; } }
-.modal-backdrop { overscroll-behavior: contain; }
-
-.custom-avatar-thumb, .auth-avatar-img-lg { width: 82px; height: 82px; max-width: 82px; max-height: 82px; display: block; object-fit: cover; border-radius: 50%; flex: 0 0 82px; }
-.avatar-preview-box { width: 90px; height: 90px; min-width: 90px; max-width: 90px; max-height: 90px; overflow: hidden; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-
-@media (max-width: 640px) {
-  .header-stats-container { top: 12px; left: 12px; right: 12px; }
-  .header-bar-container { top: 12px; right: 12px; }
-  .statistics { gap: 4px; padding: 5px 8px; }
-  .stat-item { padding: 2px 5px; }
-  .stat-item span { font-size: 13px; }
-  .stat-item small { font-size: 8px; }
-  .header-btn-label { display: none; }
-  .create-profile-btn { padding: 8px 10px; }
-  .bottom-right-status-bar { right: auto; bottom: 12px; left: 12px; justify-content: space-between; gap: 6px; padding: 8px 10px; }
-  .status-bar-item { gap: 3px; }
-  .status-lbl, .status-unopened-text { font-size: 10px; }
-  .modal-backdrop { align-items: flex-start; padding: 12px; }
-  .modal-content { max-height: calc(100vh - 24px); border-radius: 16px; }
-  .compact-studio-grid { grid-template-columns: 1fr; min-height: 0; gap: 14px; padding: 14px; }
-  .compact-studio-header, .compact-studio-footer { padding-left: 14px; padding-right: 14px; }
-  .compact-right-preview { order: -1; }
-  .compact-wish-card, .compact-flipbook-page { width: min(100%, 330px); height: 230px; }
-  .sky-black-hole-wrapper { transform: translate(-50%, -50%) scale(0.78) !important; }
+/* =====================================================
+   GLASS DESIGN LANGUAGE & SYSTEM (Section 1)
+===================================================== */
+.glass-panel,
+.modal-content.glass-panel {
+  background: rgba(10, 15, 35, 0.72) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 35px rgba(184, 156, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  border-radius: 18px !important;
 }
+
+/* Constellation Canvas Toolbar */
+.canvas-tools-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tool-buttons-cluster {
+  display: flex;
+  gap: 6px;
+}
+
+.canvas-tool-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.canvas-tool-pill.active {
+  background: rgba(184, 156, 255, 0.25);
+  border-color: var(--accent-color);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(184, 156, 255, 0.3);
+}
+
+.canvas-mode-instruction {
+  font-size: 11px;
+  color: #a5d8ff;
+  background: rgba(116, 192, 252, 0.08);
+  border: 1px solid rgba(116, 192, 252, 0.18);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+.mode-add { cursor: crosshair; }
+.mode-join { cursor: pointer; }
+.mode-remove { cursor: no-drop; }
+
+/* Gradient & Styling in WishStudio */
+.styling-section-block .sub-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.color-picker-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.studio-color-square {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  cursor: pointer;
+}
+
+.color-hex-val {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.preset-gradients-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.preset-gradient-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.gradient-preset-pill {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* CRITICAL CONSTELLATION CARD STRICT CONSTRAINTS (Section 12 & 32) */
+.compact-wish-card,
+.wish-card-canvas-standalone {
+  position: relative;
+  width: 360px;
+  min-height: 250px;
+  max-height: 340px;
+  border: 2px solid;
+  border-radius: 14px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.card-render-title {
+  margin-bottom: 8px;
+  line-height: 1.25;
+  width: 100%;
+  max-width: 90%;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-render-body {
+  margin-bottom: 10px;
+  line-height: 1.4;
+  width: 100%;
+  max-width: 92%;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  opacity: 0.95;
+}
+
+.card-render-from {
+  line-height: 1.2;
+  width: 100%;
+  max-width: 90%;
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* User Profile Creation Manager (Ownership Section 10 & 28) */
+.user-creations-manager {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.creations-header {
+  margin-bottom: 10px;
+}
+
+.creations-header h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.creations-subtitle {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.creations-list-scroll {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.creation-row-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.creation-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.creation-title {
+  display: block;
+  font-size: 12px;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.creation-detail {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.creation-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.sub-action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #ffffff;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sub-action-btn.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.user-stickers-cluster {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+}
+
+.cluster-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.saved-stickers-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.saved-sticker-thumb {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.saved-sticker-thumb img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+/* Nebula Words Expandable Drawer & Cards */
+.words-cards-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.nebula-word-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  transition: all 0.2s ease;
+}
+
+.nebula-word-card.expanded {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.nebula-word-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.word-index-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.word-prominent-display {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  flex: 1;
+  overflow-wrap: break-word;
+}
+
+.creator-reveal-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+.creator-reveal-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.creator-badge-avatar-wrap {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.creator-badge-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nebula-explanation-drawer {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+.drawer-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a5d8ff;
+  margin-bottom: 4px;
+}
+
+.drawer-explanation-text {
+  font-size: 13px;
+  color: #f1f5f9;
+  line-height: 1.45;
+}
+
+.drawer-timestamp {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Cinematic Black Hole Sucking Card */
+.cinematic-suck-card {
+  position: absolute;
+  background: rgba(24, 18, 48, 0.95);
+  border: 1.5px solid rgba(255, 200, 60, 0.8);
+  border-radius: 12px;
+  padding: 12px 18px;
+  color: #ffffff;
+  z-index: 10;
+  box-shadow: 0 0 35px rgba(255, 145, 30, 0.7);
+  max-width: 260px;
+  text-align: center;
+}
+
+.suck-card-quote {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  overflow-wrap: break-word;
+}
+
+.suck-card-creator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #ffd8a8;
+}
+
+.suck-card-creator img {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+
+@keyframes cinematicPull {
+  0% {
+    transform: translate(0, 70px) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  30% {
+    transform: translate(0, 20px) scale(0.85) rotate(-12deg);
+    opacity: 0.95;
+  }
+  60% {
+    transform: translate(0, -10px) scale(0.55) rotate(120deg);
+    opacity: 0.8;
+  }
+  85% {
+    transform: translate(0, 0) scale(0.22) rotate(380deg);
+    opacity: 0.45;
+  }
+  100% {
+    transform: translate(0, 0) scale(0) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.animate-cinematic-pull {
+  animation: cinematicPull 2.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+/* Flipbook 3D Page Turn Animation */
+@keyframes pageTurnNext {
+  0% {
+    transform: perspective(1000px) rotateY(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: perspective(1000px) rotateY(-45deg) scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes pageTurnPrev {
+  0% {
+    transform: perspective(1000px) rotateY(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: perspective(1000px) rotateY(45deg) scale(0.95);
+    opacity: 0.7;
+  }
+  100% {
+    transform: perspective(1000px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+.page-flip-next {
+  animation: pageTurnNext 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page-flip-prev {
+  animation: pageTurnPrev 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Brush Mode Switchers in Planet Designer */
+.brush-mode-switches {
+  display: flex;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 3px;
+  border-radius: 10px;
+  margin-top: 4px;
+}
+

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSky } from '../../context/SkyContext';
+import { CodeMoon } from './CodeMoon';
 
 export const MoonObject: React.FC = () => {
   const { setActiveModal } = useSky();
@@ -21,13 +22,7 @@ export const MoonObject: React.FC = () => {
       }}
       title="The Moon"
     >
-      <img
-        src="/Screenshot_2026-09-02_191319-removebg-preview.png"
-        alt="Moon"
-        className="moon-supplied-image"
-        draggable={false}
-      />
-      <div className="moon-ambient-halo" />
+      <CodeMoon size={135} />
     </div>
   );
 };

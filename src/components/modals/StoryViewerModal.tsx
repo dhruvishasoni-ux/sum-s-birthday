@@ -6,6 +6,7 @@ import { X, ChevronLeft, ChevronRight, BookOpen, User } from 'lucide-react';
 export const StoryViewerModal: React.FC = () => {
   const { activeModal, setActiveModal, stories, activeStoryId } = useSky();
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [flipDirection, setFlipDirection] = useState<'next' | 'prev' | null>(null);
 
   if (activeModal !== 'story-view' || !activeStoryId) return null;
 
@@ -17,10 +18,30 @@ export const StoryViewerModal: React.FC = () => {
   const creatorName = story.creatorName || 'Cosmic Storyteller';
   const creatorAvatar = story.creatorAvatar;
 
+  const handleNextPage = () => {
+    if (currentPageIndex < pages.length - 1) {
+      setFlipDirection('next');
+      setTimeout(() => {
+        setCurrentPageIndex((prev) => Math.min(pages.length - 1, prev + 1));
+        setFlipDirection(null);
+      }, 240);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPageIndex > 0) {
+      setFlipDirection('prev');
+      setTimeout(() => {
+        setCurrentPageIndex((prev) => Math.max(0, prev - 1));
+        setFlipDirection(null);
+      }, 240);
+    }
+  };
+
   return (
     <div className="modal-backdrop" onClick={() => setActiveModal(null)}>
       <div
-        className="modal-content story-viewer-window animate-scale-in"
+        className="modal-content story-viewer-window glass-panel animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header with Creator Info */}
@@ -53,9 +74,13 @@ export const StoryViewerModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Flipbook Page Reader Body */}
+        {/* Flipbook Page Reader Body with 3D Turn Animation */}
         <div className="flipbook-reader-body">
-          <div className={`flipbook-book-frame theme-${currentPage.theme} layout-${currentPage.layout}`}>
+          <div
+            className={`flipbook-book-frame theme-${currentPage.theme} layout-${currentPage.layout} ${
+              flipDirection === 'next' ? 'page-flip-next' : flipDirection === 'prev' ? 'page-flip-prev' : ''
+            }`}
+          >
             {/* Layout 1: Text Only */}
             {currentPage.layout === 1 && (
               <div
@@ -72,7 +97,7 @@ export const StoryViewerModal: React.FC = () => {
               </div>
             )}
 
-            {/* Layout 2: Image Only */}
+            {/* Layout 2: Image Only / Freely positioned */}
             {currentPage.layout === 2 && (
               <div className="page-image-container full-image">
                 {currentPage.imageUrl && (
@@ -134,7 +159,7 @@ export const StoryViewerModal: React.FC = () => {
             />
 
             <div className="page-footer-number">
-              Page {currentPageIndex + 1} of {pages.length}
+              {currentPageIndex + 1} / {pages.length}
             </div>
           </div>
         </div>
@@ -145,7 +170,7 @@ export const StoryViewerModal: React.FC = () => {
             type="button"
             className="viewer-nav-btn"
             disabled={currentPageIndex === 0}
-            onClick={() => setCurrentPageIndex((prev) => Math.max(0, prev - 1))}
+            onClick={handlePrevPage}
           >
             <ChevronLeft size={20} />
             <span>Previous</span>
@@ -159,7 +184,7 @@ export const StoryViewerModal: React.FC = () => {
             type="button"
             className="viewer-nav-btn"
             disabled={currentPageIndex === pages.length - 1}
-            onClick={() => setCurrentPageIndex((prev) => Math.min(pages.length - 1, prev + 1))}
+            onClick={handleNextPage}
           >
             <span>Next</span>
             <ChevronRight size={20} />

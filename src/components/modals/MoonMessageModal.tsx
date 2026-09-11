@@ -11,7 +11,7 @@ export const MoonMessageModal: React.FC = () => {
   return (
     <div className="modal-backdrop" onClick={() => setActiveModal(null)}>
       <div
-        className="modal-content moon-minimal-window animate-scale-in"
+        className="modal-content moon-minimal-window glass-panel animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         <button
