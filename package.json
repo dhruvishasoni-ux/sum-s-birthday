@@ -2,7 +2,7 @@
   "name": "sum's-bithday",
   "version": "1.0.0",
   "description": "",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -16,7 +16,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/dhruvishasoni-ux/sum-s-birthday/issues"
   },
@@ -24,7 +23,7 @@
   "dependencies": {
     "canvas-confetti": "^1.9.4",
     "express": "^5.2.1",
-    "lucide-react": "^1.41.0",
+    "lucide-react": "^1.45.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
