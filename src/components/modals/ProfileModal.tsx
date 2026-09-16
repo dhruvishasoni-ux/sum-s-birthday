@@ -2,10 +2,6 @@ import React, { useState, useRef } from 'react';
 import { useSky } from '../../context/SkyContext';
 import { X, Camera, Lock, User, LogIn, UserPlus, LogOut, CheckCircle, AlertCircle, Trash2, Star, BookOpen, Radio, MessageSquare, CircleDot } from 'lucide-react';
 
-const PRESET_AVATARS = [
-  '👩‍🚀', '👨‍🚀', '⭐', '✨', '🪐', '🌙', '🌌', '🎈', '💖', '👑', '🚀', '🌟'
-];
-
 export const ProfileModal: React.FC = () => {
   const {
     activeModal,
@@ -37,8 +33,6 @@ export const ProfileModal: React.FC = () => {
   const [signupAvatar, setSignupAvatar] = useState<string>('');
   const [signupUsername, setSignupUsername] = useState<string>('');
   const [signupPassword, setSignupPassword] = useState<string>('');
-  const [selectedEmoji, setSelectedEmoji] = useState<string>('');
-  const [isPhotoPickerOpen, setIsPhotoPickerOpen] = useState(false);
 
   // Login form state
   const [loginUsername, setLoginUsername] = useState<string>('');
@@ -64,22 +58,23 @@ export const ProfileModal: React.FC = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
-      if (dataUrl) {
-        setSignupAvatar(dataUrl);
-        setSelectedEmoji('');
-        setIsPhotoPickerOpen(false);
+      if (!dataUrl) return;
+      const image = new Image();
+      image.onload = () => {
+        const side = Math.min(image.naturalWidth, image.naturalHeight);
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 256;
+        const context = canvas.getContext('2d');
+        if (!context) return;
+        context.drawImage(image, (image.naturalWidth - side) / 2, (image.naturalHeight - side) / 2, side, side, 0, 0, 256, 256);
+        setSignupAvatar(canvas.toDataURL('image/jpeg', 0.86));
         setErrorMessage(null);
-      }
+      };
+      image.src = dataUrl;
     };
     reader.readAsDataURL(file);
     e.target.value = '';
-  };
-
-  const handleSelectEmojiAvatar = (emoji: string) => {
-    setSelectedEmoji(emoji);
-    setSignupAvatar(`emoji:${emoji}`);
-    setIsPhotoPickerOpen(false);
-    setErrorMessage(null);
   };
 
   const handleSignUpSubmit = (e: React.FormEvent) => {
@@ -96,8 +91,8 @@ export const ProfileModal: React.FC = () => {
       setErrorMessage('2. Username/Name is COMPULSORY. Please enter your name.');
       return;
     }
-    if (!signupPassword.trim()) {
-      setErrorMessage('3. Password is COMPULSORY. Please create a password.');
+    if (signupPassword.length < 4) {
+      setErrorMessage('3. Password must be at least 4 characters.');
       return;
     }
 
@@ -480,20 +475,20 @@ export const ProfileModal: React.FC = () => {
                     Choose profile picture <span className="compulsory-tag">*Required</span>
                   </label>
 
-                  <small className="profile-photo-notice">Choose a photo or avatar icon to make your account yours.</small>
+                  <small className="profile-photo-notice">Choose a photo to make your account yours.</small>
                   <div className="avatar-selection-cluster">
                     <div className="avatar-preview-box">
-                      {signupAvatar && !signupAvatar.startsWith('emoji:') ? (
+                      {signupAvatar ? (
                         <img src={signupAvatar} alt="Avatar" className="custom-avatar-thumb" />
                       ) : (
-                        <span className="emoji-avatar-thumb">{selectedEmoji}</span>
+                        <span className="avatar-placeholder"><Camera size={18} /></span>
                       )}
                     </div>
 
                     <button
                       type="button"
                       className="upload-photo-btn"
-                      onClick={() => setIsPhotoPickerOpen(true)}
+                      onClick={() => fileInputRef.current?.click()}
                     >
                       <Camera size={15} />
                       <span>{signupAvatar && !signupAvatar.startsWith('emoji:') ? 'Change photo' : 'Choose profile picture'}</span>
@@ -507,32 +502,7 @@ export const ProfileModal: React.FC = () => {
                     />
                   </div>
 
-                  {isPhotoPickerOpen && (
-                    <div className="photo-picker-popover animate-fade-in" role="dialog" aria-label="Choose profile picture">
-                      <div className="photo-picker-header">
-                        <span>Choose a profile picture</span>
-                        <button type="button" className="photo-picker-close" onClick={() => setIsPhotoPickerOpen(false)} aria-label="Close profile picture picker">
-                          <X size={16} />
-                        </button>
-                      </div>
-                      <div className="preset-buttons-wrap">
-                        {PRESET_AVATARS.map((emoji) => (
-                          <button
-                            key={emoji}
-                            type="button"
-                            className={`preset-avatar-btn ${signupAvatar === `emoji:${emoji}` || (!signupAvatar && selectedEmoji === emoji) ? 'active' : ''}`}
-                            onClick={() => handleSelectEmojiAvatar(emoji)}
-                          >
-                            {emoji}
-                          </button>
-                        ))}
-                      </div>
-                      <button type="button" className="upload-photo-btn picker-upload-btn" onClick={() => fileInputRef.current?.click()}>
-                        <Camera size={15} />
-                        <span>Upload from device</span>
-                      </button>
-                    </div>
-                  )}
+
                 </div>
 
                 {/* 2. Compulsory Username */}
@@ -564,7 +534,11 @@ export const ProfileModal: React.FC = () => {
                       type="password"
                       className="studio-text-input auth-input"
                       value={signupPassword}
-                      onChange={(e) => setSignupPassword(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setSignupPassword(value);
+                        if (value.length >= 4 && errorMessage?.includes('at least 4')) setErrorMessage(null);
+                      }}
                       placeholder="Create a passcode"
                     />
                   </div>
