@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useSky } from '../../context/SkyContext';
-import { WishCard, StickerItem, ConstellationPoint, ConstellationConnection } from '../../types/celestial';
-import { TextStyleConfig } from '../../types/editor';
+import { WishCard, StickerItem, ConstellationPoint, ConstellationConnection, CardTextBox } from '../../types/celestial';
 import { RichTextToolbar } from '../shared/RichTextToolbar';
 import { StickerBar } from '../shared/StickerBar';
 import { StickerCanvasOverlay } from '../shared/StickerCanvasOverlay';
+import { CardTextBoxItem } from '../shared/CardTextBoxItem';
+import { toggleSelectionFormatting } from '../../utils/textFormatting';
 import { X, Sparkles, Plus, Link2, Trash2, RotateCcw } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { findSafeSkyPosition } from '../../utils/objectPlacement';
@@ -13,39 +14,63 @@ export const WishStudioModal: React.FC = () => {
   const { activeModal, setActiveModal, addWish, accentColor, currentUser, wishes, stories, voiceNotes, secretStars } = useSky();
 
   const [activeTab, setActiveTab] = useState<'card' | 'constellation' | 'styling' | 'stickers'>('card');
+  const [selectedTextBoxId, setSelectedTextBoxId] = useState<'title' | 'body' | 'from'>('title');
 
-  // Card Content
-  const [title, setTitle] = useState('Happy Birthday! ✨');
-  const [titleStyle, setTitleStyle] = useState<TextStyleConfig>({
-    font: 'elegant',
-    color: '#FFE58A',
-    size: 22,
-    bold: true,
-    italic: false,
-    underline: false
+  // Input refs for tracking selection range
+  const titleInputRef = useRef<HTMLInputElement>(null);
+  const bodyInputRef = useRef<HTMLTextAreaElement>(null);
+  const fromInputRef = useRef<HTMLInputElement>(null);
+
+  // 3 Independent Text Boxes
+  const [titleBox, setTitleBox] = useState<CardTextBox>({
+    text: 'Happy Birthday! ✨',
+    x: 16,
+    y: 20,
+    width: 328,
+    height: 45,
+    style: {
+      font: 'elegant',
+      color: '#FFE58A',
+      size: 22,
+      bold: true,
+      italic: false,
+      underline: false
+    }
   });
 
-  const [body, setBody] = useState('Wishing you infinite joy, love, and starlight on your special day! 🌟');
-  const [bodyStyle, setBodyStyle] = useState<TextStyleConfig>({
-    font: 'modern',
-    color: '#ffffff',
-    size: 14,
-    bold: false,
-    italic: false,
-    underline: false
+  const [bodyBox, setBodyBox] = useState<CardTextBox>({
+    text: 'Wishing you infinite joy, love, and starlight on your special day! 🌟',
+    x: 16,
+    y: 70,
+    width: 328,
+    height: 125,
+    style: {
+      font: 'modern',
+      color: '#ffffff',
+      size: 14,
+      bold: false,
+      italic: false,
+      underline: false
+    }
   });
 
-  const [from, setFrom] = useState(currentUser ? `— ${currentUser.username}` : '— Your bestie ♡');
-  const [fromStyle, setFromStyle] = useState<TextStyleConfig>({
-    font: 'cursive',
-    color: '#FF9FCB',
-    size: 16,
-    bold: false,
-    italic: true,
-    underline: false
+  const [fromBox, setFromBox] = useState<CardTextBox>({
+    text: currentUser ? `— ${currentUser.username}` : '— Your bestie ♡',
+    x: 16,
+    y: 202,
+    width: 328,
+    height: 38,
+    style: {
+      font: 'cursive',
+      color: '#FF9FCB',
+      size: 16,
+      bold: false,
+      italic: true,
+      underline: false
+    }
   });
 
-  // Card Background Gradient & Accent Color (old frame styles removed, glow preserved)
+  // Card Background Gradient & Accent Color
   const [cardAccentColor, setCardAccentColor] = useState(accentColor || '#B89CFF');
   const [bgGradientFrom, setBgGradientFrom] = useState('#1e1b4b');
   const [bgGradientTo, setBgGradientTo] = useState('#0a0e27');
@@ -74,7 +99,43 @@ export const WishStudioModal: React.FC = () => {
 
   if (activeModal !== 'wish-studio') return null;
 
-  // TOOL 1: ADD A STAR (Exact Click Location)
+  // Handle format button click (Selection vs Whole Box)
+  const handleFormatToggle = (target: 'title' | 'body' | 'from', format: 'bold' | 'italic' | 'underline') => {
+    let inputEl: HTMLInputElement | HTMLTextAreaElement | null = null;
+    let box = titleBox;
+    let setBox = setTitleBox;
+
+    if (target === 'title') {
+      inputEl = titleInputRef.current;
+      box = titleBox;
+      setBox = setTitleBox;
+    } else if (target === 'body') {
+      inputEl = bodyInputRef.current;
+      box = bodyBox;
+      setBox = setBodyBox;
+    } else {
+      inputEl = fromInputRef.current;
+      box = fromBox;
+      setBox = setFromBox;
+    }
+
+    if (inputEl && inputEl.selectionStart !== null && inputEl.selectionEnd !== null && inputEl.selectionStart !== inputEl.selectionEnd) {
+      // Format selected text substring
+      const newText = toggleSelectionFormatting(box.text, inputEl.selectionStart, inputEl.selectionEnd, format);
+      setBox({ ...box, text: newText });
+    } else {
+      // Toggle formatting for entire box
+      setBox({
+        ...box,
+        style: {
+          ...box.style,
+          [format]: !box.style[format]
+        }
+      });
+    }
+  };
+
+  // TOOL 1: ADD A STAR
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (activeTool !== 'add' || !constellationCanvasRef.current) return;
     const rect = constellationCanvasRef.current.getBoundingClientRect();
@@ -86,12 +147,11 @@ export const WishStudioModal: React.FC = () => {
     setConstellationPoints((prev) => [...prev, newPoint]);
   };
 
-  // TOOL 2 & 3: STAR NODE CLICK (Join or Remove)
+  // TOOL 2 & 3: STAR NODE CLICK
   const handleStarNodeClick = (e: React.MouseEvent, ptId: number) => {
     e.stopPropagation();
 
     if (activeTool === 'remove') {
-      // TOOL 3: REMOVE — deletes star and all attached connections
       setConstellationPoints((prev) => prev.filter((p) => p.id !== ptId));
       setConnections((prev) => prev.filter((c) => c.fromId !== ptId && c.toId !== ptId));
       if (selectedJoinPointId === ptId) setSelectedJoinPointId(null);
@@ -99,14 +159,11 @@ export const WishStudioModal: React.FC = () => {
     }
 
     if (activeTool === 'join') {
-      // TOOL 2: JOIN — select star 1 then star 2
       if (selectedJoinPointId === null) {
         setSelectedJoinPointId(ptId);
       } else if (selectedJoinPointId === ptId) {
-        // Deselect if clicked same
         setSelectedJoinPointId(null);
       } else {
-        // Prevent duplicate connection in either direction
         const exists = connections.some(
           (c) =>
             (c.fromId === selectedJoinPointId && c.toId === ptId) ||
@@ -150,26 +207,31 @@ export const WishStudioModal: React.FC = () => {
       ...voiceNotes.map((item) => ({ x: item.x, y: item.y, kind: 'voice' as const })),
       ...secretStars.map((item) => ({ x: item.x, y: item.y, kind: 'secret' as const }))
     ]);
-    const posX = position.x;
-    const posY = position.y;
+
+    const plainTitle = titleBox.text.replace(/<[^>]*>/g, '');
+    const plainBody = bodyBox.text.replace(/<[^>]*>/g, '');
+    const plainFrom = fromBox.text.replace(/<[^>]*>/g, '');
 
     const newWish: WishCard = {
       id: `wish-${Date.now()}`,
       creatorId: currentUser?.id,
       creatorName: currentUser?.username,
       creatorAvatar: currentUser?.avatarUrl,
-      title,
-      titleStyle,
-      body,
-      bodyStyle,
-      from,
-      fromStyle,
+      title: plainTitle || 'Happy Birthday! ✨',
+      titleStyle: titleBox.style,
+      body: plainBody || 'Wishing you infinite joy!',
+      bodyStyle: bodyBox.style,
+      from: plainFrom || '— From',
+      fromStyle: fromBox.style,
+      titleBox,
+      bodyBox,
+      fromBox,
       accentColor: cardAccentColor,
       bgGradientFrom,
       bgGradientTo,
       stickers,
-      x: posX,
-      y: posY,
+      x: position.x,
+      y: position.y,
       points: constellationPoints,
       connections,
       unopened: true,
@@ -246,44 +308,68 @@ export const WishStudioModal: React.FC = () => {
             {activeTab === 'card' && (
               <div className="compact-tab-pane animate-fade-in">
                 <div className="compact-input-group">
-                  <label className="input-label">Short Greeting</label>
+                  <label className="input-label">Greeting Box (Title)</label>
                   <input
+                    ref={titleInputRef}
                     type="text"
                     className="studio-text-input compact"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    maxLength={80}
+                    value={titleBox.text}
+                    onFocus={() => setSelectedTextBoxId('title')}
+                    onChange={(e) => setTitleBox({ ...titleBox, text: e.target.value })}
                   />
-                  <RichTextToolbar styleConfig={titleStyle} onChange={setTitleStyle} showSize={false} />
+                  <RichTextToolbar
+                    styleConfig={titleBox.style}
+                    onChange={(style) => setTitleBox({ ...titleBox, style })}
+                    onFormatToggle={(fmt) => handleFormatToggle('title', fmt)}
+                    showSize={true}
+                    minSize={10}
+                    maxSize={36}
+                  />
                 </div>
 
                 <div className="compact-input-group" style={{ marginTop: '10px' }}>
-                  <label className="input-label">Birthday Message</label>
+                  <label className="input-label">Birthday Message Box (Body)</label>
                   <textarea
+                    ref={bodyInputRef}
                     className="studio-textarea compact"
                     rows={3}
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                    maxLength={500}
+                    value={bodyBox.text}
+                    onFocus={() => setSelectedTextBoxId('body')}
+                    onChange={(e) => setBodyBox({ ...bodyBox, text: e.target.value })}
                   />
-                  <RichTextToolbar styleConfig={bodyStyle} onChange={setBodyStyle} showSize={false} />
+                  <RichTextToolbar
+                    styleConfig={bodyBox.style}
+                    onChange={(style) => setBodyBox({ ...bodyBox, style })}
+                    onFormatToggle={(fmt) => handleFormatToggle('body', fmt)}
+                    showSize={true}
+                    minSize={9}
+                    maxSize={28}
+                  />
                 </div>
 
                 <div className="compact-input-group" style={{ marginTop: '10px' }}>
-                  <label className="input-label">From / Signature</label>
+                  <label className="input-label">Signature Box (From)</label>
                   <input
+                    ref={fromInputRef}
                     type="text"
                     className="studio-text-input compact"
-                    value={from}
-                    onChange={(e) => setFrom(e.target.value)}
-                    maxLength={50}
+                    value={fromBox.text}
+                    onFocus={() => setSelectedTextBoxId('from')}
+                    onChange={(e) => setFromBox({ ...fromBox, text: e.target.value })}
                   />
-                  <RichTextToolbar styleConfig={fromStyle} onChange={setFromStyle} showSize={false} />
+                  <RichTextToolbar
+                    styleConfig={fromBox.style}
+                    onChange={(style) => setFromBox({ ...fromBox, style })}
+                    onFormatToggle={(fmt) => handleFormatToggle('from', fmt)}
+                    showSize={true}
+                    minSize={10}
+                    maxSize={32}
+                  />
                 </div>
               </div>
             )}
 
-            {/* TAB 2: Constellation Creator Canvas (3 Primary Tools + Start Over) */}
+            {/* TAB 2: Constellation Creator Canvas */}
             {activeTab === 'constellation' && (
               <div className="compact-tab-pane animate-fade-in">
                 <div className="canvas-tools-toolbar">
@@ -500,7 +586,7 @@ export const WishStudioModal: React.FC = () => {
             )}
           </div>
 
-          {/* RIGHT: Live Normal-Sized Physical Card Preview */}
+          {/* RIGHT: Live Normal-Sized Physical Card Preview with 3 Independent Draggable & Resizable Text Boxes */}
           <div className="compact-right-preview">
             <div className="preview-card-wrapper">
               <div
@@ -515,44 +601,32 @@ export const WishStudioModal: React.FC = () => {
                   ✦
                 </div>
 
-                <div
-                  className={`card-render-title font-${titleStyle.font}`}
-                  style={{
-                    color: titleStyle.color,
-                    fontSize: `${titleStyle.size}px`,
-                    fontWeight: titleStyle.bold ? 'bold' : 'normal',
-                    fontStyle: titleStyle.italic ? 'italic' : 'normal',
-                    textDecoration: titleStyle.underline ? 'underline' : 'none'
-                  }}
-                >
-                  {title || 'Happy Birthday! ✨'}
-                </div>
+                <CardTextBoxItem
+                  id="title"
+                  box={titleBox}
+                  onChange={setTitleBox}
+                  isSelected={selectedTextBoxId === 'title'}
+                  onSelect={() => setSelectedTextBoxId('title')}
+                  isEditable={true}
+                />
 
-                <div
-                  className={`card-render-body font-${bodyStyle.font}`}
-                  style={{
-                    color: bodyStyle.color,
-                    fontSize: `${bodyStyle.size}px`,
-                    fontWeight: bodyStyle.bold ? 'bold' : 'normal',
-                    fontStyle: bodyStyle.italic ? 'italic' : 'normal',
-                    textDecoration: bodyStyle.underline ? 'underline' : 'none'
-                  }}
-                >
-                  {body || 'Your message...'}
-                </div>
+                <CardTextBoxItem
+                  id="body"
+                  box={bodyBox}
+                  onChange={setBodyBox}
+                  isSelected={selectedTextBoxId === 'body'}
+                  onSelect={() => setSelectedTextBoxId('body')}
+                  isEditable={true}
+                />
 
-                <div
-                  className={`card-render-from font-${fromStyle.font}`}
-                  style={{
-                    color: fromStyle.color,
-                    fontSize: `${fromStyle.size}px`,
-                    fontWeight: fromStyle.bold ? 'bold' : 'normal',
-                    fontStyle: fromStyle.italic ? 'italic' : 'normal',
-                    textDecoration: fromStyle.underline ? 'underline' : 'none'
-                  }}
-                >
-                  {from || '— From'}
-                </div>
+                <CardTextBoxItem
+                  id="from"
+                  box={fromBox}
+                  onChange={setFromBox}
+                  isSelected={selectedTextBoxId === 'from'}
+                  onSelect={() => setSelectedTextBoxId('from')}
+                  isEditable={true}
+                />
 
                 <div className="card-bottom-accent" style={{ backgroundColor: cardAccentColor }} />
 

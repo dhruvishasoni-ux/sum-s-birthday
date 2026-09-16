@@ -5,6 +5,7 @@ import { Bold, Italic, Underline } from 'lucide-react';
 interface RichTextToolbarProps {
   styleConfig: TextStyleConfig;
   onChange: (newConfig: TextStyleConfig) => void;
+  onFormatToggle?: (format: 'bold' | 'italic' | 'underline') => void;
   label?: string;
   showSize?: boolean;
   minSize?: number;
@@ -34,11 +35,20 @@ const PRESET_COLORS = [
 export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
   styleConfig,
   onChange,
+  onFormatToggle,
   label,
   showSize = true,
   minSize = 12,
   maxSize = 48
 }) => {
+  const handleToggle = (fmt: 'bold' | 'italic' | 'underline') => {
+    if (onFormatToggle) {
+      onFormatToggle(fmt);
+    } else {
+      onChange({ ...styleConfig, [fmt]: !styleConfig[fmt] });
+    }
+  };
+
   return (
     <div className="rich-text-toolbar">
       {label && <div className="toolbar-label">{label}</div>}
@@ -79,7 +89,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           <button
             type="button"
             className={`tool-btn ${styleConfig.bold ? 'active' : ''}`}
-            onClick={() => onChange({ ...styleConfig, bold: !styleConfig.bold })}
+            onClick={() => handleToggle('bold')}
             title="Bold"
             aria-label="Bold"
           >
@@ -88,7 +98,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           <button
             type="button"
             className={`tool-btn ${styleConfig.italic ? 'active' : ''}`}
-            onClick={() => onChange({ ...styleConfig, italic: !styleConfig.italic })}
+            onClick={() => handleToggle('italic')}
             title="Italic"
             aria-label="Italic"
           >
@@ -97,7 +107,7 @@ export const RichTextToolbar: React.FC<RichTextToolbarProps> = ({
           <button
             type="button"
             className={`tool-btn ${styleConfig.underline ? 'active' : ''}`}
-            onClick={() => onChange({ ...styleConfig, underline: !styleConfig.underline })}
+            onClick={() => handleToggle('underline')}
             title="Underline"
             aria-label="Underline"
           >

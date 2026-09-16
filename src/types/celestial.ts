@@ -66,6 +66,15 @@ export interface ConstellationConnection {
   toId: number;
 }
 
+export interface CardTextBox {
+  text: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  style: TextStyleConfig;
+}
+
 export interface WishCard {
   id: string;
   creatorId?: string;
@@ -77,6 +86,9 @@ export interface WishCard {
   bodyStyle: TextStyleConfig;
   from: string;
   fromStyle: TextStyleConfig;
+  titleBox?: CardTextBox;
+  bodyBox?: CardTextBox;
+  fromBox?: CardTextBox;
   frame?: string;
   accentColor: string;
   bgGradientFrom?: string;
