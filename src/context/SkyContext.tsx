@@ -202,19 +202,29 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   const focusOnCoordinates = useCallback((xPercent: number, yPercent: number) => {
-    const spaceWidth = window.innerWidth * 4;
-    const spaceHeight = window.innerHeight * 4;
-    const targetX = (xPercent / 100) * spaceWidth;
-    const targetY = (yPercent / 100) * spaceHeight;
-
-    const viewportCenterX = window.innerWidth / 2;
-    const viewportCenterY = window.innerHeight / 2;
-
-    const newOffsetX = viewportCenterX - (targetX - window.innerWidth * 1.5);
-    const newOffsetY = viewportCenterY - (targetY - window.innerHeight * 1.5);
-
-    setPanOffset({ x: newOffsetX, y: newOffsetY });
-  }, []);
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const legacyOrigin = 1.5;
+    const legacySize = 3;
+    const worldOrigin = -2.5;
+    const worldSize = 6;
+    const targetX = (worldOrigin + legacyOrigin + (xPercent / 100) * legacySize) * viewportWidth;
+    const targetY = (worldOrigin + legacyOrigin + (yPercent / 100) * legacySize) * viewportHeight;
+    const viewportCenterX = viewportWidth / 2;
+    const viewportCenterY = viewportHeight / 2;
+    const unclamped = {
+      x: viewportCenterX - targetX,
+      y: viewportCenterY - targetY
+    };
+    const minX = viewportWidth - viewportWidth * (worldSize + worldOrigin) * zoom;
+    const maxX = -viewportWidth * worldOrigin * zoom;
+    const minY = viewportHeight - viewportHeight * (worldSize + worldOrigin) * zoom;
+    const maxY = -viewportHeight * worldOrigin * zoom;
+    setPanOffset({
+      x: Math.min(maxX, Math.max(minX, unclamped.x)),
+      y: Math.min(maxY, Math.max(minY, unclamped.y))
+    });
+  }, [zoom]);
 
   const addWish = (wish: WishCard) => {
     // Preserve chronological order

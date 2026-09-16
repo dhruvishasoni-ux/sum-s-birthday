@@ -8,20 +8,28 @@ import { SpaceProbeObject } from './SpaceProbeObject';
 import { SecretStarObject } from './SecretStarObject';
 import { BlackHoleObject } from './BlackHoleObject';
 
-function generateBackgroundStars(count = 900) {
-  const stars = [];
-  for (let i = 0; i < count; i++) {
-    const x = Math.random() * 100;
-    const y = Math.random() * 100;
-    const size = Math.random() * 4.8 + 1.8;
-    const opacity = Math.random() * 0.5 + 0.2;
-    const isTwinkle = Math.random() < 0.15;
-    const isBright = Math.random() < 0.05;
-    const delay = Math.random() * 3;
+const WORLD_SIZE = 6;
+const WORLD_ORIGIN = -2.5;
+const ZOOM_MIN = 0.5;
+const ZOOM_MAX = 2.2;
 
-    stars.push({ id: i, x, y, size, opacity, isTwinkle, isBright, delay });
-  }
-  return stars;
+function seededRandom(seed: number) {
+  const value = Math.sin(seed * 12.9898) * 43758.5453;
+  return value - Math.floor(value);
+}
+
+function generateBackgroundStars(count = 1800) {
+  return Array.from({ length: count }, (_, id) => {
+    const x = seededRandom(id * 4 + 1) * 100;
+    const y = seededRandom(id * 4 + 2) * 100;
+    const size = seededRandom(id * 4 + 3) * 4.8 + 1.8;
+    const opacity = seededRandom(id * 4 + 4) * 0.5 + 0.2;
+    const isTwinkle = seededRandom(id * 4 + 5) < 0.15;
+    const isBright = seededRandom(id * 4 + 6) < 0.05;
+    const delay = seededRandom(id * 4 + 7) * 3;
+
+    return { id, x, y, size, opacity, isTwinkle, isBright, delay };
+  });
 }
 
 export const SkyCanvas: React.FC = () => {
@@ -53,13 +61,15 @@ export const SkyCanvas: React.FC = () => {
     lastTouchPos: { x: 0, y: 0 }
   });
 
-  const backgroundStars = useMemo(() => generateBackgroundStars(900), []);
+  const backgroundStars = useMemo(() => generateBackgroundStars(1800), []);
 
-  const clampPan = (next: { x: number; y: number }) => {
-    const maxX = window.innerWidth * 0.92;
-    const minX = -window.innerWidth * 1.92;
-    const maxY = window.innerHeight * 0.92;
-    const minY = -window.innerHeight * 1.92;
+  const clampPan = (next: { x: number; y: number }, nextZoom = zoom) => {
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const minX = viewportWidth - viewportWidth * (WORLD_SIZE + WORLD_ORIGIN) * nextZoom;
+    const maxX = -viewportWidth * WORLD_ORIGIN * nextZoom;
+    const minY = viewportHeight - viewportHeight * (WORLD_SIZE + WORLD_ORIGIN) * nextZoom;
+    const maxY = -viewportHeight * WORLD_ORIGIN * nextZoom;
     return {
       x: Math.min(maxX, Math.max(minX, next.x)),
       y: Math.min(maxY, Math.max(minY, next.y))
@@ -158,8 +168,9 @@ export const SkyCanvas: React.FC = () => {
 
       if (touchStateRef.current.initialDistance > 0) {
         const scaleFactor = currentDist / touchStateRef.current.initialDistance;
-        const newZoom = Math.min(2.2, Math.max(0.5, touchStateRef.current.initialZoom * scaleFactor));
+        const newZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, touchStateRef.current.initialZoom * scaleFactor));
         setZoom(newZoom);
+        setPanOffset((current) => clampPan(current, newZoom));
       }
     }
   };
@@ -184,7 +195,11 @@ export const SkyCanvas: React.FC = () => {
     if (shouldIgnoreTarget(e.target as HTMLElement)) return;
     e.preventDefault();
     const zoomDelta = e.deltaY > 0 ? -0.06 : 0.06;
-    setZoom((prev) => Math.min(2.2, Math.max(0.5, prev + zoomDelta)));
+    setZoom((prev) => {
+      const nextZoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, prev + zoomDelta));
+      setPanOffset((current) => clampPan(current, nextZoom));
+      return nextZoom;
+    });
   };
 
   return (
@@ -225,6 +240,7 @@ export const SkyCanvas: React.FC = () => {
           />
         ))}
 
+        <div className="legacy-sky-layer">
         {/* Dense Star Concentration Nebula */}
         <NebulaObject />
 
@@ -260,6 +276,7 @@ export const SkyCanvas: React.FC = () => {
 
         {/* Wish and prayer void */}
         <BlackHoleObject />
+        </div>
       </div>
     </div>
   );

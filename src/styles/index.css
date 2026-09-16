@@ -98,14 +98,22 @@ body {
 
 .space-universe {
   position: absolute;
+  width: 600vw;
+  height: 600vh;
+  left: -250vw;
+  top: -250vh;
+  will-change: transform;
+  }
+
+  .legacy-sky-layer {
+  position: absolute;
   width: 300vw;
   height: 300vh;
-  left: -100vw;
-  top: -100vh;
-  will-change: transform;
-}
-
-/* =====================================================
+  left: 150vw;
+  top: 150vh;
+  }
+  
+  /* =====================================================
    BACKGROUND STARS
 ===================================================== */
 .star {
