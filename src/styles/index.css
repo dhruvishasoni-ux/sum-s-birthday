@@ -143,16 +143,35 @@ body {
 /* =====================================================
    SUPPLIED MOON
 ===================================================== */
-.simple-moon-interactive {
-  width: 130px;
-  height: 130px;
+  .simple-moon-interactive {
+  width: 160px;
+  height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease;
-}
+  }
 
-.simple-moon-interactive:hover {
+  .code-moon-container {
+  position: relative;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 20px rgba(103, 217, 255, .46)) drop-shadow(0 0 46px rgba(14, 165, 233, .25));
+  transition: filter .8s ease;
+  }
+
+  .code-moon-container.moon-unopened {
+  filter: drop-shadow(0 0 24px rgba(165, 232, 255, .8)) drop-shadow(0 0 58px rgba(56, 189, 248, .48));
+  animation: moon-open-pulse 5s ease-in-out infinite;
+  }
+
+  .clean-full-moon { display: block; position: relative; z-index: 1; }
+
+  @keyframes moon-open-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+  }
+  
+  .simple-moon-interactive:hover {
   transform: translate(-50%, -50%) scale(1.06) !important;
 }
 
@@ -1131,14 +1150,18 @@ body {
 /* =====================================================
    MINIMAL MOON MESSAGE DIALOG
 ===================================================== */
-.moon-minimal-window {
-  max-width: 440px;
-  padding: 40px 30px;
+  .moon-minimal-window {
+  width: min(92vw, 480px);
+  max-width: 480px;
+  padding: 42px 34px 36px;
   text-align: center;
   position: relative;
-  background: radial-gradient(circle at 50% 30%, #171536 0%, #090915 100%);
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-}
+  background: linear-gradient(145deg, rgba(7, 27, 48, .78), rgba(3, 12, 26, .68));
+  border: 1px solid rgba(165, 232, 255, .24);
+  border-radius: 24px;
+  backdrop-filter: blur(18px) saturate(125%);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .44), 0 0 34px rgba(56, 189, 248, .16);
+  }
 
 .moon-message-content-area {
   display: flex;
@@ -1146,13 +1169,22 @@ body {
   align-items: center;
 }
 
-.moon-minimal-text {
+  .moon-minimal-text {
   white-space: pre-line;
-  font-size: 20px;
-  color: #f8fafc;
-  font-style: italic;
+  margin: 0;
+  font-size: clamp(16px, 2.2vw, 20px);
+  line-height: 1.75;
+  letter-spacing: .01em;
+  color: #e6f8ff;
   font-family: var(--font-elegant);
-}
+  text-wrap: pretty;
+  text-shadow: 0 1px 14px rgba(103, 217, 255, .18);
+  }
+
+  .moon-greeting, .moon-note { display: block; }
+  .moon-greeting { font-size: 1.12em; font-weight: 650; color: #f2fcff; margin-bottom: 18px; }
+  .moon-note { font-size: .92em; color: rgba(226, 248, 255, .84); }
+
 
 /* =====================================================
    PROFILE MODAL

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSky } from '../../context/SkyContext';
 import { CodeMoon } from './CodeMoon';
 
 export const MoonObject: React.FC = () => {
   const { setActiveModal } = useSky();
+  const [isOpened, setIsOpened] = useState(false);
 
   return (
     <div
@@ -18,11 +19,12 @@ export const MoonObject: React.FC = () => {
       }}
       onClick={(e) => {
         e.stopPropagation();
+        setIsOpened(true);
         setActiveModal('moon-message');
       }}
       title="The Moon"
     >
-      <CodeMoon size={135} />
+      <CodeMoon size={155} unopened={!isOpened} />
     </div>
   );
 };

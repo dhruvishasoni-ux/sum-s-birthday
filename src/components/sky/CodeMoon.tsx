@@ -2,52 +2,67 @@ import React from 'react';
 
 interface CodeMoonProps {
   size?: number;
+  unopened?: boolean;
 }
 
-export const CodeMoon: React.FC<CodeMoonProps> = ({ size = 130 }) => (
-  <div className="code-moon-container" style={{ width: size, height: size }} aria-hidden="true">
+export const CodeMoon: React.FC<CodeMoonProps> = ({ size = 135, unopened = true }) => (
+  <div className={`code-moon-container ${unopened ? 'moon-unopened' : 'moon-opened'}`} style={{ width: size, height: size }} aria-hidden="true">
     <div className="moon-procedural-glow" />
     <svg className="clean-full-moon" width={size} height={size} viewBox="0 0 200 200" role="presentation">
       <defs>
-        <radialGradient id="moonSurface" cx="34%" cy="28%" r="78%">
-          <stop offset="0" stopColor="#e9edf1" />
-          <stop offset="0.48" stopColor="#b8c0c8" />
-          <stop offset="0.82" stopColor="#858f99" />
-          <stop offset="1" stopColor="#59636e" />
+        <radialGradient id="moonSurface" cx="31%" cy="25%" r="82%">
+          <stop offset="0" stopColor="#d9f7ff" />
+          <stop offset=".34" stopColor="#8edcf5" />
+          <stop offset=".68" stopColor="#329bc8" />
+          <stop offset="1" stopColor="#075985" />
         </radialGradient>
-        <radialGradient id="moonMare" cx="40%" cy="35%" r="70%">
-          <stop offset="0" stopColor="#69747e" stopOpacity=".55" />
-          <stop offset="1" stopColor="#4c5660" stopOpacity=".2" />
+        <linearGradient id="moonCoolLight" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#effcff" stopOpacity=".7" />
+          <stop offset=".48" stopColor="#67d9ff" stopOpacity=".16" />
+          <stop offset="1" stopColor="#0284c7" stopOpacity=".3" />
+        </linearGradient>
+        <radialGradient id="moonMare" cx="42%" cy="38%" r="72%">
+          <stop offset="0" stopColor="#075985" stopOpacity=".5" />
+          <stop offset="1" stopColor="#164e63" stopOpacity=".08" />
         </radialGradient>
-        <radialGradient id="moonCrater" cx="35%" cy="28%" r="75%">
-          <stop offset="0" stopColor="#dce1e5" stopOpacity=".48" />
-          <stop offset=".48" stopColor="#7a858f" stopOpacity=".42" />
-          <stop offset="1" stopColor="#404a54" stopOpacity=".65" />
+        <radialGradient id="moonCrater" cx="32%" cy="25%" r="78%">
+          <stop offset="0" stopColor="#d9f7ff" stopOpacity=".48" />
+          <stop offset=".42" stopColor="#3b82a8" stopOpacity=".28" />
+          <stop offset=".78" stopColor="#075985" stopOpacity=".62" />
+          <stop offset="1" stopColor="#022f45" stopOpacity=".72" />
         </radialGradient>
-        <filter id="moonTexture"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="3" /><feColorMatrix values="0 0 0 0 .5 0 0 0 0 .55 0 0 0 0 .6 0 0 0 .16 0" /></filter>
+        <filter id="moonTexture" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency=".028" numOctaves="3" seed="8" />
+          <feColorMatrix values="0 0 0 0 .45 0 0 0 0 .7 0 0 0 0 .8 0 0 0 .18 0" />
+        </filter>
+        <filter id="soften" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="1.2" /></filter>
         <clipPath id="moonClip"><circle cx="100" cy="100" r="98" /></clipPath>
       </defs>
       <g clipPath="url(#moonClip)">
         <circle cx="100" cy="100" r="99" fill="url(#moonSurface)" />
-        <ellipse cx="60" cy="68" rx="34" ry="28" fill="url(#moonMare)" />
-        <ellipse cx="124" cy="76" rx="31" ry="22" fill="url(#moonMare)" />
-        <ellipse cx="89" cy="133" rx="37" ry="24" fill="url(#moonMare)" />
-        <ellipse cx="151" cy="120" rx="22" ry="30" fill="url(#moonMare)" />
-        <rect width="200" height="200" filter="url(#moonTexture)" opacity=".35" />
-        <g fill="url(#moonCrater)" stroke="#e2e6e9" strokeOpacity=".25" strokeWidth="1.2">
-          <ellipse cx="48" cy="52" rx="10" ry="8" />
-          <ellipse cx="83" cy="63" rx="7" ry="6" />
-          <ellipse cx="131" cy="47" rx="9" ry="7" />
-          <ellipse cx="155" cy="84" rx="6" ry="5" />
-          <ellipse cx="66" cy="116" rx="9" ry="7" />
-          <ellipse cx="111" cy="112" rx="7" ry="6" />
-          <ellipse cx="143" cy="151" rx="10" ry="8" />
-          <ellipse cx="88" cy="161" rx="5" ry="4" />
+        <ellipse cx="58" cy="63" rx="35" ry="25" fill="url(#moonMare)" opacity=".72" />
+        <ellipse cx="126" cy="73" rx="32" ry="20" fill="url(#moonMare)" opacity=".58" />
+        <ellipse cx="83" cy="137" rx="42" ry="23" fill="url(#moonMare)" opacity=".56" />
+        <ellipse cx="150" cy="125" rx="25" ry="32" fill="url(#moonMare)" opacity=".52" />
+        <circle cx="100" cy="100" r="100" fill="url(#moonCoolLight)" />
+        <rect width="200" height="200" filter="url(#moonTexture)" opacity=".48" />
+        <g fill="url(#moonCrater)" stroke="#c8f3ff" strokeOpacity=".18" strokeWidth="1">
+          <ellipse cx="47" cy="49" rx="12" ry="10" />
+          <ellipse cx="85" cy="61" rx="7" ry="6" />
+          <ellipse cx="132" cy="46" rx="10" ry="8" />
+          <ellipse cx="157" cy="83" rx="7" ry="5" />
+          <ellipse cx="64" cy="116" rx="11" ry="8" />
+          <ellipse cx="111" cy="111" rx="8" ry="7" />
+          <ellipse cx="144" cy="151" rx="13" ry="10" />
+          <ellipse cx="88" cy="163" rx="6" ry="5" />
+        </g>
+        <g fill="none" stroke="#b8efff" strokeOpacity=".16" strokeWidth="1.5" filter="url(#soften)">
+          <path d="M47 49 L20 29 M47 49 L23 57 M47 49 L32 76 M144 151 L171 169 M144 151 L178 146 M144 151 L165 122" />
         </g>
       </g>
-      <circle cx="100" cy="100" r="98" fill="none" stroke="#f4f6f8" strokeOpacity=".22" strokeWidth="2" />
+      <circle cx="100" cy="100" r="98" fill="none" stroke="#c8f3ff" strokeOpacity=".28" strokeWidth="1.5" />
     </svg>
   </div>
-); 
+);
 
 export default CodeMoon;

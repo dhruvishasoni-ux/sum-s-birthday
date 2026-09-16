@@ -25,7 +25,8 @@ export const MoonMessageModal: React.FC = () => {
 
         <div className="moon-message-content-area">
           <p className="moon-minimal-text">
-            {PROGRAMMER_CENTRAL_MESSAGE.text}
+            <span className="moon-greeting">Happy Birthday, Summmmmm💋💕</span>
+            <span className="moon-note">Welcome to this little sky was made just for you, filled with memories, wishes, and pieces of everyone who cares about you. ✨🌌</span>
           </p>
         </div>
       </div>
