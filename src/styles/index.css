@@ -177,8 +177,8 @@ body {
 ===================================================== */
 .personality-nebula {
   position: absolute;
-  left: 24%;
-  top: 48%;
+  left: 16%;
+  top: 68%;
   width: 520px;
   height: 450px;
   transform: translate(-50%, -50%);
@@ -1147,6 +1147,7 @@ body {
 }
 
 .moon-minimal-text {
+  white-space: pre-line;
   font-size: 20px;
   color: #f8fafc;
   font-style: italic;

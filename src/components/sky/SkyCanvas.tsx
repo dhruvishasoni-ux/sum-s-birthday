@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { useSky } from '../../context/SkyContext';
 import { MoonObject } from './MoonObject';
 import { ConstellationObject } from './ConstellationObject';
@@ -42,8 +42,13 @@ export const SkyCanvas: React.FC = () => {
     stories,
     voiceNotes,
     secretStars,
-    personalityWords
+    personalityWords,
+    focusOnCoordinates
   } = useSky();
+
+  useEffect(() => {
+    focusOnCoordinates(52, 18);
+  }, [focusOnCoordinates]);
 
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });

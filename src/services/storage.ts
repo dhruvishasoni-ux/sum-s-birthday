@@ -8,6 +8,6 @@ export const DEFAULT_ACCENT_COLOR = '#B89CFF';
 
 // Programmer-defined Central Birthday Message (read-only)
 export const PROGRAMMER_CENTRAL_MESSAGE = {
-  text: 'text undecided'
+  text: 'Happy Birthday, Summmmmm💋💕\n\nWelcome to this little sky was made just for you, filled with memories, wishes, and pieces of everyone who cares about you. ✨🌌'
 };
 
