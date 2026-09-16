@@ -44,6 +44,24 @@ export const ProfileModal: React.FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const resetAccountForm = () => {
+    setSignupAvatar('');
+    setSignupUsername('');
+    setSignupPassword('');
+    setLoginUsername('');
+    setLoginPassword('');
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setAuthNotice(null);
+    setAuthMode('login');
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const closeAccountModal = () => {
+    resetAccountForm();
+    setActiveModal(null);
+  };
+
   if (activeModal !== 'profile' && activeModal !== 'auth') return null;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,11 +178,8 @@ export const ProfileModal: React.FC = () => {
   return (
     <div
       className="modal-backdrop"
-      onClick={() => {
-        setAuthNotice(null);
-        setActiveModal(null);
-      }}
-    >
+  onClick={closeAccountModal}
+  >
       <div
         className="modal-content auth-modal-window glass-panel animate-scale-in"
         onClick={(e) => e.stopPropagation()}
@@ -187,11 +202,8 @@ export const ProfileModal: React.FC = () => {
           <button
             type="button"
             className="close-modal-btn"
-            onClick={() => {
-              setAuthNotice(null);
-              setActiveModal(null);
-            }}
-            aria-label="Close"
+  onClick={closeAccountModal}
+  aria-label="Close"
           >
             <X size={20} />
           </button>

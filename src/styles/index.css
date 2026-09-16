@@ -1639,10 +1639,7 @@ body {
 .status-bar-item { display: flex; align-items: baseline; gap: 5px; white-space: nowrap; }
 .status-val { color: #ffffff; font-size: 14px; font-weight: 700; }
 .status-lbl { color: var(--text-muted); font-size: 11px; }
-.status-unopened-text { color: var(--text-muted); font-size: 11px; }
 .status-bar-divider { width: 1px; height: 18px; background: rgba(255, 255, 255, 0.14); }
-.status-unopened-dot { width: 7px; height: 7px; border-radius: 50%; background: #ffe58a; box-shadow: 0 0 8px #ffe58a; }
-
 .modal-content { max-height: calc(100vh - 32px); overflow: auto; overscroll-behavior: contain; }
 
 /* ── Creator badge — always a small thumbnail, never grows ── */
