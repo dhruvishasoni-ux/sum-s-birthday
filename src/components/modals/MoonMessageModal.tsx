@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSky } from '../../context/SkyContext';
-import { PROGRAMMER_CENTRAL_MESSAGE } from '../../services/storage';
 import { X } from 'lucide-react';
 
 export const MoonMessageModal: React.FC = () => {
@@ -25,8 +24,10 @@ export const MoonMessageModal: React.FC = () => {
 
         <div className="moon-message-content-area">
           <p className="moon-minimal-text">
-            <span className="moon-greeting">Happy Birthday, Summmmmm💋💕</span>
-            <span className="moon-note">Welcome to this little sky was made just for you, filled with memories, wishes, and pieces of everyone who cares about you. ✨🌌</span>
+            <span>Happy Birthday Summm💋💕</span>
+            <span>Welcome to this little sky which was made for you filled with wishes, memories and pieces of everyone who cares about you✨</span>
+            <span>So move around and find elements which shine a bit more than the others 😋</span>
+            <span>Hint: The unopened bar in the bottom left corner is there to help you😉</span>
           </p>
         </div>
       </div>
