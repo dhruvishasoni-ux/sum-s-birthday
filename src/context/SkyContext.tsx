@@ -38,6 +38,7 @@ interface SkyContextType {
   blackHoleWishes: BlackHoleWish[];
   isNebulaOpened: boolean;
   isBlackHoleOpened: boolean;
+  isMoonOpened: boolean;
 
   // Actions
   addWish: (wish: WishCard) => void;
@@ -63,6 +64,7 @@ interface SkyContextType {
   addBlackHoleWish: (wishText: string) => { success: boolean; error?: string };
   deleteBlackHoleWish: (id: string) => boolean;
   openBlackHole: () => void;
+  openMoon: () => void;
 
   addUploadedSticker: (stickerUrl: string) => void;
 
@@ -127,6 +129,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [blackHoleWishes, setBlackHoleWishes] = useState<BlackHoleWish[]>([]);
   const [isNebulaOpened, setIsNebulaOpened] = useState<boolean>(false);
   const [isBlackHoleOpened, setIsBlackHoleOpened] = useState<boolean>(false);
+  const [isMoonOpened, setIsMoonOpened] = useState<boolean>(false);
 
   // Modal State Management
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -431,6 +434,11 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   }, [currentUser]);
 
+  const openMoon = () => {
+    setIsMoonOpened(true);
+    setActiveModal('moon-message');
+  };
+
   const openBlackHole = () => {
     setIsBlackHoleOpened(true);
     setActiveModal('black-hole');
@@ -443,7 +451,9 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const unopenedCount =
     wishes.filter((w) => w.unopened).length +
     stories.filter((s) => s.unopened).length +
-    voiceNotes.filter((v) => !v.heard).length;
+    voiceNotes.filter((v) => !v.heard).length +
+    (isMoonOpened ? 0 : 1) +
+    secretStars.filter((s) => !s.discovered).length;
 
   return (
     <SkyContext.Provider
@@ -467,6 +477,8 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         blackHoleWishes,
         isNebulaOpened,
         isBlackHoleOpened,
+        isMoonOpened,
+        openMoon,
         addWish,
         openWish,
         deleteWish,
