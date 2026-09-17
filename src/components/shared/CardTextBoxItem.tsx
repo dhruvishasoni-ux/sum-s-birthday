@@ -2,7 +2,7 @@ import React, { useRef, useState, useLayoutEffect } from 'react';
 import { CardTextBox } from '../../types/celestial';
 
 interface CardTextBoxItemProps {
-  id: 'title' | 'body' | 'from';
+  id: string;
   box: CardTextBox;
   onChange: (updatedBox: CardTextBox) => void;
   isSelected?: boolean;
@@ -28,51 +28,148 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const [fittedFontSize, setFittedFontSize] = useState<number>(box.style?.size || 14);
+
+  const [fittedFontSize, setFittedFontSize] = useState(
+    box.style?.size || 14
+  );
+
   const SAFE_MARGIN = 8;
 
-  // Dragging state
   const isDraggingRef = useRef(false);
-  const dragStartPos = useRef({ x: 0, y: 0, boxX: 0, boxY: 0 });
+  const dragStartPos = useRef({
+    x: 0,
+    y: 0,
+    boxX: 0,
+    boxY: 0
+  });
 
-  // Resizing state
   const isResizingRef = useRef(false);
-  const resizeStartPos = useRef({ x: 0, y: 0, width: 0, height: 0, dir: '' });
+  const resizeStartPos = useRef({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    dir: ''
+  });
 
-  // Auto font-fitting calculation
+  /*
+   * AUTO FIT
+   *
+   * Measures both width AND height.
+   * The previous version only reliably checked height,
+   * which allowed long words/HTML content to overflow.
+   */
   useLayoutEffect(() => {
     const el = contentRef.current;
     if (!el) return;
 
-    const baseSize = box.style?.size || (id === 'title' ? 22 : id === 'body' ? 14 : 16);
-    const minSize = id === 'title' ? 14 : id === 'body' ? 12 : 13;
-    let size = baseSize;
+    const requestedSize = Number(box.style?.size) || 14;
+    const MIN_FONT_SIZE = 8;
 
-    // Apply temporary size to measure overflow
-    el.style.fontSize = `${size}px`;
+    const paddingX = SAFE_MARGIN * 2;
+    const paddingY = SAFE_MARGIN;
 
-    const availWidth = Math.max(1, box.width - SAFE_MARGIN * 2 - 8);
-    const availHeight = Math.max(1, box.height - SAFE_MARGIN * 2);
+    const availableWidth = Math.max(
+      1,
+      box.width - paddingX
+    );
 
-    while (
-      size > minSize &&
-      (el.scrollHeight > availHeight || el.scrollWidth > availWidth)
-    ) {
+    const availableHeight = Math.max(
+      1,
+      box.height - paddingY
+    );
+
+    const measure = document.createElement('div');
+
+    const computed = window.getComputedStyle(el);
+
+    measure.innerHTML = box.text || '';
+
+    measure.style.position = 'fixed';
+    measure.style.left = '-100000px';
+    measure.style.top = '0';
+
+    measure.style.width = `${availableWidth}px`;
+    measure.style.height = 'auto';
+
+    measure.style.boxSizing = 'border-box';
+    measure.style.padding = '0';
+
+    measure.style.fontFamily = computed.fontFamily;
+    measure.style.fontWeight = box.style?.bold ? '700' : '400';
+    measure.style.fontStyle = box.style?.italic ? 'italic' : 'normal';
+    measure.style.textDecoration = box.style?.underline
+      ? 'underline'
+      : 'none';
+
+    measure.style.textAlign = 'center';
+
+    measure.style.whiteSpace = 'pre-wrap';
+    measure.style.overflowWrap = 'anywhere';
+    measure.style.wordBreak = 'break-word';
+
+    measure.style.lineHeight =
+      id === 'body' ? '1.35' : '1.2';
+
+    document.body.appendChild(measure);
+
+    let size = requestedSize;
+
+    const fits = () => {
+      measure.style.fontSize = `${size}px`;
+
+      return (
+        measure.scrollWidth <= availableWidth + 1 &&
+        measure.scrollHeight <= availableHeight + 1
+      );
+    };
+
+    /*
+     * Shrink until the COMPLETE text fits.
+     */
+    while (size > MIN_FONT_SIZE && !fits()) {
       size -= 0.5;
-      el.style.fontSize = `${size}px`;
     }
 
-    setFittedFontSize(size);
-  }, [box.text, box.width, box.height, box.style?.size, box.style?.font, box.style?.bold, box.style?.italic, box.style?.underline, id]);
+    /*
+     * If it still doesn't fit at minimum size,
+     * use the minimum rather than allowing overflow.
+     */
+    size = Math.max(MIN_FONT_SIZE, size);
 
-  // Handle Dragging
+    document.body.removeChild(measure);
+
+    setFittedFontSize(size);
+  }, [
+    box.text,
+    box.width,
+    box.height,
+    box.style?.size,
+    box.style?.font,
+    box.style?.bold,
+    box.style?.italic,
+    box.style?.underline,
+    id
+  ]);
+
+  // DRAG
   const handleMouseDownDrag = (e: React.MouseEvent) => {
     if (!isEditable) return;
-    if ((e.target as HTMLElement).classList.contains('resize-handle')) return;
 
-    if (onSelect) onSelect();
+    if (
+      (e.target as HTMLElement).classList.contains(
+        'resize-handle'
+      )
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+
+    onSelect?.();
 
     isDraggingRef.current = true;
+
     dragStartPos.current = {
       x: e.clientX,
       y: e.clientY,
@@ -82,15 +179,32 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
 
     const handleMouseMove = (me: MouseEvent) => {
       if (!isDraggingRef.current) return;
-      const dx = me.clientX - dragStartPos.current.x;
-      const dy = me.clientY - dragStartPos.current.y;
 
-      const safeWidth = Math.max(1, cardWidth - SAFE_MARGIN * 2);
-      const safeHeight = Math.max(1, cardHeight - SAFE_MARGIN * 2);
-      const boundedWidth = Math.min(box.width, safeWidth);
-      const boundedHeight = Math.min(box.height, safeHeight);
-      const newX = Math.max(SAFE_MARGIN, Math.min(cardWidth - SAFE_MARGIN - boundedWidth, dragStartPos.current.boxX + dx));
-      const newY = Math.max(SAFE_MARGIN, Math.min(cardHeight - SAFE_MARGIN - boundedHeight, dragStartPos.current.boxY + dy));
+      const dx =
+        me.clientX - dragStartPos.current.x;
+
+      const dy =
+        me.clientY - dragStartPos.current.y;
+
+      const newX = Math.max(
+        SAFE_MARGIN,
+        Math.min(
+          cardWidth -
+          SAFE_MARGIN -
+          box.width,
+          dragStartPos.current.boxX + dx
+        )
+      );
+
+      const newY = Math.max(
+        SAFE_MARGIN,
+        Math.min(
+          cardHeight -
+          SAFE_MARGIN -
+          box.height,
+          dragStartPos.current.boxY + dy
+        )
+      );
 
       onChange({
         ...box,
@@ -101,23 +215,43 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
 
     const handleMouseUp = () => {
       isDraggingRef.current = false;
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+
+      window.removeEventListener(
+        'mousemove',
+        handleMouseMove
+      );
+
+      window.removeEventListener(
+        'mouseup',
+        handleMouseUp
+      );
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener(
+      'mousemove',
+      handleMouseMove
+    );
+
+    window.addEventListener(
+      'mouseup',
+      handleMouseUp
+    );
   };
 
-  // Handle Resizing
-  const handleMouseDownResize = (e: React.MouseEvent, dir: string) => {
+  // RESIZE
+  const handleMouseDownResize = (
+    e: React.MouseEvent,
+    dir: string
+  ) => {
     if (!isEditable) return;
-    e.stopPropagation();
-    e.preventDefault();
 
-    if (onSelect) onSelect();
+    e.preventDefault();
+    e.stopPropagation();
+
+    onSelect?.();
 
     isResizingRef.current = true;
+
     resizeStartPos.current = {
       x: e.clientX,
       y: e.clientY,
@@ -128,19 +262,53 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
 
     const handleMouseMove = (me: MouseEvent) => {
       if (!isResizingRef.current) return;
-      const dx = me.clientX - resizeStartPos.current.x;
-      const dy = me.clientY - resizeStartPos.current.y;
 
-      let newWidth = box.width;
-      let newHeight = box.height;
+      const dx =
+        me.clientX -
+        resizeStartPos.current.x;
 
-      const safeWidth = Math.max(minWidth, cardWidth - SAFE_MARGIN * 2 - box.x);
-      const safeHeight = Math.max(minHeight, cardHeight - SAFE_MARGIN * 2 - box.y);
+      const dy =
+        me.clientY -
+        resizeStartPos.current.y;
+
+      let newWidth =
+        resizeStartPos.current.width;
+
+      let newHeight =
+        resizeStartPos.current.height;
+
+      const maxWidth = Math.max(
+        minWidth,
+        cardWidth -
+        SAFE_MARGIN -
+        box.x
+      );
+
+      const maxHeight = Math.max(
+        minHeight,
+        cardHeight -
+        SAFE_MARGIN -
+        box.y
+      );
+
       if (dir.includes('e')) {
-        newWidth = Math.max(minWidth, Math.min(safeWidth, resizeStartPos.current.width + dx));
+        newWidth = Math.max(
+          minWidth,
+          Math.min(
+            maxWidth,
+            resizeStartPos.current.width + dx
+          )
+        );
       }
+
       if (dir.includes('s')) {
-        newHeight = Math.max(minHeight, Math.min(safeHeight, resizeStartPos.current.height + dy));
+        newHeight = Math.max(
+          minHeight,
+          Math.min(
+            maxHeight,
+            resizeStartPos.current.height + dy
+          )
+        );
       }
 
       onChange({
@@ -152,20 +320,42 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
 
     const handleMouseUp = () => {
       isResizingRef.current = false;
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+
+      window.removeEventListener(
+        'mousemove',
+        handleMouseMove
+      );
+
+      window.removeEventListener(
+        'mouseup',
+        handleMouseUp
+      );
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener(
+      'mousemove',
+      handleMouseMove
+    );
+
+    window.addEventListener(
+      'mouseup',
+      handleMouseUp
+    );
   };
 
-  const fontClass = `font-${box.style?.font || (id === 'title' ? 'elegant' : id === 'body' ? 'modern' : 'cursive')}`;
+  const fontClass = `font-${box.style?.font ||
+    (id === 'title'
+      ? 'elegant'
+      : id === 'body'
+        ? 'modern'
+        : 'cursive')
+    }`;
 
   return (
     <div
       ref={containerRef}
-      className={`card-text-box-wrapper ${isSelected ? 'active-selection' : ''} ${isEditable ? 'editable' : ''}`}
+      className={`card-text-box-wrapper ${isSelected ? 'active-selection' : ''
+        } ${isEditable ? 'editable' : ''}`}
       style={{
         position: 'absolute',
         left: `${box.x}px`,
@@ -177,7 +367,9 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
         zIndex: isSelected ? 12 : 10
       }}
       onMouseDown={handleMouseDownDrag}
-      onClick={() => isEditable && onSelect && onSelect()}
+      onClick={() =>
+        isEditable && onSelect?.()
+      }
     >
       <div
         ref={contentRef}
@@ -185,44 +377,76 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
         style={{
           width: '100%',
           height: '100%',
-          color: box.style?.color || '#ffffff',
+          boxSizing: 'border-box',
+
+          color:
+            box.style?.color || '#ffffff',
+
           fontSize: `${fittedFontSize}px`,
-          fontWeight: box.style?.bold ? 'bold' : 'normal',
-          fontStyle: box.style?.italic ? 'italic' : 'normal',
-          textDecoration: box.style?.underline ? 'underline' : 'none',
-          lineHeight: id === 'body' ? 1.35 : 1.2,
+
+          fontWeight:
+            box.style?.bold
+              ? 'bold'
+              : 'normal',
+
+          fontStyle:
+            box.style?.italic
+              ? 'italic'
+              : 'normal',
+
+          textDecoration:
+            box.style?.underline
+              ? 'underline'
+              : 'none',
+
+          lineHeight:
+            id === 'body' ? 1.35 : 1.2,
+
           textAlign: 'center',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-word',
+
           whiteSpace: 'pre-wrap',
+          overflowWrap: 'anywhere',
+          wordBreak: 'break-word',
+
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+
           overflow: 'hidden',
-          padding: `${SAFE_MARGIN / 2}px ${SAFE_MARGIN}px`,
-          boxSizing: 'border-box'
+
+          padding: `${SAFE_MARGIN / 2}px ${SAFE_MARGIN}px`
         }}
-        dangerouslySetInnerHTML={{ __html: box.text || '' }}
+        dangerouslySetInnerHTML={{
+          __html: box.text || ''
+        }}
       />
 
-      {/* Editable Handles & Selection Border */}
       {isEditable && isSelected && (
         <>
           <div className="card-box-outline-ring" />
+
           <div
             className="resize-handle handle-se"
-            onMouseDown={(e) => handleMouseDownResize(e, 'se')}
+            onMouseDown={(e) =>
+              handleMouseDownResize(e, 'se')
+            }
             title="Resize text box"
           />
+
           <div
             className="resize-handle handle-e"
-            onMouseDown={(e) => handleMouseDownResize(e, 'e')}
+            onMouseDown={(e) =>
+              handleMouseDownResize(e, 'e')
+            }
             title="Resize width"
           />
+
           <div
             className="resize-handle handle-s"
-            onMouseDown={(e) => handleMouseDownResize(e, 's')}
+            onMouseDown={(e) =>
+              handleMouseDownResize(e, 's')
+            }
             title="Resize height"
           />
         </>

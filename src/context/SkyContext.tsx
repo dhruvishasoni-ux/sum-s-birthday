@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect
+} from 'react';
+
 import {
   WishCard,
   Story,
@@ -9,48 +16,91 @@ import {
   BlackHoleWish,
   ModalType
 } from '../types/celestial';
+
 import { DEFAULT_SECRET_STARS } from '../config/secretStars';
 import { DEFAULT_ACCENT_COLOR } from '../services/storage';
 import { findSafeSkyPosition } from '../utils/objectPlacement';
 
 interface SkyContextType {
-  // Session Authentication & Current User
   currentUser: UserAccount | null;
   registeredAccounts: UserAccount[];
-  signUp: (username: string, password: string, avatarUrl: string) => { success: boolean; error?: string };
-  login: (username: string, password: string) => { success: boolean; error?: string };
+
+  signUp: (
+    username: string,
+    password: string,
+    avatarUrl: string
+  ) => {
+    success: boolean;
+    error?: string;
+  };
+
+  login: (
+    username: string,
+    password: string
+  ) => {
+    success: boolean;
+    error?: string;
+  };
+
   logout: () => void;
+
   accentColor: string;
 
-  // Sky coordinates & viewport
-  panOffset: { x: number; y: number };
-  setPanOffset: React.Dispatch<React.SetStateAction<{ x: number; y: number }>>;
-  zoom: number;
-  setZoom: React.Dispatch<React.SetStateAction<number>>;
-  focusOnCoordinates: (xPercent: number, yPercent: number) => void;
+  panOffset: {
+    x: number;
+    y: number;
+  };
 
-  // Celestial objects (In-Memory Session Only)
+  setPanOffset: React.Dispatch<
+    React.SetStateAction<{
+      x: number;
+      y: number;
+    }>
+  >;
+
+  zoom: number;
+
+  setZoom: React.Dispatch<
+    React.SetStateAction<number>
+  >;
+
+  focusOnCoordinates: (
+    xPercent: number,
+    yPercent: number
+  ) => void;
+
   wishes: WishCard[];
   stories: Story[];
   nebulaWords: NebulaWordEntry[];
   voiceNotes: VoiceNote[];
   secretStars: SecretStar[];
   blackHoleWishes: BlackHoleWish[];
+
   isNebulaOpened: boolean;
   isBlackHoleOpened: boolean;
   isMoonOpened: boolean;
 
-  // Actions
   addWish: (wish: WishCard) => void;
   openWish: (id: string) => void;
   deleteWish: (id: string) => boolean;
-  moveWish: (id: string, x: number, y: number) => boolean;
+  moveWish: (
+    id: string,
+    x: number,
+    y: number
+  ) => boolean;
 
   addStory: (story: Story) => void;
   openStory: (id: string) => void;
   deleteStory: (id: string) => boolean;
 
-  addNebulaWord: (word: string, explanation: string) => { success: boolean; error?: string };
+  addNebulaWord: (
+    word: string,
+    explanation: string
+  ) => {
+    success: boolean;
+    error?: string;
+  };
+
   deleteNebulaWord: (id: string) => boolean;
   openNebula: () => void;
 
@@ -61,464 +111,1276 @@ interface SkyContextType {
 
   discoverSecretStar: (id: string) => void;
 
-  addBlackHoleWish: (wishText: string) => { success: boolean; error?: string };
-  deleteBlackHoleWish: (id: string) => boolean;
+  addBlackHoleWish: (
+    wishText: string
+  ) => {
+    success: boolean;
+    error?: string;
+  };
+
+  deleteBlackHoleWish: (
+    id: string
+  ) => boolean;
+
   openBlackHole: () => void;
   openMoon: () => void;
 
-  addUploadedSticker: (stickerUrl: string) => void;
+  addUploadedSticker: (
+    stickerUrl: string
+  ) => void;
 
-  // Modals & Active objects
   activeModal: ModalType;
-  setActiveModal: (modal: ModalType) => void;
+  setActiveModal: (
+    modal: ModalType
+  ) => void;
+
   authNotice: string | null;
-  setAuthNotice: (notice: string | null) => void;
-  authMode: 'choice' | 'login' | 'signup';
-  setAuthMode: (mode: 'choice' | 'login' | 'signup') => void;
+  setAuthNotice: (
+    notice: string | null
+  ) => void;
+
+  authMode:
+  | 'choice'
+  | 'login'
+  | 'signup';
+
+  setAuthMode: (
+    mode:
+      | 'choice'
+      | 'login'
+      | 'signup'
+  ) => void;
 
   activeWishId: string | null;
-  setActiveWishId: (id: string | null) => void;
+  setActiveWishId: (
+    id: string | null
+  ) => void;
 
   activeStoryId: string | null;
-  setActiveStoryId: (id: string | null) => void;
+  setActiveStoryId: (
+    id: string | null
+  ) => void;
 
   activeVoiceNoteId: string | null;
-  setActiveVoiceNoteId: (id: string | null) => void;
+  setActiveVoiceNoteId: (
+    id: string | null
+  ) => void;
 
   activeSecretStarId: string | null;
-  setActiveSecretStarId: (id: string | null) => void;
+  setActiveSecretStarId: (
+    id: string | null
+  ) => void;
 
-  // Dynamic statistics
   friendsCount: number;
   unopenedCount: number;
 }
 
-const SkyContext = createContext<SkyContextType | null>(null);
+const SkyContext =
+  createContext<SkyContextType | null>(null);
 
 const COLOR_PALETTE = [
-  '#f472b6', '#c084fc', '#60a5fa', '#38bdf8', '#4ade80',
-  '#facc15', '#fb923c', '#e879f9', '#a78bfa', '#f87171'
+  '#f472b6',
+  '#c084fc',
+  '#60a5fa',
+  '#38bdf8',
+  '#4ade80',
+  '#facc15',
+  '#fb923c',
+  '#e879f9',
+  '#a78bfa',
+  '#f87171'
 ];
 
-const ACCOUNT_STORAGE_KEY = 'birthday-sky-accounts-v2';
+const ACCOUNT_STORAGE_KEY =
+  'birthday-sky-accounts-v2';
 
-export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Account credentials/profile persist; all other app data remains in memory.
-  const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
-  const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>(() => {
-    if (typeof window === 'undefined') return [];
-    try {
-      // The versioned key intentionally starts empty so all previously stored accounts are deleted.
-      window.localStorage.removeItem('birthday-sky-accounts');
-      return JSON.parse(window.localStorage.getItem(ACCOUNT_STORAGE_KEY) || '[]');
-    } catch {
-      return [];
-    }
-  });
-  const [authNotice, setAuthNotice] = useState<string | null>(null);
-  const [authMode, setAuthMode] = useState<'choice' | 'login' | 'signup'>('choice');
+export const SkyProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+
+  const [currentUser, setCurrentUser] =
+    useState<UserAccount | null>(null);
+
+  const [registeredAccounts, setRegisteredAccounts] =
+    useState<UserAccount[]>(() => {
+      if (typeof window === 'undefined') {
+        return [];
+      }
+
+      try {
+        window.localStorage.removeItem(
+          'birthday-sky-accounts'
+        );
+
+        return JSON.parse(
+          window.localStorage.getItem(
+            ACCOUNT_STORAGE_KEY
+          ) || '[]'
+        );
+      } catch {
+        return [];
+      }
+    });
+
+  const [authNotice, setAuthNotice] =
+    useState<string | null>(null);
+
+  const [authMode, setAuthMode] =
+    useState<
+      'choice' | 'login' | 'signup'
+    >('choice');
 
   useEffect(() => {
-    window.localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(registeredAccounts));
-  }, [registeredAccounts]);
-
-  const accentColor = DEFAULT_ACCENT_COLOR;
-
-  // Sky Pan & Zoom with clamping
-  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);
-
-  // In-Memory Session Data (Resets completely on refresh)
-  const [wishes, setWishes] = useState<WishCard[]>([]);
-  const [stories, setStories] = useState<Story[]>([]);
-  const [nebulaWords, setNebulaWords] = useState<NebulaWordEntry[]>([]);
-  const [voiceNotes, setVoiceNotes] = useState<VoiceNote[]>([]);
-  const [secretStars, setSecretStars] = useState<SecretStar[]>(() => {
-    const placed: { x: number; y: number; kind: 'secret' }[] = [];
-    return DEFAULT_SECRET_STARS.map((star) => {
-      const position = findSafeSkyPosition('secret', placed);
-      placed.push({ ...position, kind: 'secret' });
-      return { ...star, ...position };
-    });
-  });
-  const [blackHoleWishes, setBlackHoleWishes] = useState<BlackHoleWish[]>([]);
-  const [isNebulaOpened, setIsNebulaOpened] = useState<boolean>(false);
-  const [isBlackHoleOpened, setIsBlackHoleOpened] = useState<boolean>(false);
-  const [isMoonOpened, setIsMoonOpened] = useState<boolean>(false);
-
-  // Modal State Management
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [activeWishId, setActiveWishId] = useState<string | null>(null);
-  const [activeStoryId, setActiveStoryId] = useState<string | null>(null);
-  const [activeVoiceNoteId, setActiveVoiceNoteId] = useState<string | null>(null);
-  const [activeSecretStarId, setActiveSecretStarId] = useState<string | null>(null);
-
-  // Sign Up Handler
-  const signUp = useCallback((username: string, password: string, avatarUrl: string) => {
-    const trimmedUsername = username.trim();
-    if (!avatarUrl || !avatarUrl.trim()) {
-      return { success: false, error: 'A profile picture is required to sign up.' };
-    }
-    if (!trimmedUsername) {
-      return { success: false, error: 'A username is required to sign up.' };
-    }
-    if (!password || !password.trim()) {
-      return { success: false, error: 'A password is required to sign up.' };
-    }
-
-    const exists = registeredAccounts.some(
-      (acc) => acc.username.toLowerCase() === trimmedUsername.toLowerCase()
+    window.localStorage.setItem(
+      ACCOUNT_STORAGE_KEY,
+      JSON.stringify(registeredAccounts)
     );
-    if (exists) {
-      return { success: false, error: 'This username is already taken in this session. Please choose another.' };
-    }
-
-    const newAccount: UserAccount = {
-      id: `usr-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      username: trimmedUsername,
-      password: password.trim(),
-      avatarUrl: avatarUrl.trim(),
-      createdAt: Date.now()
-    };
-
-    setRegisteredAccounts((prev) => [...prev, newAccount]);
-    setCurrentUser(newAccount);
-    setAuthNotice(null);
-    return { success: true };
   }, [registeredAccounts]);
 
-  // Login Handler
-  const login = useCallback((username: string, password: string) => {
-    const trimmedUsername = username.trim();
-    if (!trimmedUsername) {
-      return { success: false, error: 'Please enter your username.' };
-    }
-    if (!password) {
-      return { success: false, error: 'Please enter your password.' };
-    }
+  const accentColor =
+    DEFAULT_ACCENT_COLOR;
 
-    const matchedAccount = registeredAccounts.find(
-      (acc) => acc.username.toLowerCase() === trimmedUsername.toLowerCase()
+  const [panOffset, setPanOffset] =
+    useState({
+      x: 0,
+      y: 0
+    });
+
+  const [zoom, setZoom] =
+    useState(1);
+
+  /*
+   * Moves the camera so the requested percentage
+   * coordinate appears at the center of the screen.
+   */
+  const focusOnCoordinates = useCallback(
+    (
+      xPercent: number,
+      yPercent: number
+    ) => {
+      if (
+        typeof window === 'undefined'
+      ) {
+        return;
+      }
+
+      const viewportWidth =
+        window.innerWidth;
+
+      const viewportHeight =
+        window.innerHeight;
+
+      const legacyOrigin = 1.5;
+      const legacySize = 3;
+
+      const worldOrigin = -2.5;
+      const worldSize = 6;
+
+      const targetX =
+        (
+          worldOrigin +
+          legacyOrigin +
+          (xPercent / 100) *
+          legacySize
+        ) *
+        viewportWidth;
+
+      const targetY =
+        (
+          worldOrigin +
+          legacyOrigin +
+          (yPercent / 100) *
+          legacySize
+        ) *
+        viewportHeight;
+
+      const viewportCenterX =
+        viewportWidth / 2;
+
+      const viewportCenterY =
+        viewportHeight / 2;
+
+      const unclamped = {
+        x:
+          viewportCenterX -
+          targetX,
+
+        y:
+          viewportCenterY -
+          targetY
+      };
+
+      const minX =
+        viewportWidth -
+        viewportWidth *
+        (worldSize +
+          worldOrigin) *
+        zoom;
+
+      const maxX =
+        -viewportWidth *
+        worldOrigin *
+        zoom;
+
+      const minY =
+        viewportHeight -
+        viewportHeight *
+        (worldSize +
+          worldOrigin) *
+        zoom;
+
+      const maxY =
+        -viewportHeight *
+        worldOrigin *
+        zoom;
+
+      setPanOffset({
+        x: Math.min(
+          maxX,
+          Math.max(
+            minX,
+            unclamped.x
+          )
+        ),
+
+        y: Math.min(
+          maxY,
+          Math.max(
+            minY,
+            unclamped.y
+          )
+        )
+      });
+    },
+    [zoom]
+  );
+
+  /*
+   * In-memory session data.
+   */
+  const [wishes, setWishes] =
+    useState<WishCard[]>([]);
+
+  const [stories, setStories] =
+    useState<Story[]>([]);
+
+  const [nebulaWords, setNebulaWords] =
+    useState<NebulaWordEntry[]>([]);
+
+  const [voiceNotes, setVoiceNotes] =
+    useState<VoiceNote[]>([]);
+
+  const [secretStars, setSecretStars] =
+    useState<SecretStar[]>(() => {
+      const placed: {
+        x: number;
+        y: number;
+        kind: 'secret';
+      }[] = [];
+
+      return DEFAULT_SECRET_STARS.map(
+        (star) => {
+          const position =
+            findSafeSkyPosition(
+              'secret',
+              placed
+            );
+
+          placed.push({
+            ...position,
+            kind: 'secret'
+          });
+
+          return {
+            ...star,
+            ...position
+          };
+        }
+      );
+    });
+
+  const [blackHoleWishes, setBlackHoleWishes] =
+    useState<BlackHoleWish[]>([]);
+
+  const [isNebulaOpened, setIsNebulaOpened] =
+    useState(false);
+
+  const [isBlackHoleOpened, setIsBlackHoleOpened] =
+    useState(false);
+
+  const [isMoonOpened, setIsMoonOpened] =
+    useState(false);
+
+  const [activeModal, setActiveModal] =
+    useState<ModalType>(null);
+
+  const [activeWishId, setActiveWishId] =
+    useState<string | null>(null);
+
+  const [activeStoryId, setActiveStoryId] =
+    useState<string | null>(null);
+
+  const [activeVoiceNoteId, setActiveVoiceNoteId] =
+    useState<string | null>(null);
+
+  const [activeSecretStarId, setActiveSecretStarId] =
+    useState<string | null>(null);
+
+  /*
+   * ACCOUNT
+   */
+
+  const signUp = useCallback(
+    (
+      username: string,
+      password: string,
+      avatarUrl: string
+    ) => {
+      const trimmedUsername =
+        username.trim();
+
+      if (
+        !avatarUrl ||
+        !avatarUrl.trim()
+      ) {
+        return {
+          success: false,
+          error:
+            'A profile picture is required to sign up.'
+        };
+      }
+
+      if (!trimmedUsername) {
+        return {
+          success: false,
+          error:
+            'A username is required to sign up.'
+        };
+      }
+
+      if (
+        !password ||
+        !password.trim()
+      ) {
+        return {
+          success: false,
+          error:
+            'A password is required to sign up.'
+        };
+      }
+
+      const exists =
+        registeredAccounts.some(
+          (acc) =>
+            acc.username.toLowerCase() ===
+            trimmedUsername.toLowerCase()
+        );
+
+      if (exists) {
+        return {
+          success: false,
+          error:
+            'This username is already taken in this session. Please choose another.'
+        };
+      }
+
+      const newAccount: UserAccount = {
+        id: `usr-${Date.now()}-${Math.random()
+          .toString(36)
+          .substring(2, 6)}`,
+
+        username: trimmedUsername,
+
+        password:
+          password.trim(),
+
+        avatarUrl:
+          avatarUrl.trim(),
+
+        createdAt: Date.now()
+      };
+
+      setRegisteredAccounts(
+        (prev) => [
+          ...prev,
+          newAccount
+        ]
+      );
+
+      setCurrentUser(
+        newAccount
+      );
+
+      setAuthNotice(null);
+
+      return {
+        success: true
+      };
+    },
+    [registeredAccounts]
+  );
+
+  const login = useCallback(
+    (
+      username: string,
+      password: string
+    ) => {
+      const trimmedUsername =
+        username.trim();
+
+      if (!trimmedUsername) {
+        return {
+          success: false,
+          error:
+            'Please enter your username.'
+        };
+      }
+
+      if (!password) {
+        return {
+          success: false,
+          error:
+            'Please enter your password.'
+        };
+      }
+
+      const matchedAccount =
+        registeredAccounts.find(
+          (acc) =>
+            acc.username.toLowerCase() ===
+            trimmedUsername.toLowerCase()
+        );
+
+      if (!matchedAccount) {
+        return {
+          success: false,
+          error:
+            'No session account found with this username. Please sign up first.'
+        };
+      }
+
+      if (
+        matchedAccount.password !==
+        password.trim()
+      ) {
+        return {
+          success: false,
+          error:
+            'Incorrect password. Please try again.'
+        };
+      }
+
+      setCurrentUser(
+        matchedAccount
+      );
+
+      setAuthNotice(null);
+
+      return {
+        success: true
+      };
+    },
+    [registeredAccounts]
+  );
+
+  const logout =
+    useCallback(() => {
+      setCurrentUser(null);
+    }, []);
+
+  /*
+   * WISHES
+   */
+
+  const addWish =
+    useCallback(
+      (wish: WishCard) => {
+        setWishes(
+          (prev) => [
+            ...prev,
+            wish
+          ]
+        );
+
+        window.setTimeout(() => {
+          focusOnCoordinates(
+            wish.x,
+            wish.y
+          );
+        }, 100);
+      },
+      [focusOnCoordinates]
     );
 
-    if (!matchedAccount) {
-      return { success: false, error: 'No session account found with this username. Please sign up first.' };
-    }
+  const openWish =
+    (id: string) => {
+      setWishes(
+        (prev) =>
+          prev.map(
+            (w) =>
+              w.id === id
+                ? {
+                  ...w,
+                  unopened: false
+                }
+                : w
+          )
+      );
 
-    if (matchedAccount.password !== password.trim()) {
-      return { success: false, error: 'Incorrect password. Please try again.' };
-    }
-
-    setCurrentUser(matchedAccount);
-    setAuthNotice(null);
-    return { success: true };
-  }, [registeredAccounts]);
-
-  // Logout Handler
-  const logout = useCallback(() => {
-    setCurrentUser(null);
-  }, []);
-
-  const focusOnCoordinates = useCallback((xPercent: number, yPercent: number) => {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const legacyOrigin = 1.5;
-    const legacySize = 3;
-    const worldOrigin = -2.5;
-    const worldSize = 6;
-    const targetX = (worldOrigin + legacyOrigin + (xPercent / 100) * legacySize) * viewportWidth;
-    const targetY = (worldOrigin + legacyOrigin + (yPercent / 100) * legacySize) * viewportHeight;
-    const viewportCenterX = viewportWidth / 2;
-    const viewportCenterY = viewportHeight / 2;
-    const unclamped = {
-      x: viewportCenterX - targetX,
-      y: viewportCenterY - targetY
-    };
-    const minX = viewportWidth - viewportWidth * (worldSize + worldOrigin) * zoom;
-    const maxX = -viewportWidth * worldOrigin * zoom;
-    const minY = viewportHeight - viewportHeight * (worldSize + worldOrigin) * zoom;
-    const maxY = -viewportHeight * worldOrigin * zoom;
-    setPanOffset({
-      x: Math.min(maxX, Math.max(minX, unclamped.x)),
-      y: Math.min(maxY, Math.max(minY, unclamped.y))
-    });
-  }, [zoom]);
-
-  const addWish = (wish: WishCard) => {
-    // Preserve chronological order
-    setWishes((prev) => [...prev, wish]);
-  };
-
-  const openWish = (id: string) => {
-    setWishes((prev) => prev.map((w) => (w.id === id ? { ...w, unopened: false } : w)));
-    setActiveWishId(id);
-    setActiveModal('wish-view');
-  };
-
-  // Ownership-enforced Delete Wish
-  const deleteWish = useCallback((id: string) => {
-    if (!currentUser) return false;
-    let deleted = false;
-    setWishes((prev) => {
-      const item = prev.find((w) => w.id === id);
-      if (!item || item.creatorId !== currentUser.id) return prev;
-      deleted = true;
-      return prev.filter((w) => w.id !== id);
-    });
-    return deleted;
-  }, [currentUser]);
-
-  // Ownership-enforced Move Wish
-  const moveWish = useCallback((id: string, x: number, y: number) => {
-    if (!currentUser) return false;
-    let moved = false;
-    setWishes((prev) => {
-      const item = prev.find((w) => w.id === id);
-      if (!item || item.creatorId !== currentUser.id) return prev;
-      moved = true;
-      return prev.map((w) => (w.id === id ? { ...w, x, y } : w));
-    });
-    return moved;
-  }, [currentUser]);
-
-  const addStory = (story: Story) => {
-    setStories((prev) => [...prev, story]);
-  };
-
-  const openStory = (id: string) => {
-    setStories((prev) => prev.map((s) => (s.id === id ? { ...s, unopened: false } : s)));
-    setActiveStoryId(id);
-    setActiveModal('story-view');
-  };
-
-  // Ownership-enforced Delete Story
-  const deleteStory = useCallback((id: string) => {
-    if (!currentUser) return false;
-    let deleted = false;
-    setStories((prev) => {
-      const item = prev.find((s) => s.id === id);
-      if (!item || item.creatorId !== currentUser.id) return prev;
-      deleted = true;
-      return prev.filter((s) => s.id !== id);
-    });
-    return deleted;
-  }, [currentUser]);
-
-  // Nebula word with compulsory explanation in creation order
-  const addNebulaWord = useCallback((word: string, explanation: string) => {
-    if (!currentUser) {
-      return { success: false, error: 'You must be logged in to submit a word.' };
-    }
-
-    const trimmedWord = word.trim();
-    if (!trimmedWord) {
-      return { success: false, error: 'Please enter a word describing the birthday girl.' };
-    }
-
-    const wordCount = trimmedWord.split(/\s+/).filter(Boolean).length;
-    if (wordCount > 2) {
-      return { success: false, error: 'Please enter one or two words only.' };
-    }
-
-    const trimmedExpl = explanation.trim();
-    if (!trimmedExpl) {
-      return { success: false, error: 'An explanation of why you chose this word is required.' };
-    }
-
-    const randomColor = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
-    const newEntry: NebulaWordEntry = {
-      id: `word-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      word: trimmedWord,
-      explanation: trimmedExpl,
-      creatorId: currentUser.id,
-      creatorName: currentUser.username,
-      creatorAvatar: currentUser.avatarUrl,
-      createdAt: Date.now(),
-      x: 15 + Math.random() * 70,
-      y: 20 + Math.random() * 60,
-      color: randomColor,
-      floatDelay: Math.random() * 4,
-      floatDuration: 5 + Math.random() * 4
+      setActiveWishId(id);
+      setActiveModal(
+        'wish-view'
+      );
     };
 
-    // Stored strictly in creation order
-    setNebulaWords((prev) => [...prev, newEntry]);
-    return { success: true };
-  }, [currentUser]);
+  const deleteWish =
+    useCallback(
+      (id: string) => {
+        if (!currentUser) {
+          return false;
+        }
 
-  const deleteNebulaWord = useCallback((id: string) => {
-    if (!currentUser) return false;
-    let deleted = false;
-    setNebulaWords((prev) => {
-      const item = prev.find((w) => w.id === id);
-      if (!item || item.creatorId !== currentUser.id) return prev;
-      deleted = true;
-      return prev.filter((w) => w.id !== id);
-    });
-    return deleted;
-  }, [currentUser]);
+        let deleted = false;
 
-  const openNebula = () => {
-    setIsNebulaOpened(true);
-    setActiveModal('nebula');
-  };
+        setWishes(
+          (prev) => {
+            const item =
+              prev.find(
+                (w) =>
+                  w.id === id
+              );
 
-  const addVoiceNote = (note: VoiceNote) => {
-    setVoiceNotes((prev) => [...prev, note]);
-  };
+            if (
+              !item ||
+              item.creatorId !==
+              currentUser.id
+            ) {
+              return prev;
+            }
 
-  const openVoiceNote = (id: string) => {
-    setActiveVoiceNoteId(id);
-    setActiveModal('voice-probe');
-  };
+            deleted = true;
 
-  const markVoiceNoteHeard = (id: string) => {
-    setVoiceNotes((prev) => prev.map((v) => (v.id === id ? { ...v, heard: true } : v)));
-  };
+            return prev.filter(
+              (w) =>
+                w.id !== id
+            );
+          }
+        );
 
-  const deleteVoiceNote = useCallback((id: string) => {
-    if (!currentUser) return false;
-    let deleted = false;
-    setVoiceNotes((prev) => {
-      const item = prev.find((v) => v.id === id);
-      if (!item || item.creatorId !== currentUser.id) return prev;
-      deleted = true;
-      return prev.filter((v) => v.id !== id);
-    });
-    return deleted;
-  }, [currentUser]);
+        return deleted;
+      },
+      [currentUser]
+    );
 
-  const discoverSecretStar = (id: string) => {
-    setSecretStars((prev) => prev.map((s) => (s.id === id ? { ...s, discovered: true } : s)));
-    setActiveSecretStarId(id);
-    setActiveModal('secret-star');
-  };
+  const moveWish =
+    useCallback(
+      (
+        id: string,
+        x: number,
+        y: number
+      ) => {
+        if (!currentUser) {
+          return false;
+        }
 
-  const addBlackHoleWish = useCallback((wishText: string) => {
-    if (!currentUser) {
-      return { success: false, error: 'You must be logged in to submit to the Black Hole.' };
-    }
+        let moved = false;
 
-    const trimmed = wishText.trim();
-    if (!trimmed) {
-      return { success: false, error: 'Please enter a wish, prayer, or burden to release.' };
-    }
+        setWishes(
+          (prev) => {
+            const item =
+              prev.find(
+                (w) =>
+                  w.id === id
+              );
 
-    const newWish: BlackHoleWish = {
-      id: `bh-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      wishText: trimmed,
-      creatorId: currentUser.id,
-      creatorName: currentUser.username,
-      creatorAvatar: currentUser.avatarUrl,
-      createdAt: Date.now()
+            if (
+              !item ||
+              item.creatorId !==
+              currentUser.id
+            ) {
+              return prev;
+            }
+
+            moved = true;
+
+            return prev.map(
+              (w) =>
+                w.id === id
+                  ? {
+                    ...w,
+                    x,
+                    y
+                  }
+                  : w
+            );
+          }
+        );
+
+        return moved;
+      },
+      [currentUser]
+    );
+
+  /*
+   * STORIES
+   */
+
+  const addStory =
+    useCallback(
+      (story: Story) => {
+        setStories(
+          (prev) => [
+            ...prev,
+            story
+          ]
+        );
+
+        window.setTimeout(() => {
+          focusOnCoordinates(
+            story.x,
+            story.y
+          );
+        }, 100);
+      },
+      [focusOnCoordinates]
+    );
+
+  const openStory =
+    (id: string) => {
+      setStories(
+        (prev) =>
+          prev.map(
+            (s) =>
+              s.id === id
+                ? {
+                  ...s,
+                  unopened: false
+                }
+                : s
+          )
+      );
+
+      setActiveStoryId(id);
+      setActiveModal(
+        'story-view'
+      );
     };
 
-    // Kept in creation order (oldest first in list)
-    setBlackHoleWishes((prev) => [...prev, newWish]);
-    return { success: true };
-  }, [currentUser]);
+  const deleteStory =
+    useCallback(
+      (id: string) => {
+        if (!currentUser) {
+          return false;
+        }
 
-  const deleteBlackHoleWish = useCallback((id: string) => {
-    if (!currentUser) return false;
-    let deleted = false;
-    setBlackHoleWishes((prev) => {
-      const item = prev.find((w) => w.id === id);
-      if (!item || item.creatorId !== currentUser.id) return prev;
-      deleted = true;
-      return prev.filter((w) => w.id !== id);
-    });
-    return deleted;
-  }, [currentUser]);
+        let deleted = false;
 
-  // Persist user-uploaded sticker in their session account
-  const addUploadedSticker = useCallback((stickerUrl: string) => {
-    if (!currentUser) return;
-    setCurrentUser((prev) => {
-      if (!prev) return prev;
-      const existing = prev.uploadedStickers || [];
-      if (existing.includes(stickerUrl)) return prev;
-      return { ...prev, uploadedStickers: [stickerUrl, ...existing] };
-    });
-  }, [currentUser]);
+        setStories(
+          (prev) => {
+            const item =
+              prev.find(
+                (s) =>
+                  s.id === id
+              );
 
-  const openMoon = () => {
-    setIsMoonOpened(true);
-    setActiveModal('moon-message');
-  };
+            if (
+              !item ||
+              item.creatorId !==
+              currentUser.id
+            ) {
+              return prev;
+            }
 
-  const openBlackHole = () => {
-    setIsBlackHoleOpened(true);
-    setActiveModal('black-hole');
-  };
+            deleted = true;
 
-  // Distinct friends count (contributors)
-  const friendsCount = registeredAccounts.length;
+            return prev.filter(
+              (s) =>
+                s.id !== id
+            );
+          }
+        );
 
-  // Dynamic unopened count across universe
+        return deleted;
+      },
+      [currentUser]
+    );
+
+  /*
+   * NEBULA WORDS
+   */
+
+  const addNebulaWord =
+    useCallback(
+      (
+        word: string,
+        explanation: string
+      ) => {
+        if (!currentUser) {
+          return {
+            success: false,
+            error:
+              'You must be logged in to submit a word.'
+          };
+        }
+
+        const trimmedWord =
+          word.trim();
+
+        if (!trimmedWord) {
+          return {
+            success: false,
+            error:
+              'Please enter a word describing the birthday girl.'
+          };
+        }
+
+        const wordCount =
+          trimmedWord
+            .split(/\s+/)
+            .filter(Boolean)
+            .length;
+
+        if (wordCount > 2) {
+          return {
+            success: false,
+            error:
+              'Please enter one or two words only.'
+          };
+        }
+
+        const trimmedExpl =
+          explanation.trim();
+
+        if (!trimmedExpl) {
+          return {
+            success: false,
+            error:
+              'An explanation of why you chose this word is required.'
+          };
+        }
+
+        const randomColor =
+          COLOR_PALETTE[
+          Math.floor(
+            Math.random() *
+            COLOR_PALETTE.length
+          )
+          ];
+
+        const newEntry:
+          NebulaWordEntry = {
+          id: `word-${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 6)}`,
+
+          word:
+            trimmedWord,
+
+          explanation:
+            trimmedExpl,
+
+          creatorId:
+            currentUser.id,
+
+          creatorName:
+            currentUser.username,
+
+          creatorAvatar:
+            currentUser.avatarUrl,
+
+          createdAt:
+            Date.now(),
+
+          x:
+            18 +
+            Math.random() *
+            64,
+
+          y:
+            22 +
+            Math.random() *
+            56,
+
+          color:
+            randomColor,
+
+          floatDelay:
+            Math.random() *
+            4,
+
+          floatDuration:
+            5 +
+            Math.random() *
+            4
+        };
+
+        setNebulaWords(
+          (prev) => [
+            ...prev,
+            newEntry
+          ]
+        );
+
+        /*
+         * Freshly created Nebula word:
+         * automatically locate it.
+         */
+        window.setTimeout(() => {
+          focusOnCoordinates(
+            newEntry.x,
+            newEntry.y
+          );
+        }, 100);
+
+        return {
+          success: true
+        };
+      },
+      [
+        currentUser,
+        focusOnCoordinates
+      ]
+    );
+
+  const deleteNebulaWord =
+    useCallback(
+      (id: string) => {
+        if (!currentUser) {
+          return false;
+        }
+
+        let deleted = false;
+
+        setNebulaWords(
+          (prev) => {
+            const item =
+              prev.find(
+                (w) =>
+                  w.id === id
+              );
+
+            if (
+              !item ||
+              item.creatorId !==
+              currentUser.id
+            ) {
+              return prev;
+            }
+
+            deleted = true;
+
+            return prev.filter(
+              (w) =>
+                w.id !== id
+            );
+          }
+        );
+
+        return deleted;
+      },
+      [currentUser]
+    );
+
+  const openNebula =
+    () => {
+      setIsNebulaOpened(
+        true
+      );
+
+      setActiveModal(
+        'nebula'
+      );
+    };
+
+  /*
+   * VOICE NOTES
+   */
+
+  const addVoiceNote =
+    useCallback(
+      (note: VoiceNote) => {
+        setVoiceNotes(
+          (prev) => [
+            ...prev,
+            note
+          ]
+        );
+
+        window.setTimeout(() => {
+          focusOnCoordinates(
+            note.x,
+            note.y
+          );
+        }, 100);
+      },
+      [focusOnCoordinates]
+    );
+
+  const openVoiceNote =
+    (id: string) => {
+      setActiveVoiceNoteId(id);
+
+      setActiveModal(
+        'voice-probe'
+      );
+    };
+
+  const markVoiceNoteHeard =
+    (id: string) => {
+      setVoiceNotes(
+        (prev) =>
+          prev.map(
+            (v) =>
+              v.id === id
+                ? {
+                  ...v,
+                  heard: true
+                }
+                : v
+          )
+      );
+    };
+
+  const deleteVoiceNote =
+    useCallback(
+      (id: string) => {
+        if (!currentUser) {
+          return false;
+        }
+
+        let deleted = false;
+
+        setVoiceNotes(
+          (prev) => {
+            const item =
+              prev.find(
+                (v) =>
+                  v.id === id
+              );
+
+            if (
+              !item ||
+              item.creatorId !==
+              currentUser.id
+            ) {
+              return prev;
+            }
+
+            deleted = true;
+
+            return prev.filter(
+              (v) =>
+                v.id !== id
+            );
+          }
+        );
+
+        return deleted;
+      },
+      [currentUser]
+    );
+
+  /*
+   * SECRET STARS
+   */
+
+  const discoverSecretStar =
+    (id: string) => {
+      setSecretStars(
+        (prev) =>
+          prev.map(
+            (s) =>
+              s.id === id
+                ? {
+                  ...s,
+                  discovered: true
+                }
+                : s
+          )
+      );
+
+      setActiveSecretStarId(
+        id
+      );
+
+      setActiveModal(
+        'secret-star'
+      );
+    };
+
+  /*
+   * BLACK HOLE
+   */
+
+  const addBlackHoleWish =
+    useCallback(
+      (wishText: string) => {
+        if (!currentUser) {
+          return {
+            success: false,
+            error:
+              'You must be logged in to submit to the Black Hole.'
+          };
+        }
+
+        const trimmed =
+          wishText.trim();
+
+        if (!trimmed) {
+          return {
+            success: false,
+            error:
+              'Please enter a wish, prayer, or burden to release.'
+          };
+        }
+
+        const newWish:
+          BlackHoleWish = {
+          id: `bh-${Date.now()}-${Math.random()
+            .toString(36)
+            .substring(2, 6)}`,
+
+          wishText:
+            trimmed,
+
+          creatorId:
+            currentUser.id,
+
+          creatorName:
+            currentUser.username,
+
+          creatorAvatar:
+            currentUser.avatarUrl,
+
+          createdAt:
+            Date.now()
+        };
+
+        setBlackHoleWishes(
+          (prev) => [
+            ...prev,
+            newWish
+          ]
+        );
+
+        return {
+          success: true
+        };
+      },
+      [currentUser]
+    );
+
+  const deleteBlackHoleWish =
+    useCallback(
+      (id: string) => {
+        if (!currentUser) {
+          return false;
+        }
+
+        let deleted = false;
+
+        setBlackHoleWishes(
+          (prev) => {
+            const item =
+              prev.find(
+                (w) =>
+                  w.id === id
+              );
+
+            if (
+              !item ||
+              item.creatorId !==
+              currentUser.id
+            ) {
+              return prev;
+            }
+
+            deleted = true;
+
+            return prev.filter(
+              (w) =>
+                w.id !== id
+            );
+          }
+        );
+
+        return deleted;
+      },
+      [currentUser]
+    );
+
+  /*
+   * UPLOADED STICKERS
+   */
+
+  const addUploadedSticker =
+    useCallback(
+      (stickerUrl: string) => {
+        if (!currentUser) {
+          return;
+        }
+
+        setCurrentUser(
+          (prev) => {
+            if (!prev) {
+              return prev;
+            }
+
+            const existing =
+              prev.uploadedStickers ||
+              [];
+
+            if (
+              existing.includes(
+                stickerUrl
+              )
+            ) {
+              return prev;
+            }
+
+            return {
+              ...prev,
+              uploadedStickers: [
+                stickerUrl,
+                ...existing
+              ]
+            };
+          }
+        );
+      },
+      [currentUser]
+    );
+
+  /*
+   * OTHER OBJECTS
+   */
+
+  const openMoon =
+    () => {
+      setIsMoonOpened(
+        true
+      );
+
+      setActiveModal(
+        'moon-message'
+      );
+    };
+
+  const openBlackHole =
+    () => {
+      setIsBlackHoleOpened(
+        true
+      );
+
+      setActiveModal(
+        'black-hole'
+      );
+    };
+
+  const friendsCount =
+    registeredAccounts.length;
+
   const unopenedCount =
-    wishes.filter((w) => w.unopened).length +
-    stories.filter((s) => s.unopened).length +
-    voiceNotes.filter((v) => !v.heard).length +
+    wishes.filter(
+      (w) => w.unopened
+    ).length +
+
+    stories.filter(
+      (s) => s.unopened
+    ).length +
+
+    voiceNotes.filter(
+      (v) => !v.heard
+    ).length +
+
     (isMoonOpened ? 0 : 1) +
-    secretStars.filter((s) => !s.discovered).length;
+
+    (isNebulaOpened ? 0 : 1) +
+
+    secretStars.filter(
+      (s) => !s.discovered
+    ).length;
 
   return (
     <SkyContext.Provider
       value={{
         currentUser,
         registeredAccounts,
+
         signUp,
         login,
         logout,
+
         accentColor,
+
         panOffset,
         setPanOffset,
+
         zoom,
         setZoom,
+
         focusOnCoordinates,
+
         wishes,
         stories,
         nebulaWords,
         voiceNotes,
         secretStars,
         blackHoleWishes,
+
         isNebulaOpened,
         isBlackHoleOpened,
         isMoonOpened,
+
         openMoon,
+
         addWish,
         openWish,
         deleteWish,
         moveWish,
+
         addStory,
         openStory,
         deleteStory,
+
         addNebulaWord,
         deleteNebulaWord,
         openNebula,
+
         addVoiceNote,
         openVoiceNote,
         markVoiceNoteHeard,
         deleteVoiceNote,
+
         discoverSecretStar,
+
         addBlackHoleWish,
         deleteBlackHoleWish,
         openBlackHole,
+
         addUploadedSticker,
+
         activeModal,
         setActiveModal,
+
         authNotice,
         setAuthNotice,
+
         authMode,
         setAuthMode,
+
         activeWishId,
         setActiveWishId,
+
         activeStoryId,
         setActiveStoryId,
+
         activeVoiceNoteId,
         setActiveVoiceNoteId,
+
         activeSecretStarId,
         setActiveSecretStarId,
+
         friendsCount,
         unopenedCount
       }}
@@ -529,9 +1391,14 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 };
 
 export const useSky = () => {
-  const context = useContext(SkyContext);
+  const context =
+    useContext(SkyContext);
+
   if (!context) {
-    throw new Error('useSky must be used within a SkyProvider');
+    throw new Error(
+      'useSky must be used within a SkyProvider'
+    );
   }
+
   return context;
 };

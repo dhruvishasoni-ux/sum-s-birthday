@@ -107,7 +107,7 @@ export const NebulaObject: React.FC = () => {
   }, []);
 
   return (
-    <div className={`nebula-object ${isNebulaOpened ? 'opened' : ''}`} style={{ left: '24%', top: '48%' }} onMouseMove={updatePointer} onMouseLeave={() => { pointerRef.current = null; }} onClick={(event) => { event.stopPropagation(); openNebula(); }} title="Nebula" aria-label="Open Nebula" role="button" tabIndex={0}>
+    <div className={`nebula-object ${isNebulaOpened ? 'opened' : ''}`} onMouseMove={updatePointer} onMouseLeave={() => { pointerRef.current = null; }} onClick={(event) => { event.stopPropagation(); openNebula(); }} title="Nebula" aria-label="Open Nebula" role="button" tabIndex={0}>
       <canvas ref={canvasRef} width={WIDTH} height={HEIGHT} aria-hidden="true" />
     </div>
   );

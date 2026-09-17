@@ -2,8 +2,7 @@
    GOOGLE FONTS
 ===================================================== */
 
-@import url(
-    'https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Caveat:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap'
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Caveat:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap'
 );
 
 
@@ -32,12 +31,10 @@
 body {
 
     background:
-        radial-gradient(
-            circle at 50% 50%,
+        radial-gradient(circle at 50% 50%,
             #10102a 0%,
             #070719 45%,
-            #03030d 100%
-        );
+            #03030d 100%);
 
     color:
         white;
@@ -187,7 +184,7 @@ body {
 .bright-star {
 
     box-shadow:
-        0 0 8px rgba(255,255,255,0.7);
+        0 0 8px rgba(255, 255, 255, 0.7);
 
 }
 
@@ -231,11 +228,9 @@ body {
         20%;
 
     background:
-        radial-gradient(
-            ellipse,
-            rgba(100,80,255,0.8),
-            rgba(100,80,255,0)
-        );
+        radial-gradient(ellipse,
+            rgba(100, 80, 255, 0.8),
+            rgba(100, 80, 255, 0));
 
 }
 
@@ -255,11 +250,9 @@ body {
         55%;
 
     background:
-        radial-gradient(
-            ellipse,
-            rgba(180,80,255,0.6),
-            rgba(180,80,255,0)
-        );
+        radial-gradient(ellipse,
+            rgba(180, 80, 255, 0.6),
+            rgba(180, 80, 255, 0));
 
 }
 
@@ -292,16 +285,14 @@ body {
         0.5;
 
     background:
-        radial-gradient(
-            circle at 35% 35%,
+        radial-gradient(circle at 35% 35%,
             #ffffff,
             #d8d8e8 55%,
-            #a9a9bd
-        );
+            #a9a9bd);
 
     box-shadow:
-        0 0 20px rgba(255,255,255,0.15),
-        0 0 60px rgba(200,200,255,0.08);
+        0 0 20px rgba(255, 255, 255, 0.15),
+        0 0 60px rgba(200, 200, 255, 0.08);
 
     pointer-events:
         none;
@@ -328,11 +319,9 @@ body {
         999px;
 
     background:
-        linear-gradient(
-            to right,
-            rgba(255,255,255,0.95),
-            rgba(255,255,255,0)
-        );
+        linear-gradient(to right,
+            rgba(255, 255, 255, 0.95),
+            rgba(255, 255, 255, 0));
 
     transform:
         rotate(-45deg);
@@ -341,7 +330,7 @@ body {
         left center;
 
     box-shadow:
-        0 0 6px rgba(255,255,255,0.45);
+        0 0 6px rgba(255, 255, 255, 0.45);
 
     animation:
         shooting 1.25s linear forwards;
@@ -357,9 +346,7 @@ body {
     0% {
 
         transform:
-            translate(0,0)
-            rotate(-45deg)
-            scaleX(0.15);
+            translate(0, 0) rotate(-45deg) scaleX(0.15);
 
         opacity:
             0;
@@ -386,9 +373,7 @@ body {
     100% {
 
         transform:
-            translate(-380px,380px)
-            rotate(-45deg)
-            scaleX(1);
+            translate(-380px, 380px) rotate(-45deg) scaleX(1);
 
         opacity:
             0;
@@ -423,10 +408,10 @@ body {
         14px 20px;
 
     background:
-        rgba(255,255,255,0.07);
+        rgba(255, 255, 255, 0.07);
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     border-radius:
         18px;
@@ -524,7 +509,7 @@ body {
     100% {
 
         text-shadow:
-            0 0 4px rgba(255,255,255,0.2);
+            0 0 4px rgba(255, 255, 255, 0.2);
 
     }
 
@@ -532,8 +517,8 @@ body {
     50% {
 
         text-shadow:
-            0 0 16px rgba(255,255,255,0.9),
-            0 0 28px rgba(190,175,255,0.5);
+            0 0 16px rgba(255, 255, 255, 0.9),
+            0 0 28px rgba(190, 175, 255, 0.5);
 
     }
 
@@ -568,13 +553,13 @@ body {
         7px 11px 7px 7px;
 
     border:
-        1px solid rgba(255,255,255,0.14);
+        1px solid rgba(255, 255, 255, 0.14);
 
     border-radius:
         999px;
 
     background:
-        rgba(255,255,255,0.07);
+        rgba(255, 255, 255, 0.07);
 
     color:
         white;
@@ -615,7 +600,7 @@ body {
         hidden;
 
     background:
-        rgba(255,255,255,0.1);
+        rgba(255, 255, 255, 0.1);
 
 }
 
@@ -670,10 +655,10 @@ body {
         50%;
 
     border:
-        1px solid rgba(255,255,255,0.18);
+        1px solid rgba(255, 255, 255, 0.18);
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     color:
         white;
@@ -723,13 +708,13 @@ body {
         14px;
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     border-radius:
         22px;
 
     background:
-        rgba(16,16,35,0.86);
+        rgba(16, 16, 35, 0.86);
 
     backdrop-filter:
         blur(22px);
@@ -789,13 +774,13 @@ body {
         5px;
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         15px;
 
     background:
-        rgba(255,255,255,0.035);
+        rgba(255, 255, 255, 0.035);
 
     color:
         white;
@@ -812,7 +797,7 @@ body {
 .element-option:hover {
 
     background:
-        rgba(255,255,255,0.09);
+        rgba(255, 255, 255, 0.09);
 
 }
 
@@ -849,7 +834,7 @@ body {
         center;
 
     background:
-        rgba(255,255,255,0.07);
+        rgba(255, 255, 255, 0.07);
 
     color:
         #b89cff;
@@ -923,7 +908,7 @@ body {
         24px;
 
     background:
-        rgba(2,2,12,0.48);
+        rgba(2, 2, 12, 0.48);
 
     backdrop-filter:
         blur(7px);
@@ -969,10 +954,10 @@ body {
         50%;
 
     border:
-        1px solid rgba(255,255,255,0.1);
+        1px solid rgba(255, 255, 255, 0.1);
 
     background:
-        rgba(255,255,255,0.05);
+        rgba(255, 255, 255, 0.05);
 
     color:
         white;
@@ -996,10 +981,10 @@ body {
 .wish-window {
 
     width:
-        min(1180px,95vw);
+        min(1180px, 95vw);
 
     height:
-        min(92vh,900px);
+        min(92vh, 900px);
 
     overflow:
         auto;
@@ -1014,13 +999,13 @@ body {
         relative;
 
     background:
-        rgba(17,17,35,0.70);
+        rgba(17, 17, 35, 0.70);
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     box-shadow:
-        0 30px 100px rgba(0,0,0,0.45);
+        0 30px 100px rgba(0, 0, 0, 0.45);
 
     backdrop-filter:
         blur(28px);
@@ -1044,16 +1029,16 @@ body {
         68px;
 
     border:
-        1px solid rgba(255,255,255,0.08);
+        1px solid rgba(255, 255, 255, 0.08);
 
     border-radius:
         999px;
 
     background:
-        rgba(255,255,255,0.035);
+        rgba(255, 255, 255, 0.035);
 
     color:
-        rgba(255,255,255,0.42);
+        rgba(255, 255, 255, 0.42);
 
     padding:
         6px 10px;
@@ -1073,7 +1058,7 @@ body {
         white;
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
 }
 
@@ -1154,8 +1139,7 @@ body {
         grid;
 
     grid-template-columns:
-        minmax(390px,0.9fr)
-        minmax(450px,1.1fr);
+        minmax(390px, 0.9fr) minmax(450px, 1.1fr);
 
     gap:
         36px;
@@ -1186,7 +1170,7 @@ body {
         18px;
 
     border-bottom:
-        1px solid rgba(255,255,255,0.06);
+        1px solid rgba(255, 255, 255, 0.06);
 
 }
 
@@ -1251,13 +1235,13 @@ body {
         100%;
 
     border:
-        1px solid rgba(255,255,255,0.1);
+        1px solid rgba(255, 255, 255, 0.1);
 
     border-radius:
         13px;
 
     background:
-        rgba(255,255,255,0.06);
+        rgba(255, 255, 255, 0.06);
 
     color:
         white;
@@ -1306,7 +1290,7 @@ body {
 .creator-panel input::placeholder {
 
     color:
-        rgba(255,255,255,0.25);
+        rgba(255, 255, 255, 0.25);
 
 }
 
@@ -1352,8 +1336,7 @@ body {
         grid;
 
     grid-template-columns:
-        minmax(125px,1fr)
-        minmax(100px,1.25fr);
+        minmax(125px, 1fr) minmax(100px, 1.25fr);
 
     gap:
         8px;
@@ -1401,16 +1384,16 @@ body {
         30px;
 
     border:
-        1px solid rgba(255,255,255,0.08);
+        1px solid rgba(255, 255, 255, 0.08);
 
     border-radius:
         8px;
 
     background:
-        rgba(255,255,255,0.045);
+        rgba(255, 255, 255, 0.045);
 
     color:
-        rgba(255,255,255,0.68);
+        rgba(255, 255, 255, 0.68);
 
     cursor:
         pointer;
@@ -1421,7 +1404,7 @@ body {
 .format-button.active {
 
     background:
-        rgba(255,255,255,0.14);
+        rgba(255, 255, 255, 0.14);
 
     color:
         white;
@@ -1460,7 +1443,7 @@ body {
         relative;
 
     border:
-        1px solid rgba(255,255,255,0.1);
+        1px solid rgba(255, 255, 255, 0.1);
 
     border-radius:
         8px;
@@ -1566,16 +1549,16 @@ body {
         7px 10px;
 
     border:
-        1px solid rgba(255,255,255,0.08);
+        1px solid rgba(255, 255, 255, 0.08);
 
     border-radius:
         999px;
 
     background:
-        rgba(255,255,255,0.035);
+        rgba(255, 255, 255, 0.035);
 
     color:
-        rgba(255,255,255,0.55);
+        rgba(255, 255, 255, 0.55);
 
     font-size:
         10px;
@@ -1594,10 +1577,10 @@ body {
         white;
 
     background:
-        rgba(255,255,255,0.1);
+        rgba(255, 255, 255, 0.1);
 
     border-color:
-        rgba(255,255,255,0.25);
+        rgba(255, 255, 255, 0.25);
 
 }
 
@@ -1714,7 +1697,7 @@ body {
         0 !important;
 
     border:
-        1px dashed rgba(255,255,255,0.3);
+        1px dashed rgba(255, 255, 255, 0.3);
 
     border-radius:
         50%;
@@ -1781,7 +1764,7 @@ body {
         6px 9px;
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         999px;
@@ -1790,7 +1773,7 @@ body {
         transparent;
 
     color:
-        rgba(255,255,255,0.42);
+        rgba(255, 255, 255, 0.42);
 
     font-size:
         10px;
@@ -1804,7 +1787,7 @@ body {
 .sticker-tab.active {
 
     background:
-        rgba(255,255,255,0.09);
+        rgba(255, 255, 255, 0.09);
 
     color:
         white;
@@ -1818,7 +1801,7 @@ body {
         grid;
 
     grid-template-columns:
-        repeat(8,1fr);
+        repeat(8, 1fr);
 
     gap:
         7px;
@@ -1827,13 +1810,13 @@ body {
         9px;
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         15px;
 
     background:
-        rgba(255,255,255,0.025);
+        rgba(255, 255, 255, 0.025);
 
 }
 
@@ -1845,13 +1828,13 @@ body {
         42px;
 
     border:
-        1px solid rgba(255,255,255,0.04);
+        1px solid rgba(255, 255, 255, 0.04);
 
     border-radius:
         10px;
 
     background:
-        rgba(255,255,255,0.035);
+        rgba(255, 255, 255, 0.035);
 
     color:
         white;
@@ -1949,8 +1932,8 @@ body {
         isolate;
 
     box-shadow:
-        inset 0 0 80px rgba(255,255,255,0.025),
-        0 22px 70px rgba(0,0,0,0.18);
+        inset 0 0 80px rgba(255, 255, 255, 0.025),
+        0 22px 70px rgba(0, 0, 0, 0.18);
 
 }
 
@@ -1962,21 +1945,15 @@ body {
 .wish-preview.theme-midnight {
 
     background:
-        radial-gradient(
-            circle at 80% 10%,
-            rgba(140,125,255,0.42),
-            transparent 37%
-        ),
-        radial-gradient(
-            circle at 12% 88%,
-            rgba(80,75,190,0.25),
-            transparent 37%
-        ),
-        linear-gradient(
-            135deg,
+        radial-gradient(circle at 80% 10%,
+            rgba(140, 125, 255, 0.42),
+            transparent 37%),
+        radial-gradient(circle at 12% 88%,
+            rgba(80, 75, 190, 0.25),
+            transparent 37%),
+        linear-gradient(135deg,
             #13122c,
-            #2b2853
-        );
+            #2b2853);
 
 }
 
@@ -1984,21 +1961,15 @@ body {
 .wish-preview.theme-blossom {
 
     background:
-        radial-gradient(
-            circle at 82% 12%,
-            rgba(255,182,218,0.48),
-            transparent 38%
-        ),
-        radial-gradient(
-            circle at 12% 88%,
-            rgba(220,122,179,0.28),
-            transparent 38%
-        ),
-        linear-gradient(
-            135deg,
+        radial-gradient(circle at 82% 12%,
+            rgba(255, 182, 218, 0.48),
+            transparent 38%),
+        radial-gradient(circle at 12% 88%,
+            rgba(220, 122, 179, 0.28),
+            transparent 38%),
+        linear-gradient(135deg,
             #422237,
-            #7d4569
-        );
+            #7d4569);
 
 }
 
@@ -2006,21 +1977,15 @@ body {
 .wish-preview.theme-ocean {
 
     background:
-        radial-gradient(
-            circle at 82% 10%,
-            rgba(105,220,238,0.45),
-            transparent 38%
-        ),
-        radial-gradient(
-            circle at 12% 88%,
-            rgba(55,145,175,0.3),
-            transparent 38%
-        ),
-        linear-gradient(
-            135deg,
+        radial-gradient(circle at 82% 10%,
+            rgba(105, 220, 238, 0.45),
+            transparent 38%),
+        radial-gradient(circle at 12% 88%,
+            rgba(55, 145, 175, 0.3),
+            transparent 38%),
+        linear-gradient(135deg,
             #0c2a37,
-            #1d6277
-        );
+            #1d6277);
 
 }
 
@@ -2028,21 +1993,15 @@ body {
 .wish-preview.theme-sunset {
 
     background:
-        radial-gradient(
-            circle at 82% 10%,
-            rgba(255,193,120,0.48),
-            transparent 38%
-        ),
-        radial-gradient(
-            circle at 12% 88%,
-            rgba(222,104,91,0.28),
-            transparent 38%
-        ),
-        linear-gradient(
-            135deg,
+        radial-gradient(circle at 82% 10%,
+            rgba(255, 193, 120, 0.48),
+            transparent 38%),
+        radial-gradient(circle at 12% 88%,
+            rgba(222, 104, 91, 0.28),
+            transparent 38%),
+        linear-gradient(135deg,
             #4c2732,
-            #8c4c36
-        );
+            #8c4c36);
 
 }
 
@@ -2050,21 +2009,15 @@ body {
 .wish-preview.theme-cosmic {
 
     background:
-        radial-gradient(
-            circle at 82% 10%,
-            rgba(196,133,255,0.5),
-            transparent 38%
-        ),
-        radial-gradient(
-            circle at 12% 88%,
-            rgba(93,69,195,0.3),
-            transparent 38%
-        ),
-        linear-gradient(
-            135deg,
+        radial-gradient(circle at 82% 10%,
+            rgba(196, 133, 255, 0.5),
+            transparent 38%),
+        radial-gradient(circle at 12% 88%,
+            rgba(93, 69, 195, 0.3),
+            transparent 38%),
+        linear-gradient(135deg,
             #17132f,
-            #492461
-        );
+            #492461);
 
 }
 
@@ -2072,21 +2025,15 @@ body {
 .wish-preview.theme-candy {
 
     background:
-        radial-gradient(
-            circle at 82% 10%,
-            rgba(255,175,220,0.48),
-            transparent 38%
-        ),
-        radial-gradient(
-            circle at 12% 88%,
-            rgba(238,105,171,0.3),
-            transparent 38%
-        ),
-        linear-gradient(
-            135deg,
+        radial-gradient(circle at 82% 10%,
+            rgba(255, 175, 220, 0.48),
+            transparent 38%),
+        radial-gradient(circle at 12% 88%,
+            rgba(238, 105, 171, 0.3),
+            transparent 38%),
+        linear-gradient(135deg,
             #492136,
-            #884164
-        );
+            #884164);
 
 }
 
@@ -2113,8 +2060,7 @@ body {
 }
 
 
-.wish-preview.background-plain
-.background-texture {
+.wish-preview.background-plain .background-texture {
 
     opacity:
         0;
@@ -2122,29 +2068,24 @@ body {
 }
 
 
-.wish-preview.background-notebook
-.background-texture {
+.wish-preview.background-notebook .background-texture {
 
     opacity:
         0.82;
 
     background-image:
 
-        repeating-linear-gradient(
-            to bottom,
+        repeating-linear-gradient(to bottom,
             transparent 0,
             transparent 31px,
-            rgba(255,255,255,0.13) 32px,
-            transparent 33px
-        ),
+            rgba(255, 255, 255, 0.13) 32px,
+            transparent 33px),
 
-        linear-gradient(
-            to right,
+        linear-gradient(to right,
             transparent 0,
             transparent 47px,
-            rgba(255,110,135,0.3) 48px,
-            transparent 49px
-        );
+            rgba(255, 110, 135, 0.3) 48px,
+            transparent 49px);
 
     background-size:
         100% 33px,
@@ -2153,25 +2094,18 @@ body {
 }
 
 
-.wish-preview.background-stardust
-.background-texture {
+.wish-preview.background-stardust .background-texture {
 
     opacity:
         0.65;
 
     background-image:
 
-        radial-gradient(
-            rgba(255,255,255,0.30)
-            0.7px,
-            transparent 1px
-        ),
+        radial-gradient(rgba(255, 255, 255, 0.30) 0.7px,
+            transparent 1px),
 
-        radial-gradient(
-            rgba(255,255,255,0.17)
-            1px,
-            transparent 1.4px
-        );
+        radial-gradient(rgba(255, 255, 255, 0.17) 1px,
+            transparent 1.4px);
 
     background-size:
         17px 17px,
@@ -2185,43 +2119,32 @@ body {
    soft faded circles, NO diagonal lines.
 */
 
-.wish-preview.background-scrapbook
-.background-texture {
+.wish-preview.background-scrapbook .background-texture {
 
     opacity:
         0.75;
 
     background-image:
 
-        radial-gradient(
-            circle at 13% 18%,
-            rgba(255,255,255,0.10) 0 24px,
-            transparent 25px
-        ),
+        radial-gradient(circle at 13% 18%,
+            rgba(255, 255, 255, 0.10) 0 24px,
+            transparent 25px),
 
-        radial-gradient(
-            circle at 33% 72%,
-            rgba(255,255,255,0.07) 0 34px,
-            transparent 35px
-        ),
+        radial-gradient(circle at 33% 72%,
+            rgba(255, 255, 255, 0.07) 0 34px,
+            transparent 35px),
 
-        radial-gradient(
-            circle at 76% 25%,
-            rgba(255,255,255,0.08) 0 29px,
-            transparent 30px
-        ),
+        radial-gradient(circle at 76% 25%,
+            rgba(255, 255, 255, 0.08) 0 29px,
+            transparent 30px),
 
-        radial-gradient(
-            circle at 88% 78%,
-            rgba(255,255,255,0.07) 0 38px,
-            transparent 39px
-        ),
+        radial-gradient(circle at 88% 78%,
+            rgba(255, 255, 255, 0.07) 0 38px,
+            transparent 39px),
 
-        radial-gradient(
-            circle at 55% 45%,
-            rgba(255,255,255,0.035) 0 70px,
-            transparent 71px
-        );
+        radial-gradient(circle at 55% 45%,
+            rgba(255, 255, 255, 0.035) 0 70px,
+            transparent 71px);
 
     background-size:
         100% 100%;
@@ -2267,12 +2190,9 @@ body {
 .card-frame.border-single {
 
     border:
-        1px solid
-        color-mix(
-            in srgb,
+        1px solid color-mix(in srgb,
             var(--accent) 58%,
-            white
-        );
+            white);
 
     opacity:
         0.76;
@@ -2283,12 +2203,9 @@ body {
 .card-frame.border-dotted {
 
     border:
-        2px dotted
-        color-mix(
-            in srgb,
+        2px dotted color-mix(in srgb,
             var(--accent) 60%,
-            white
-        );
+            white);
 
     opacity:
         0.72;
@@ -2429,8 +2346,7 @@ body {
         50%;
 
     transform:
-        translateX(-50%)
-        rotate(180deg);
+        translateX(-50%) rotate(180deg);
 
     white-space:
         nowrap;
@@ -2505,8 +2421,7 @@ body {
         50%;
 
     transform:
-        translateX(-50%)
-        rotate(180deg);
+        translateX(-50%) rotate(180deg);
 
     white-space:
         nowrap;
@@ -2529,12 +2444,9 @@ body {
         22px;
 
     border:
-        1px solid
-        color-mix(
-            in srgb,
+        1px solid color-mix(in srgb,
             var(--accent) 20%,
-            transparent
-        );
+            transparent);
 
 }
 
@@ -2594,12 +2506,9 @@ body {
         24px;
 
     border:
-        1px solid
-        color-mix(
-            in srgb,
+        1px solid color-mix(in srgb,
             var(--accent) 18%,
-            transparent
-        );
+            transparent);
 
 }
 
@@ -2651,8 +2560,7 @@ body {
         50%;
 
     transform:
-        translateX(-50%)
-        rotate(180deg);
+        translateX(-50%) rotate(180deg);
 
     white-space:
         nowrap;
@@ -2675,12 +2583,9 @@ body {
         22px;
 
     border:
-        1px solid
-        color-mix(
-            in srgb,
+        1px solid color-mix(in srgb,
             var(--accent) 24%,
-            transparent
-        );
+            transparent);
 
 }
 
@@ -2759,7 +2664,7 @@ body {
         none;
 
     transform:
-        translate(-50%,-50%);
+        translate(-50%, -50%);
 
     text-align:
         center;
@@ -2778,12 +2683,9 @@ body {
 .draggable-text.text-selected {
 
     text-shadow:
-        0 0 12px
-        color-mix(
-            in srgb,
+        0 0 12px color-mix(in srgb,
             var(--accent) 38%,
-            transparent
-        );
+            transparent);
 
 }
 
@@ -2803,11 +2705,9 @@ body {
         1.18;
 
     color:
-        color-mix(
-            in srgb,
+        color-mix(in srgb,
             var(--accent) 62%,
-            white
-        );
+            white);
 
 }
 
@@ -2815,7 +2715,7 @@ body {
 .card-body {
 
     width:
-        min(78%,460px);
+        min(78%, 460px);
 
     font-size:
         18px;
@@ -2995,13 +2895,13 @@ body {
         7px 9px;
 
     border:
-        1px solid rgba(255,255,255,0.13);
+        1px solid rgba(255, 255, 255, 0.13);
 
     border-radius:
         14px;
 
     background:
-        rgba(12,12,28,0.72);
+        rgba(12, 12, 28, 0.72);
 
     backdrop-filter:
         blur(14px);
@@ -3043,13 +2943,13 @@ body {
         28px;
 
     border:
-        1px solid rgba(255,255,255,0.1);
+        1px solid rgba(255, 255, 255, 0.1);
 
     border-radius:
         8px;
 
     background:
-        rgba(255,255,255,0.06);
+        rgba(255, 255, 255, 0.06);
 
     color:
         white;
@@ -3101,10 +3001,7 @@ body {
 .card-sticker.selected {
 
     filter:
-        drop-shadow(
-            0 0 10px
-            var(--accent)
-        );
+        drop-shadow(0 0 10px var(--accent));
 
 }
 
@@ -3134,13 +3031,13 @@ body {
         8px;
 
     border:
-        1px solid rgba(255,255,255,0.08);
+        1px solid rgba(255, 255, 255, 0.08);
 
     border-radius:
         15px;
 
     background:
-        rgba(255,255,255,0.045);
+        rgba(255, 255, 255, 0.045);
 
     backdrop-filter:
         blur(12px);
@@ -3165,13 +3062,13 @@ body {
         31px;
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         9px;
 
     background:
-        rgba(255,255,255,0.045);
+        rgba(255, 255, 255, 0.045);
 
     color:
         white;
@@ -3191,7 +3088,7 @@ body {
         18px;
 
     background:
-        rgba(255,255,255,0.1);
+        rgba(255, 255, 255, 0.1);
 
 }
 
@@ -3242,7 +3139,7 @@ body {
         19px;
 
     border-top:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
 }
 
@@ -3264,13 +3161,13 @@ body {
 .account-link-button {
 
     border:
-        1px solid rgba(255,255,255,0.14);
+        1px solid rgba(255, 255, 255, 0.14);
 
     border-radius:
         999px;
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     color:
         white;
@@ -3293,7 +3190,7 @@ body {
 .account-secondary-button {
 
     background:
-        rgba(255,255,255,0.04);
+        rgba(255, 255, 255, 0.04);
 
 }
 
@@ -3319,7 +3216,7 @@ body {
 .account-window {
 
     width:
-        min(450px,94vw);
+        min(450px, 94vw);
 
     max-height:
         92vh;
@@ -3337,13 +3234,13 @@ body {
         relative;
 
     background:
-        rgba(17,17,35,0.80);
+        rgba(17, 17, 35, 0.80);
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     box-shadow:
-        0 30px 100px rgba(0,0,0,0.45);
+        0 30px 100px rgba(0, 0, 0, 0.45);
 
     backdrop-filter:
         blur(28px);
@@ -3419,10 +3316,10 @@ body {
         hidden;
 
     background:
-        rgba(255,255,255,0.07);
+        rgba(255, 255, 255, 0.07);
 
     border:
-        1px solid rgba(255,255,255,0.14);
+        1px solid rgba(255, 255, 255, 0.14);
 
 }
 
@@ -3448,13 +3345,13 @@ body {
         8px 12px;
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     border-radius:
         999px;
 
     background:
-        rgba(255,255,255,0.06);
+        rgba(255, 255, 255, 0.06);
 
     cursor:
         pointer;
@@ -3556,13 +3453,13 @@ body {
         10px 11px;
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         12px;
 
     background:
-        rgba(255,255,255,0.035);
+        rgba(255, 255, 255, 0.035);
 
 }
 
@@ -3620,7 +3517,7 @@ body {
 .saved-constellation-actions button {
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         8px;
@@ -3629,7 +3526,7 @@ body {
         5px 7px;
 
     background:
-        rgba(255,255,255,0.05);
+        rgba(255, 255, 255, 0.05);
 
     color:
         white;
@@ -3675,7 +3572,7 @@ body {
 .constellation-window {
 
     width:
-        min(1150px,95vw);
+        min(1150px, 95vw);
 
     max-height:
         94vh;
@@ -3693,13 +3590,13 @@ body {
         relative;
 
     background:
-        rgba(12,13,31,0.82);
+        rgba(12, 13, 31, 0.82);
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     box-shadow:
-        0 30px 100px rgba(0,0,0,0.45);
+        0 30px 100px rgba(0, 0, 0, 0.45);
 
     backdrop-filter:
         blur(28px);
@@ -3755,13 +3652,13 @@ body {
         0 11px;
 
     border:
-        1px solid rgba(255,255,255,0.1);
+        1px solid rgba(255, 255, 255, 0.1);
 
     border-radius:
         11px;
 
     background:
-        rgba(255,255,255,0.06);
+        rgba(255, 255, 255, 0.06);
 
     color:
         white;
@@ -3795,16 +3692,16 @@ body {
         10px 11px;
 
     border:
-        1px solid rgba(255,255,255,0.07);
+        1px solid rgba(255, 255, 255, 0.07);
 
     border-radius:
         11px;
 
     background:
-        rgba(255,255,255,0.035);
+        rgba(255, 255, 255, 0.035);
 
     color:
-        rgba(255,255,255,0.55);
+        rgba(255, 255, 255, 0.55);
 
     cursor:
         pointer;
@@ -3818,13 +3715,13 @@ body {
 .constellation-tool.active {
 
     background:
-        rgba(255,255,255,0.11);
+        rgba(255, 255, 255, 0.11);
 
     color:
         white;
 
     border-color:
-        rgba(255,255,255,0.24);
+        rgba(255, 255, 255, 0.24);
 
 }
 
@@ -3838,13 +3735,13 @@ body {
         13px;
 
     border:
-        1px solid rgba(255,255,255,0.06);
+        1px solid rgba(255, 255, 255, 0.06);
 
     border-radius:
         14px;
 
     background:
-        rgba(255,255,255,0.025);
+        rgba(255, 255, 255, 0.025);
 
 }
 
@@ -3884,7 +3781,7 @@ body {
         540px;
 
     height:
-        min(65vh,600px);
+        min(65vh, 600px);
 
     position:
         relative;
@@ -3893,24 +3790,20 @@ body {
         hidden;
 
     border:
-        1px solid rgba(255,255,255,0.08);
+        1px solid rgba(255, 255, 255, 0.08);
 
     border-radius:
         24px;
 
     background:
 
-        radial-gradient(
-            circle at 50% 50%,
-            rgba(105,95,190,0.12),
-            transparent 55%
-        ),
+        radial-gradient(circle at 50% 50%,
+            rgba(105, 95, 190, 0.12),
+            transparent 55%),
 
-        linear-gradient(
-            135deg,
+        linear-gradient(135deg,
             #09091c,
-            #11112b
-        );
+            #11112b);
 
     touch-action:
         none;
@@ -3933,11 +3826,8 @@ body {
         none;
 
     background-image:
-        radial-gradient(
-            rgba(255,255,255,0.16)
-            0.7px,
-            transparent 0.9px
-        );
+        radial-gradient(rgba(255, 255, 255, 0.16) 0.7px,
+            transparent 0.9px);
 
     background-size:
         21px 21px;
@@ -3960,7 +3850,7 @@ body {
         50%;
 
     transform:
-        translate(-50%,-50%);
+        translate(-50%, -50%);
 
     width:
         max-content;
@@ -3998,7 +3888,7 @@ body {
         0;
 
     transform:
-        translate(-50%,-50%);
+        translate(-50%, -50%);
 
     border:
         none;
@@ -4019,7 +3909,7 @@ body {
         5;
 
     text-shadow:
-        0 0 10px rgba(255,255,255,0.75);
+        0 0 10px rgba(255, 255, 255, 0.75);
 
 }
 
@@ -4047,7 +3937,7 @@ body {
         left center;
 
     background:
-        rgba(205,195,255,0.65);
+        rgba(205, 195, 255, 0.65);
 
     z-index:
         2;
@@ -4089,7 +3979,7 @@ body {
         30;
 
     transform:
-        translate(-50%,-50%);
+        translate(-50%, -50%);
 
     touch-action:
         none;
@@ -4100,8 +3990,7 @@ body {
 .sky-constellation:hover {
 
     transform:
-        translate(-50%,-50%)
-        scale(1.06);
+        translate(-50%, -50%) scale(1.06);
 
 }
 
@@ -4157,14 +4046,13 @@ body {
         50%;
 
     transform:
-        translate(-50%,-50%);
+        translate(-50%, -50%);
 
     background:
         white;
 
     box-shadow:
-        0 0 8px
-        rgba(255,255,255,0.8);
+        0 0 8px rgba(255, 255, 255, 0.8);
 
 }
 
@@ -4181,7 +4069,7 @@ body {
         left center;
 
     background:
-        rgba(205,195,255,0.48);
+        rgba(205, 195, 255, 0.48);
 
 }
 
@@ -4198,12 +4086,11 @@ body {
 }
 
 
-.sky-constellation.unopened-constellation
-.sky-constellation-star {
+.sky-constellation.unopened-constellation .sky-constellation-star {
 
     box-shadow:
         0 0 8px white,
-        0 0 15px rgba(205,190,255,0.75);
+        0 0 15px rgba(205, 190, 255, 0.75);
 
 }
 
@@ -4222,11 +4109,7 @@ body {
     50% {
 
         filter:
-            brightness(1.8)
-            drop-shadow(
-                0 0 14px
-                rgba(210,195,255,0.55)
-            );
+            brightness(1.8) drop-shadow(0 0 14px rgba(210, 195, 255, 0.55));
 
     }
 
@@ -4240,7 +4123,7 @@ body {
 .saved-card-window {
 
     width:
-        min(760px,94vw);
+        min(760px, 94vw);
 
     max-height:
         92vh;
@@ -4258,13 +4141,13 @@ body {
         relative;
 
     background:
-        rgba(17,17,35,0.80);
+        rgba(17, 17, 35, 0.80);
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
     box-shadow:
-        0 30px 100px rgba(0,0,0,0.45);
+        0 30px 100px rgba(0, 0, 0, 0.45);
 
     backdrop-filter:
         blur(28px);
@@ -4317,10 +4200,10 @@ body {
         center;
 
     background:
-        rgba(255,255,255,0.08);
+        rgba(255, 255, 255, 0.08);
 
     border:
-        1px solid rgba(255,255,255,0.12);
+        1px solid rgba(255, 255, 255, 0.12);
 
 }
 
@@ -4656,7 +4539,7 @@ body {
     .sticker-tray {
 
         grid-template-columns:
-            repeat(5,1fr);
+            repeat(5, 1fr);
 
     }
 
@@ -4733,4 +4616,17 @@ body {
 
     }
 
+}
+
+.moon-minimal-text span:first-child {
+    font-weight: 700 !important;
+}
+
+.black-hole-icon {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
 }

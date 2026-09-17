@@ -37,16 +37,38 @@ export interface TextStyleConfig {
 
 export type StoryLayoutType = 1 | 2 | 3 | 4;
 
-export type PageThemeType = 'midnight' | 'stardust' | 'parchment' | 'blossom' | 'cosmic' | 'sunset';
-
+export type PageThemeType =
+  | 'midnight'
+  | 'stardust'
+  | 'parchment'
+  | 'blossom'
+  | 'cosmic'
+  | 'sunset'
+  | 'custom';
 export interface StoryPage {
   id: string;
   layout: StoryLayoutType;
   text: string;
   textStyle: TextStyleConfig;
+
+  // Story text box position and size
+  textBoxX: number;
+  textBoxY: number;
+  textBoxWidth: number;
+  textBoxHeight: number;
+
   imageUrl?: string;
+
+  // Story image position and size
+  imageX: number;
+  imageY: number;
+  imageWidth: number;
+  imageHeight: number;
+
   stickers: StickerItem[];
   theme: PageThemeType;
+  customGradientFrom?: string;
+  customGradientTo?: string;
 }
 
 export interface PlanetDesign {

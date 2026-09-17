@@ -24,7 +24,9 @@ export const MoonMessageModal: React.FC = () => {
 
         <div className="moon-message-content-area">
           <p className="moon-minimal-text">
-            <span>Happy Birthday Summm💋💕</span>
+            <span style={{ fontWeight: 700 }}>
+              Happy Birthday Summm💋💕
+            </span>
             <span>Welcome to this little sky which was made for you filled with wishes, memories and pieces of everyone who cares about you✨</span>
             <span>So move around and find elements which shine a bit more than the others 😋</span>
             <span>Hint: The unopened bar in the bottom left corner is there to help you😉</span>

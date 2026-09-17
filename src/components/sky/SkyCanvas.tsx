@@ -246,41 +246,38 @@ export const SkyCanvas: React.FC = () => {
         ))}
 
         <div className="legacy-sky-layer">
-        {/* Dense Star Concentration Nebula */}
-        <NebulaObject />
+          {/* Nebula and its words are kept inside one bounded area */}
+          <div className="nebula-stage">
+            <NebulaObject />
 
-        {/* Floating nebula thoughts */}
-        {nebulaWords.map((item) => (
-          <div key={item.id} className="sky-nebula-card" style={{ left: `${item.x}%`, top: `${item.y}%`, borderColor: `${item.color}66`, color: item.color, boxShadow: `0 0 18px ${item.color}33`, animationDelay: `${item.floatDelay}s`, animationDuration: `${item.floatDuration}s` }} title={`Added by ${item.creatorName}`}>
-            <span>{item.word}</span>
+
           </div>
-        ))}
 
-        {/* Central Moon */}
-        <MoonObject />
+          {/* Central Moon */}
+          <MoonObject />
 
-        {/* Wish Constellations */}
-        {wishes.map((wish) => (
-          <ConstellationObject key={wish.id} wish={wish} />
-        ))}
+          {/* Wish Constellations */}
+          {wishes.map((wish) => (
+            <ConstellationObject key={wish.id} wish={wish} />
+          ))}
 
-        {/* Stories / Planets */}
-        {stories.map((story) => (
-          <PlanetObject key={story.id} story={story} />
-        ))}
+          {/* Stories / Planets */}
+          {stories.map((story) => (
+            <PlanetObject key={story.id} story={story} />
+          ))}
 
-        {/* Space Probes */}
-        {voiceNotes.map((probe) => (
-          <SpaceProbeObject key={probe.id} probe={probe} />
-        ))}
+          {/* Space Probes */}
+          {voiceNotes.map((probe) => (
+            <SpaceProbeObject key={probe.id} probe={probe} />
+          ))}
 
-        {/* Programmer Secret Stars */}
-        {secretStars.map((star) => (
-          <SecretStarObject key={star.id} star={star} />
-        ))}
+          {/* Programmer Secret Stars */}
+          {secretStars.map((star) => (
+            <SecretStarObject key={star.id} star={star} />
+          ))}
 
-        {/* Wish and prayer void */}
-        <BlackHoleObject />
+          {/* Wish and prayer void */}
+          <BlackHoleObject />
         </div>
       </div>
     </div>
