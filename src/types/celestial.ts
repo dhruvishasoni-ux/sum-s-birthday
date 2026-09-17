@@ -117,7 +117,7 @@ export interface Story {
   createdAt: number;
 }
 
-export interface PersonalityWordEntry {
+export interface NebulaWordEntry {
   id: string;
   word: string;
   explanation: string;
@@ -177,8 +177,7 @@ export type ModalType =
   | 'planet-designer'
   | 'story-studio'
   | 'story-view'
-  | 'personality'
-  | 'personality-list'
+  | 'nebula'
   | 'voice-probe'
   | 'secret-star'
   | 'black-hole';

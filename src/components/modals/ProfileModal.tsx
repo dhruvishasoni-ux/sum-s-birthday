@@ -20,8 +20,8 @@ export const ProfileModal: React.FC = () => {
     deleteStory,
     voiceNotes,
     deleteVoiceNote,
-    personalityWords,
-    deletePersonalityWord,
+    nebulaWords,
+    deleteNebulaWord,
     blackHoleWishes,
     deleteBlackHoleWish,
     openWish,
@@ -164,7 +164,7 @@ export const ProfileModal: React.FC = () => {
   const userWishes = currentUser ? wishes.filter((w) => w.creatorId === currentUser.id) : [];
   const userStories = currentUser ? stories.filter((s) => s.creatorId === currentUser.id) : [];
   const userVoiceNotes = currentUser ? voiceNotes.filter((v) => v.creatorId === currentUser.id) : [];
-  const userWords = currentUser ? personalityWords.filter((p) => p.creatorId === currentUser.id) : [];
+  const userWords = currentUser ? nebulaWords.filter((p) => p.creatorId === currentUser.id) : [];
   const userBlackHoles = currentUser ? blackHoleWishes.filter((b) => b.creatorId === currentUser.id) : [];
   const userStickers = currentUser?.uploadedStickers || [];
 
@@ -375,7 +375,7 @@ export const ProfileModal: React.FC = () => {
                         <button
                           type="button"
                           className="sub-action-btn delete-btn"
-                          onClick={() => deletePersonalityWord(p.id)}
+                          onClick={() => deleteNebulaWord(p.id)}
                           title="Delete this word"
                         >
                           <Trash2 size={14} />

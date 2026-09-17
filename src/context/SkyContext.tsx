@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useEffect } fr
 import {
   WishCard,
   Story,
-  PersonalityWordEntry,
+  NebulaWordEntry,
   VoiceNote,
   SecretStar,
   UserAccount,
@@ -32,7 +32,7 @@ interface SkyContextType {
   // Celestial objects (In-Memory Session Only)
   wishes: WishCard[];
   stories: Story[];
-  personalityWords: PersonalityWordEntry[];
+  nebulaWords: NebulaWordEntry[];
   voiceNotes: VoiceNote[];
   secretStars: SecretStar[];
   blackHoleWishes: BlackHoleWish[];
@@ -50,9 +50,9 @@ interface SkyContextType {
   openStory: (id: string) => void;
   deleteStory: (id: string) => boolean;
 
-  addPersonalityWord: (word: string, explanation: string) => { success: boolean; error?: string };
-  deletePersonalityWord: (id: string) => boolean;
-  openPersonality: () => void;
+  addNebulaWord: (word: string, explanation: string) => { success: boolean; error?: string };
+  deleteNebulaWord: (id: string) => boolean;
+  openNebula: () => void;
 
   addVoiceNote: (note: VoiceNote) => void;
   openVoiceNote: (id: string) => void;
@@ -123,7 +123,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // In-Memory Session Data (Resets completely on refresh)
   const [wishes, setWishes] = useState<WishCard[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
-  const [personalityWords, setPersonalityWords] = useState<PersonalityWordEntry[]>([]);
+  const [nebulaWords, setNebulaWords] = useState<NebulaWordEntry[]>([]);
   const [voiceNotes, setVoiceNotes] = useState<VoiceNote[]>([]);
   const [secretStars, setSecretStars] = useState<SecretStar[]>(() => {
     const placed: { x: number; y: number; kind: 'secret' }[] = [];
@@ -296,8 +296,8 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return deleted;
   }, [currentUser]);
 
-  // Personality word with compulsory explanation in creation order
-  const addPersonalityWord = useCallback((word: string, explanation: string) => {
+  // Nebula word with compulsory explanation in creation order
+  const addNebulaWord = useCallback((word: string, explanation: string) => {
     if (!currentUser) {
       return { success: false, error: 'You must be logged in to submit a word.' };
     }
@@ -318,7 +318,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     const randomColor = COLOR_PALETTE[Math.floor(Math.random() * COLOR_PALETTE.length)];
-    const newEntry: PersonalityWordEntry = {
+    const newEntry: NebulaWordEntry = {
       id: `word-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       word: trimmedWord,
       explanation: trimmedExpl,
@@ -334,14 +334,14 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     };
 
     // Stored strictly in creation order
-    setPersonalityWords((prev) => [...prev, newEntry]);
+    setNebulaWords((prev) => [...prev, newEntry]);
     return { success: true };
   }, [currentUser]);
 
-  const deletePersonalityWord = useCallback((id: string) => {
+  const deleteNebulaWord = useCallback((id: string) => {
     if (!currentUser) return false;
     let deleted = false;
-    setPersonalityWords((prev) => {
+    setNebulaWords((prev) => {
       const item = prev.find((w) => w.id === id);
       if (!item || item.creatorId !== currentUser.id) return prev;
       deleted = true;
@@ -350,9 +350,9 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return deleted;
   }, [currentUser]);
 
-  const openPersonality = () => {
+  const openNebula = () => {
     setIsNebulaOpened(true);
-    setActiveModal('personality');
+    setActiveModal('nebula');
   };
 
   const addVoiceNote = (note: VoiceNote) => {
@@ -478,7 +478,7 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         focusOnCoordinates,
         wishes,
         stories,
-        personalityWords,
+        nebulaWords,
         voiceNotes,
         secretStars,
         blackHoleWishes,
@@ -493,9 +493,9 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addStory,
         openStory,
         deleteStory,
-        addPersonalityWord,
-        deletePersonalityWord,
-        openPersonality,
+        addNebulaWord,
+        deleteNebulaWord,
+        openNebula,
         addVoiceNote,
         openVoiceNote,
         markVoiceNoteHeard,

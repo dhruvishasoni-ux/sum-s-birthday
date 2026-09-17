@@ -6,7 +6,7 @@ export const AddMenu: React.FC = () => {
   const { setActiveModal, currentUser, setAuthNotice } = useSky();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleSelect = (modalType: 'wish-studio' | 'planet-designer' | 'personality' | 'voice-probe' | 'black-hole') => {
+  const handleSelect = (modalType: 'wish-studio' | 'planet-designer' | 'nebula' | 'voice-probe' | 'black-hole') => {
     setIsOpen(false);
     if (!currentUser) {
       setAuthNotice('Please Log In or Sign Up before creating celestial content in Birthday Sky.');
@@ -54,14 +54,14 @@ export const AddMenu: React.FC = () => {
           <button
             type="button"
             className="add-option-btn"
-            onClick={() => handleSelect('personality')}
+            onClick={() => handleSelect('nebula')}
           >
             <div className="option-icon nebula-icon">
               <MessageSquare size={18} />
             </div>
             <div className="option-info">
-              <span className="option-title">Personality Word</span>
-              <span className="option-desc">Add one or two personality words</span>
+              <span className="option-title">Nebula Word</span>
+              <span className="option-desc">Describe Sum in one word</span>
             </div>
           </button>
 
