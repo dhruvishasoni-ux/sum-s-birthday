@@ -45,7 +45,7 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
     if (!el) return;
 
     const baseSize = box.style?.size || (id === 'title' ? 22 : id === 'body' ? 14 : 16);
-    const minSize = 9;
+    const minSize = id === 'title' ? 14 : id === 'body' ? 12 : 13;
     let size = baseSize;
 
     // Apply temporary size to measure overflow
@@ -199,7 +199,7 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'visible',
+          overflow: 'hidden',
           padding: `${SAFE_MARGIN / 2}px ${SAFE_MARGIN}px`,
           boxSizing: 'border-box'
         }}

@@ -14,7 +14,7 @@ export const WishStudioModal: React.FC = () => {
   const { activeModal, setActiveModal, addWish, accentColor, currentUser, wishes, stories, voiceNotes, secretStars } = useSky();
 
   const [activeTab, setActiveTab] = useState<'card' | 'constellation' | 'styling' | 'stickers'>('card');
-  const [selectedTextBoxId, setSelectedTextBoxId] = useState<'title' | 'body' | 'from'>('title');
+  const [selectedTextBoxId, setSelectedTextBoxId] = useState<'title' | 'body' | 'from' | null>(null);
 
   // Input refs for tracking selection range
   const titleInputRef = useRef<HTMLInputElement>(null);
@@ -47,7 +47,7 @@ export const WishStudioModal: React.FC = () => {
     style: {
       font: 'modern',
       color: '#ffffff',
-      size: 14,
+      size: 18,
       bold: false,
       italic: false,
       underline: false
@@ -79,20 +79,8 @@ export const WishStudioModal: React.FC = () => {
 
   // Constellation Canvas Tools: 'add' | 'join' | 'remove'
   const [activeTool, setActiveTool] = useState<'add' | 'join' | 'remove'>('add');
-  const [constellationPoints, setConstellationPoints] = useState<ConstellationPoint[]>([
-    { id: 1, x: 50, y: 70 },
-    { id: 2, x: 100, y: 40 },
-    { id: 3, x: 160, y: 60 },
-    { id: 4, x: 200, y: 110 },
-    { id: 5, x: 120, y: 140 }
-  ]);
-  const [connections, setConnections] = useState<ConstellationConnection[]>([
-    { fromId: 1, toId: 2 },
-    { fromId: 2, toId: 3 },
-    { fromId: 3, toId: 4 },
-    { fromId: 4, toId: 5 },
-    { fromId: 5, toId: 1 }
-  ]);
+  const [constellationPoints, setConstellationPoints] = useState<ConstellationPoint[]>([]);
+  const [connections, setConnections] = useState<ConstellationConnection[]>([]);
   const [selectedJoinPointId, setSelectedJoinPointId] = useState<number | null>(null);
 
   const constellationCanvasRef = useRef<HTMLDivElement>(null);

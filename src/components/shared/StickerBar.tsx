@@ -15,7 +15,8 @@ const STICKER_CATEGORIES = [
   { id: 'small', label: 'Small' },
   { id: 'birthday', label: 'Birthday' },
   { id: 'flowers', label: 'Flowers' },
-  { id: 'cosmic', label: 'Cosmic' }
+  { id: 'cosmic', label: 'Cosmic' },
+  { id: 'custom', label: 'Custom Stickers' }
 ];
 
 const STICKERS_DATA = [
@@ -63,8 +64,8 @@ export const StickerBar: React.FC<StickerBarProps> = ({
   const allCustomStickers = Array.from(new Set([...savedStickers, ...localCustomStickers]));
 
   const filteredStickers =
-    activeCategory === 'all'
-      ? STICKERS_DATA
+    activeCategory === 'all' || activeCategory === 'custom'
+      ? (activeCategory === 'custom' ? [] : STICKERS_DATA)
       : STICKERS_DATA.filter((s) => s.category === activeCategory);
 
   const handleCustomUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,15 +105,15 @@ export const StickerBar: React.FC<StickerBarProps> = ({
       <div className={`sticker-picker-layout ${activeCategory === 'all' ? 'sticker-picker-all' : 'sticker-picker-category'}`}>
       <div className="sticker-tray-scroll">
         {/* Custom Sticker Upload Button */}
-        <button
+        {activeCategory === 'custom' && <button
           type="button"
-          className="sticker-button upload-btn"
+          className="sticker-button upload-btn custom-upload-button"
           onClick={() => fileInputRef.current?.click()}
           title="Upload your own custom sticker"
         >
           <Upload size={16} />
-          <span>Custom Sticker</span>
-        </button>
+          <span>Custom Stickers</span>
+        </button>}
         <input
           ref={fileInputRef}
           type="file"

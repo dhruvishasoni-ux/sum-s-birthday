@@ -78,7 +78,8 @@ export const StickerCanvasOverlay: React.FC<StickerCanvasOverlayProps> = ({
             style={{
               left: `${sticker.x}%`,
               top: `${sticker.y}%`,
-              transform: `translate(-50%, -50%) scale(${sticker.scale || 1}) rotate(${sticker.rotation || 0}deg)`
+              transform: `translate(-50%, -50%) scale(${sticker.scale || 1}) rotate(${sticker.rotation || 0}deg)`,
+              zIndex: isSelected ? 30 : 25
             }}
             onPointerDown={(e) => handlePointerDown(e, sticker)}
             onClick={(e) => e.stopPropagation()}

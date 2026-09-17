@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import {
   WishCard,
   Story,
@@ -103,9 +103,16 @@ const COLOR_PALETTE = [
 export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // In-Memory Session Accounts & Login State
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
-  const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>([]);
+  const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try { return JSON.parse(window.localStorage.getItem('birthday-sky-accounts') || '[]'); } catch { return []; }
+  });
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const [authMode, setAuthMode] = useState<'choice' | 'login' | 'signup'>('choice');
+
+  useEffect(() => {
+    window.localStorage.setItem('birthday-sky-accounts', JSON.stringify(registeredAccounts));
+  }, [registeredAccounts]);
 
   const accentColor = DEFAULT_ACCENT_COLOR;
 
