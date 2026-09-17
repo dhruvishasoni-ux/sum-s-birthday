@@ -100,18 +100,26 @@ const COLOR_PALETTE = [
   '#facc15', '#fb923c', '#e879f9', '#a78bfa', '#f87171'
 ];
 
+const ACCOUNT_STORAGE_KEY = 'birthday-sky-accounts-v2';
+
 export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // In-Memory Session Accounts & Login State
+  // Account credentials/profile persist; all other app data remains in memory.
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(null);
   const [registeredAccounts, setRegisteredAccounts] = useState<UserAccount[]>(() => {
     if (typeof window === 'undefined') return [];
-    try { return JSON.parse(window.localStorage.getItem('birthday-sky-accounts') || '[]'); } catch { return []; }
+    try {
+      // The versioned key intentionally starts empty so all previously stored accounts are deleted.
+      window.localStorage.removeItem('birthday-sky-accounts');
+      return JSON.parse(window.localStorage.getItem(ACCOUNT_STORAGE_KEY) || '[]');
+    } catch {
+      return [];
+    }
   });
   const [authNotice, setAuthNotice] = useState<string | null>(null);
   const [authMode, setAuthMode] = useState<'choice' | 'login' | 'signup'>('choice');
 
   useEffect(() => {
-    window.localStorage.setItem('birthday-sky-accounts', JSON.stringify(registeredAccounts));
+    window.localStorage.setItem(ACCOUNT_STORAGE_KEY, JSON.stringify(registeredAccounts));
   }, [registeredAccounts]);
 
   const accentColor = DEFAULT_ACCENT_COLOR;
@@ -431,14 +439,6 @@ export const SkyProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (existing.includes(stickerUrl)) return prev;
       return { ...prev, uploadedStickers: [stickerUrl, ...existing] };
     });
-    setRegisteredAccounts((prev) =>
-      prev.map((acc) => {
-        if (acc.id !== currentUser.id) return acc;
-        const existing = acc.uploadedStickers || [];
-        if (existing.includes(stickerUrl)) return acc;
-        return { ...acc, uploadedStickers: [stickerUrl, ...existing] };
-      })
-    );
   }, [currentUser]);
 
   const openMoon = () => {
