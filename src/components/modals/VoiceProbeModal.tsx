@@ -264,8 +264,18 @@ export const VoiceProbeModal: React.FC = () => {
               </div>
             ) : (
               <div className="probe-view-info">
-                <div className="probe-sender-tag" style={{ fontSize: '12px', color: '#cbd5e1', marginBottom: '4px' }}>
-                  FROM: <strong>{activeNote.contributor || 'A Friend'}</strong>
+                <div className="probe-sender-header">
+                  {activeNote.creatorAvatar ? (
+                    <img className="probe-sender-avatar" src={activeNote.creatorAvatar} alt="" />
+                  ) : (
+                    <span className="probe-sender-avatar probe-sender-avatar-fallback" aria-hidden="true">
+                      {(activeNote.contributor || 'A').charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <div className="probe-sender-tag">
+                    <span>FROM</span>
+                    <strong>{activeNote.contributor || 'A Friend'}</strong>
+                  </div>
                 </div>
                 <h3>{activeNote.title || 'Voice Note'}</h3>
               </div>
