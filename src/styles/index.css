@@ -1395,15 +1395,42 @@ body {
   color: #ffffff;
 }
 
-.sticker-tray-scroll {
+  .sticker-picker-layout {
   display: flex;
-  gap: 4px;
-  overflow-x: auto;
+  gap: 14px;
+  align-items: flex-start;
+  }
+  .sticker-picker-all { flex-direction: column; }
+  .sticker-picker-category { flex-direction: row; }
+  .sticker-tray-scroll {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(32px, 1fr));
+  gap: 6px;
+  overflow: visible;
   padding: 4px 2px;
   align-items: center;
-}
+  flex: 1;
+  }
+  .sticker-picker-category .sticker-tray-scroll { grid-template-columns: repeat(3, 38px); max-width: 150px; }
+  .sticker-picker-all .sticker-tray-scroll { width: 100%; }
 
-.sticker-button {
+  .sticker-selected-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 110px;
+  padding: 8px;
+  border: 1px solid rgba(184, 156, 255, .22);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, .42);
+  }
+  .sticker-picker-all .sticker-selected-preview { width: 100%; }
+  .sticker-preview-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+  .sticker-preview-art { display: grid; place-items: center; min-width: 40px; min-height: 40px; font-size: 30px; }
+  .sticker-preview-art img { width: 40px; height: 40px; object-fit: contain; }
+
+  .sticker-button {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;

@@ -29,6 +29,7 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [fittedFontSize, setFittedFontSize] = useState<number>(box.style?.size || 14);
+  const SAFE_MARGIN = 8;
 
   // Dragging state
   const isDraggingRef = useRef(false);
@@ -50,8 +51,8 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
     // Apply temporary size to measure overflow
     el.style.fontSize = `${size}px`;
 
-    const availWidth = box.width;
-    const availHeight = box.height;
+    const availWidth = Math.max(1, box.width - SAFE_MARGIN * 2 - 8);
+    const availHeight = Math.max(1, box.height - SAFE_MARGIN * 2);
 
     while (
       size > minSize &&
@@ -84,8 +85,12 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
       const dx = me.clientX - dragStartPos.current.x;
       const dy = me.clientY - dragStartPos.current.y;
 
-      const newX = Math.max(0, Math.min(cardWidth - box.width, dragStartPos.current.boxX + dx));
-      const newY = Math.max(0, Math.min(cardHeight - box.height, dragStartPos.current.boxY + dy));
+      const safeWidth = Math.max(1, cardWidth - SAFE_MARGIN * 2);
+      const safeHeight = Math.max(1, cardHeight - SAFE_MARGIN * 2);
+      const boundedWidth = Math.min(box.width, safeWidth);
+      const boundedHeight = Math.min(box.height, safeHeight);
+      const newX = Math.max(SAFE_MARGIN, Math.min(cardWidth - SAFE_MARGIN - boundedWidth, dragStartPos.current.boxX + dx));
+      const newY = Math.max(SAFE_MARGIN, Math.min(cardHeight - SAFE_MARGIN - boundedHeight, dragStartPos.current.boxY + dy));
 
       onChange({
         ...box,
@@ -129,11 +134,13 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
       let newWidth = box.width;
       let newHeight = box.height;
 
+      const safeWidth = Math.max(minWidth, cardWidth - SAFE_MARGIN * 2 - box.x);
+      const safeHeight = Math.max(minHeight, cardHeight - SAFE_MARGIN * 2 - box.y);
       if (dir.includes('e')) {
-        newWidth = Math.max(minWidth, Math.min(cardWidth - box.x, resizeStartPos.current.width + dx));
+        newWidth = Math.max(minWidth, Math.min(safeWidth, resizeStartPos.current.width + dx));
       }
       if (dir.includes('s')) {
-        newHeight = Math.max(minHeight, Math.min(cardHeight - box.y, resizeStartPos.current.height + dy));
+        newHeight = Math.max(minHeight, Math.min(safeHeight, resizeStartPos.current.height + dy));
       }
 
       onChange({
@@ -192,8 +199,8 @@ export const CardTextBoxItem: React.FC<CardTextBoxItemProps> = ({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
-          padding: '2px 4px',
+          overflow: 'visible',
+          padding: `${SAFE_MARGIN / 2}px ${SAFE_MARGIN}px`,
           boxSizing: 'border-box'
         }}
         dangerouslySetInnerHTML={{ __html: box.text || '' }}

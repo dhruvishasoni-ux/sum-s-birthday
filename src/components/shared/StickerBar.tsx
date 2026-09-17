@@ -101,6 +101,7 @@ export const StickerBar: React.FC<StickerBarProps> = ({
       </div>
 
       {/* Stickers Tray & Custom Sticker Area */}
+      <div className={`sticker-picker-layout ${activeCategory === 'all' ? 'sticker-picker-all' : 'sticker-picker-category'}`}>
       <div className="sticker-tray-scroll">
         {/* Custom Sticker Upload Button */}
         <button
@@ -145,6 +146,19 @@ export const StickerBar: React.FC<StickerBarProps> = ({
             {s.symbol}
           </button>
         ))}
+      </div>
+      {selectedSticker && (
+        <div className="sticker-selected-preview" aria-label="Selected sticker preview">
+          <span className="sticker-preview-label">Selected sticker</span>
+          <div className="sticker-preview-art">
+            {selectedSticker.isCustom && selectedSticker.customUrl ? (
+              <img src={selectedSticker.customUrl} alt="Selected custom sticker" />
+            ) : (
+              selectedSticker.symbol
+            )}
+          </div>
+        </div>
+      )}
       </div>
 
       {/* Floating Toolbar when a sticker on canvas is selected */}
