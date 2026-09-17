@@ -1236,6 +1236,36 @@ body {
 .studio-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 4px 4px; }
 @media (max-width: 560px) { .voice-probe-window { padding: 18px; } .voice-transmission-card { padding: 18px; } .studio-footer { align-items: stretch; flex-direction: column; } .studio-footer .continue-button { width: 100%; justify-content: center; } .probe-status-banner { min-width: 150px; font-size: 13px; } }
 
+.black-hole-backdrop { padding: 20px; }
+.black-hole-modal-window { width: min(94vw, 760px); max-height: min(92vh, 820px); overflow-y: auto; padding: 28px; box-sizing: border-box; }
+.black-hole-title-block { min-width: 0; padding: 4px; }
+.black-hole-title-block h2 { margin: 8px 0; line-height: 1.2; overflow-wrap: anywhere; }
+.black-hole-title-block p { margin: 0; padding-right: 12px; color: #cbd5e1; line-height: 1.55; }
+.black-hole-main-panel, .black-hole-prayer-form, .black-hole-prayers-panel { padding: 22px 6px 6px; }
+.black-hole-stage { position: relative; display: grid; place-items: center; min-height: 410px; margin: 0 auto; overflow: hidden; border: 1px solid rgba(255,255,255,.08); border-radius: 24px; background: radial-gradient(circle at center, rgba(41,20,71,.3), rgba(3,8,24,.64) 62%, rgba(0,0,0,.32)); }
+.black-hole-stage .singularity-core { position: relative; width: 300px; height: 300px; z-index: 2; }
+.black-hole-empty-hint { position: absolute; bottom: 24px; color: #aab4ca; font-size: 13px; }
+.black-hole-prayer-traveler { position: absolute; z-index: 3; width: min(220px, 34vw); padding: 10px 13px; border: 1px solid rgba(204,169,255,.34); border-radius: 12px; color: #f8f5ff; background: rgba(25,18,53,.9); box-shadow: 0 8px 24px rgba(0,0,0,.28), 0 0 16px rgba(187,134,255,.12); font-size: 12px; line-height: 1.4; overflow-wrap: anywhere; animation: black-hole-prayer-pull 5.2s cubic-bezier(.2,.7,.25,1) infinite; animation-delay: calc(var(--prayer-index) * -0.68s); }
+.black-hole-prayer-traveler.is-new { animation-delay: 0s; }
+.black-hole-main-copy { max-width: 560px; margin: 18px auto 0; padding: 0 12px; text-align: center; color: #cbd5e1; line-height: 1.6; }
+.black-hole-main-copy p { margin: 0; }
+.black-hole-primary-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; padding: 20px 0 4px; }
+.action-count { opacity: .75; }
+.black-hole-prayer-form, .black-hole-prayers-panel { display: flex; flex-direction: column; gap: 18px; }
+.black-hole-back-button { align-self: flex-start; display: inline-flex; align-items: center; gap: 7px; border: 0; padding: 8px 4px; color: #c9b0ff; background: transparent; cursor: pointer; }
+.black-hole-prayer-form label { padding: 0 4px; color: #f5f3ff; font-size: 15px; font-weight: 700; }
+.black-hole-prayer-form textarea { min-height: 170px; width: 100%; box-sizing: border-box; padding: 16px; border: 1px solid rgba(255,255,255,.16); border-radius: 14px; color: #fff; background: rgba(0,0,0,.24); resize: vertical; line-height: 1.55; outline: none; }
+.black-hole-prayer-form textarea:focus { border-color: #c99aff; box-shadow: 0 0 0 3px rgba(201,154,255,.14); }
+.black-hole-form-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 4px; }
+.black-hole-prayer-list { display: flex; flex-direction: column; gap: 12px; padding: 4px; }
+.black-hole-prayer-entry { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 16px; border: 1px solid rgba(255,255,255,.11); border-radius: 15px; background: rgba(255,255,255,.045); }
+.black-hole-prayer-entry p { flex: 1; min-width: 0; margin: 0; color: #f1eff8; line-height: 1.55; overflow-wrap: anywhere; }
+.black-hole-prayer-sender { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; color: #d8d4e6; font-size: 12px; }
+.black-hole-prayer-sender img, .black-hole-prayer-sender > span { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; display: grid; place-items: center; background: rgba(255,255,255,.14); }
+.black-hole-empty-list { display: grid; place-items: center; gap: 10px; min-height: 250px; padding: 30px; color: #aab4ca; text-align: center; }
+@keyframes black-hole-prayer-pull { 0% { opacity: 0; transform: translate(calc(var(--prayer-x) * 2.4), calc(var(--prayer-y) * 2.4)) scale(.92) rotate(-4deg); } 12% { opacity: 1; } 78% { opacity: .92; } 100% { opacity: 0; transform: translate(0, 0) scale(.08) rotate(8deg); } }
+@media (max-width: 580px) { .black-hole-backdrop { padding: 10px; } .black-hole-modal-window { padding: 18px; } .black-hole-stage { min-height: 340px; } .black-hole-stage .singularity-core { transform: scale(.82); } .black-hole-form-footer, .black-hole-prayer-entry { align-items: stretch; flex-direction: column; } .black-hole-form-footer .continue-button { width: 100%; justify-content: center; } .black-hole-prayer-sender { align-self: flex-start; } }
+
 /* =====================================================
    MINIMAL MOON MESSAGE DIALOG
 ===================================================== */
