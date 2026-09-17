@@ -40,7 +40,7 @@ const AppContent: React.FC = () => {
       <WishCardModal />
       <MoonMessageModal />
       <PlanetDesignerModal onCompleteDesign={(design) => setStagedPlanetDesign(design)} />
-      <StoryStudioModal initialPlanetDesign={stagedPlanetDesign} />
+      <StoryStudioModal initialPlanetDesign={stagedPlanetDesign} onSubmitted={() => setStagedPlanetDesign(null)} />
       <StoryViewerModal />
       <NebulaWordModal />
       <VoiceProbeModal />

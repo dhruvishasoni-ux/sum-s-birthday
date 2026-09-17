@@ -1,346 +1,70 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSky } from '../../context/SkyContext';
 import { PlanetDesign } from '../../types/celestial';
-import { X, Sparkles, RefreshCw, Disc, ArrowRight } from 'lucide-react';
+import { X, Undo2, Eraser, ArrowRight, RotateCcw } from 'lucide-react';
 
-const PLANET_PALETTE = [
-  '#f97316', // Orange
-  '#ef4444', // Red
-  '#eab308', // Yellow
-  '#3b82f6', // Blue
-  '#06b6d4', // Cyan
-  '#a855f7', // Purple
-  '#ec4899', // Pink
-  '#10b981', // Emerald
-  '#64748b', // Slate
-  '#ffffff'  // White
-];
+const COLORS = ['#f97316', '#ef4444', '#facc15', '#38bdf8', '#4ade80', '#a855f7', '#ec4899', '#ffffff'];
+const ACCENTS = ['#B89CFF', '#FF9FCB', '#73D4E7', '#FFB27D', '#A7E89B', '#FFE58A'];
+type Brush = 'glow' | 'solid' | 'fine' | 'sparkle';
 
-interface PlanetDesignerModalProps {
-  onCompleteDesign?: (design: PlanetDesign) => void;
-}
+interface PlanetDesignerModalProps { onCompleteDesign?: (design: PlanetDesign) => void; }
 
 export const PlanetDesignerModal: React.FC<PlanetDesignerModalProps> = ({ onCompleteDesign }) => {
   const { activeModal, setActiveModal, accentColor } = useSky();
-
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [brushMode, setBrushMode] = useState<'spray' | 'smooth'>('smooth');
-  const [brushColor, setBrushColor] = useState('#f97316');
-  const [brushSize, setBrushSize] = useState(24);
+  const drawingRef = useRef(false);
+  const lastPoint = useRef<{ x: number; y: number } | null>(null);
+  const history = useRef<ImageData[]>([]);
+  const [brush, setBrush] = useState<Brush>('glow');
+  const [color, setColor] = useState('#f97316');
+  const [size, setSize] = useState(24);
+  const [eraserSize, setEraserSize] = useState(28);
+  const [eraser, setEraser] = useState(false);
+  const [accent, setAccent] = useState(accentColor);
   const [hasRings, setHasRings] = useState(true);
-  const [planetAccentColor, setPlanetAccentColor] = useState(accentColor);
-  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
 
-  // Initialize white circular canvas
-  const initCanvas = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Fill circular planet base
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
-    ctx.fillStyle = '#ffffff';
-    ctx.fill();
-    ctx.restore();
+  const planetPath = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
   };
+  const paintBase = () => {
+    const canvas = canvasRef.current; if (!canvas) return;
+    const ctx = canvas.getContext('2d'); if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height); planetPath(ctx, canvas); ctx.fillStyle = '#fff'; ctx.fill(); history.current = [];
+  };
+  useEffect(() => { if (activeModal === 'planet-designer') setTimeout(paintBase, 40); }, [activeModal]);
 
-  useEffect(() => {
-    if (activeModal === 'planet-designer') {
-      setTimeout(initCanvas, 50);
-    }
-  }, [activeModal]);
-
+  const snapshot = () => { const canvas = canvasRef.current; const ctx = canvas?.getContext('2d'); if (canvas && ctx) history.current.push(ctx.getImageData(0, 0, canvas.width, canvas.height)); };
+  const coords = (e: React.PointerEvent<HTMLCanvasElement>) => { const c = canvasRef.current!; const r = c.getBoundingClientRect(); return { x: (e.clientX - r.left) * c.width / r.width, y: (e.clientY - r.top) * c.height / r.height }; };
+  const draw = (x: number, y: number, moving: boolean) => {
+    const c = canvasRef.current; if (!c) return; const ctx = c.getContext('2d'); if (!ctx) return;
+    const radius = eraser ? eraserSize / 2 : size / 2;
+    ctx.save(); planetPath(ctx, c); ctx.clip();
+    if (eraser) { ctx.globalCompositeOperation = 'destination-out'; ctx.lineWidth = eraserSize; ctx.lineCap = 'round'; if (moving && lastPoint.current) { ctx.beginPath(); ctx.moveTo(lastPoint.current.x, lastPoint.current.y); ctx.lineTo(x, y); ctx.stroke(); } else { ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); } }
+    else if (brush === 'solid' || brush === 'fine') { ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = color; ctx.strokeStyle = color; ctx.lineWidth = brush === 'fine' ? Math.max(3, size / 3) : size; ctx.lineCap = 'round'; if (moving && lastPoint.current) { ctx.beginPath(); ctx.moveTo(lastPoint.current.x, lastPoint.current.y); ctx.lineTo(x, y); ctx.stroke(); } else { ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill(); } }
+    else if (brush === 'glow') { ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = size * .9; ctx.beginPath(); ctx.arc(x, y, radius * .55, 0, Math.PI * 2); ctx.fill(); }
+    else { ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = color; for (let i = 0; i < 8; i++) { const a = Math.random() * Math.PI * 2; const d = Math.random() * size * 1.5; ctx.beginPath(); ctx.arc(x + Math.cos(a) * d, y + Math.sin(a) * d, Math.max(1.5, size / 12), 0, Math.PI * 2); ctx.fill(); } ctx.beginPath(); ctx.arc(x, y, Math.max(2, size / 8), 0, Math.PI * 2); ctx.fill(); }
+    ctx.restore(); lastPoint.current = { x, y };
+  };
+  const down = (e: React.PointerEvent<HTMLCanvasElement>) => { snapshot(); drawingRef.current = true; lastPoint.current = coords(e); draw(lastPoint.current.x, lastPoint.current.y, false); e.currentTarget.setPointerCapture(e.pointerId); };
+  const move = (e: React.PointerEvent<HTMLCanvasElement>) => { if (drawingRef.current) { const p = coords(e); draw(p.x, p.y, true); } };
+  const up = () => { drawingRef.current = false; lastPoint.current = null; };
+  const undo = () => { const c = canvasRef.current; const ctx = c?.getContext('2d'); const state = history.current.pop(); if (c && ctx && state) ctx.putImageData(state, 0, 0); };
+  const proceed = () => { const canvas = canvasRef.current; const design: PlanetDesign = { canvasDataUrl: canvas?.toDataURL() || '', hasRings, accentColor: accent }; onCompleteDesign?.(design); setActiveModal('story-studio'); };
   if (activeModal !== 'planet-designer') return null;
 
-  // Painting functions strictly constrained inside circular planet
-  const paintOnCanvas = (x: number, y: number, isMove = false) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.save();
-    // Clip strictly to circular planet boundary
-    ctx.beginPath();
-    ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
-    ctx.clip();
-
-    if (brushMode === 'smooth') {
-      ctx.fillStyle = brushColor;
-      ctx.strokeStyle = brushColor;
-      ctx.lineWidth = brushSize;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      if (isMove && lastPosRef.current) {
-        ctx.beginPath();
-        ctx.moveTo(lastPosRef.current.x, lastPosRef.current.y);
-        ctx.lineTo(x, y);
-        ctx.stroke();
-      } else {
-        ctx.beginPath();
-        ctx.arc(x, y, brushSize / 2, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    } else {
-      // Spray paint brush effect
-      const density = brushSize * 1.5;
-      ctx.fillStyle = brushColor;
-      for (let i = 0; i < density; i++) {
-        const offsetX = (Math.random() - 0.5) * brushSize * 2;
-        const offsetY = (Math.random() - 0.5) * brushSize * 2;
-        const dist = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
-        if (dist <= brushSize) {
-          const radius = Math.random() * 2 + 0.5;
-          ctx.beginPath();
-          ctx.arc(x + offsetX, y + offsetY, radius, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-    }
-
-    ctx.restore();
-    lastPosRef.current = { x, y };
-  };
-
-  const getCanvasCoords = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return { x: 0, y: 0 };
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-    return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY
-    };
-  };
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    setIsDrawing(true);
-    const { x, y } = getCanvasCoords(e);
-    lastPosRef.current = { x, y };
-    paintOnCanvas(x, y, false);
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) return;
-    const { x, y } = getCanvasCoords(e);
-    paintOnCanvas(x, y, true);
-  };
-
-  const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    setIsDrawing(false);
-    lastPosRef.current = null;
-  };
-
-  const handleProceedToStory = () => {
-    const canvas = canvasRef.current;
-    const dataUrl = canvas ? canvas.toDataURL() : '';
-
-    const design: PlanetDesign = {
-      canvasDataUrl: dataUrl,
-      hasRings,
-      accentColor: planetAccentColor
-    };
-
-    if (onCompleteDesign) {
-      onCompleteDesign(design);
-    }
-    setActiveModal('story-studio');
-  };
-
-  return (
-    <div className="modal-backdrop">
-      <div className="modal-content planet-designer-window glass-panel animate-scale-in">
-        {/* Header */}
-        <div className="studio-header">
-          <div>
-            <div className="eyebrow">RELIVE A DAY · STEP 1</div>
-            <h2>Planet Designer 🪐</h2>
-            <p>Customize your planet canvas with spray paint, rings, and glowing accents.</p>
-          </div>
-          <button
-            type="button"
-            className="close-modal-btn"
-            onClick={() => setActiveModal(null)}
-          >
-            <X size={22} />
-          </button>
-        </div>
-
-        <div className="planet-designer-body">
-          {/* Controls Panel */}
-          <div className="designer-tools-panel">
-            {/* Color Palette */}
-            <div className="designer-tool-section">
-              <label className="input-label">Spray Paint Palette</label>
-              <div className="color-palette-grid">
-                {PLANET_PALETTE.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={`palette-color-btn ${brushColor === c ? 'active' : ''}`}
-                    style={{ backgroundColor: c }}
-                    onClick={() => setBrushColor(c)}
-                    title={c}
-                  />
-                ))}
-                <label className="custom-color-input-btn" title="Custom color picker">
-                  <input
-                    type="color"
-                    value={brushColor}
-                    onChange={(e) => setBrushColor(e.target.value)}
-                    className="hidden-color-input"
-                  />
-                  <span>+</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Brush Mode Switcher */}
-            <div className="designer-tool-section">
-              <label className="input-label">Brush Type</label>
-              <div className="brush-mode-switches">
-                <button
-                  type="button"
-                  className={`studio-tab-pill ${brushMode === 'smooth' ? 'active' : ''}`}
-                  onClick={() => setBrushMode('smooth')}
-                >
-                  Smooth Brush
-                </button>
-                <button
-                  type="button"
-                  className={`studio-tab-pill ${brushMode === 'spray' ? 'active' : ''}`}
-                  onClick={() => setBrushMode('spray')}
-                >
-                  Cosmic Spray
-                </button>
-              </div>
-            </div>
-
-            {/* Brush Size Slider */}
-            <div className="designer-tool-section">
-              <div className="label-with-val">
-                <label className="input-label">{brushMode === 'smooth' ? 'Smooth Brush' : 'Spray Brush'} Size</label>
-                <span className="val-badge">{brushSize}px</span>
-              </div>
-              <input
-                type="range"
-                min={8}
-                max={60}
-                value={brushSize}
-                onChange={(e) => setBrushSize(Number(e.target.value))}
-                className="size-slider full-width"
-              />
-            </div>
-
-            {/* Planetary Rings Toggle */}
-            <div className="designer-tool-section">
-              <label className="input-label">Planetary Features</label>
-              <label className="toggle-checkbox-row">
-                <input
-                  type="checkbox"
-                  checked={hasRings}
-                  onChange={(e) => setHasRings(e.target.checked)}
-                />
-                <span>Include Planetary Rings</span>
-              </label>
-            </div>
-
-            {/* Accent Color (Controls Planet Glow & Ring Color) */}
-            <div className="designer-tool-section">
-              <label className="input-label">Planet Glow & Ring Accent</label>
-              <div className="accent-color-row">
-                {['#B89CFF', '#FF9FCB', '#73D4E7', '#FFB27D', '#A7E89B', '#FFE58A'].map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className={`color-dot-large ${planetAccentColor === c ? 'active' : ''}`}
-                    style={{ backgroundColor: c }}
-                    onClick={() => setPlanetAccentColor(c)}
-                  />
-                ))}
-                <label className="custom-color-input-btn" title="Custom accent color">
-                  <input
-                    type="color"
-                    value={planetAccentColor}
-                    onChange={(e) => setPlanetAccentColor(e.target.value)}
-                    className="hidden-color-input"
-                  />
-                  <span>+</span>
-                </label>
-              </div>
-            </div>
-
-            {/* Clear / Reset Canvas */}
-            <button
-              type="button"
-              className="secondary-action-btn"
-              onClick={initCanvas}
-            >
-              <RefreshCw size={15} />
-              <span>Reset Canvas</span>
-            </button>
-          </div>
-
-          {/* Planet Circular Canvas Viewport */}
-          <div className="designer-canvas-viewport">
-            <div
-              className="planet-render-wrapper"
-              style={{
-                boxShadow: `0 0 50px ${planetAccentColor}44, 0 0 100px ${planetAccentColor}22`
-              }}
-            >
-              {/* Planetary Ring Preview */}
-              {hasRings && (
-                <div
-                  className="planet-ring-preview"
-                  style={{
-                    borderColor: planetAccentColor,
-                    boxShadow: `0 0 16px ${planetAccentColor}`
-                  }}
-                />
-              )}
-
-              {/* HTML5 Circular Canvas */}
-              <canvas
-                ref={canvasRef}
-                width={280}
-                height={280}
-                className="circular-planet-canvas"
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerUp}
-              />
-            </div>
-            <div className="canvas-helper-text">
-              ✨ Click and drag over the planet to spray paint your custom world!
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="studio-footer">
-          <span className="footer-info">
-            Step 1 of 2: Design your planet world before authoring your story
-          </span>
-          <button
-            type="button"
-            className="continue-button"
-            onClick={handleProceedToStory}
-          >
-            <span>Proceed to Story Studio</span>
-            <ArrowRight size={18} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+  const brushes: { id: Brush; label: string; mark: string }[] = [{ id: 'glow', label: 'Soft glow', mark: '◉' }, { id: 'solid', label: 'Solid', mark: '●' }, { id: 'fine', label: 'Fine detail', mark: '·' }, { id: 'sparkle', label: 'Sparkle star', mark: '✦' }];
+  return <div className="modal-backdrop"><div className="modal-content planet-designer-window glass-panel animate-scale-in">
+    <header className="studio-header"><div><div className="eyebrow">RELIVE A DAY · STEP 1</div><h2>Planet Designer</h2><p>Paint a small world for your story.</p></div><button type="button" className="close-modal-btn" onClick={() => setActiveModal(null)} aria-label="Close"><X size={22} /></button></header>
+    <div className="planet-editor-layout"><aside className="planet-tool-panel">
+      <section className="planet-tool-section"><h3>Brush</h3><div className="planet-brush-grid">{brushes.map((b) => <button type="button" key={b.id} className={`planet-brush-btn ${!eraser && brush === b.id ? 'active' : ''}`} onClick={() => { setBrush(b.id); setEraser(false); }}><span>{b.mark}</span>{b.label}</button>)}</div></section>
+      <section className="planet-tool-section"><h3>Brush Color</h3><div className="planet-color-row">{COLORS.map(c => <button type="button" key={c} aria-label={`Color ${c}`} className={`planet-color-swatch ${color === c ? 'active' : ''}`} style={{ background: c }} onClick={() => { setColor(c); setEraser(false); }} />)}<label className="planet-color-picker"><input type="color" value={color} onChange={e => { setColor(e.target.value); setEraser(false); }} />+</label></div></section>
+      <section className="planet-tool-section"><div className="planet-section-heading"><h3>Brush Size</h3><output>{size}px</output></div><input aria-label="Brush size" type="range" min="6" max="56" value={size} onChange={e => setSize(Number(e.target.value))} /></section>
+      <section className="planet-tool-section"><button type="button" className="planet-undo-btn" disabled={!history.current.length} onClick={undo}><Undo2 size={16} /> Undo</button></section>
+      <section className="planet-tool-section"><h3>Eraser</h3><div className="planet-eraser-row">{[14, 28, 46].map(v => <button type="button" key={v} className={`planet-size-chip ${eraser && eraserSize === v ? 'active' : ''}`} onClick={() => { setEraser(true); setEraserSize(v); }}>{v}px</button>)}</div></section>
+      <section className="planet-tool-section"><h3>Accent Color</h3><div className="planet-color-row">{ACCENTS.map(c => <button type="button" key={c} aria-label={`Accent ${c}`} className={`planet-color-swatch ${accent === c ? 'active' : ''}`} style={{ background: c }} onClick={() => setAccent(c)} />)}<label className="planet-color-picker"><input type="color" value={accent} onChange={e => setAccent(e.target.value)} />+</label></div></section>
+      <label className="planet-rings-toggle"><input type="checkbox" checked={hasRings} onChange={e => setHasRings(e.target.checked)} /> Planetary rings</label>
+    </aside><section className="planet-canvas-panel"><div className="planet-canvas-stage" style={{ '--planet-accent': accent } as React.CSSProperties}>{hasRings && <div className="planet-ring-preview" style={{ borderColor: accent, boxShadow: `0 0 18px ${accent}` }} />}<canvas ref={canvasRef} width={420} height={420} className="circular-planet-canvas" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up} /></div><p>Draw inside the planet surface. {eraser ? 'Eraser active.' : 'Choose a brush and color.'}</p></section></div>
+    <footer className="studio-footer"><span className="footer-info">Step 1 of 2 · Your planet stays intact in Story Studio</span><button type="button" className="continue-button" onClick={proceed}>Next: Write Story <ArrowRight size={18} /></button></footer>
+  </div></div>;
 };
+export default PlanetDesignerModal;

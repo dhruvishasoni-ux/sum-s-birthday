@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSky } from '../../context/SkyContext';
 import { Story, StoryPage, StoryLayoutType, PageThemeType, PlanetDesign, StickerItem } from '../../types/celestial';
 import { RichTextToolbar } from '../shared/RichTextToolbar';
@@ -10,6 +10,7 @@ import { findSafeSkyPosition } from '../../utils/objectPlacement';
 
 interface StoryStudioModalProps {
   initialPlanetDesign?: PlanetDesign | null;
+  onSubmitted?: () => void;
 }
 
 const PAGE_THEMES: { id: PageThemeType; label: string; className: string }[] = [
@@ -21,10 +22,10 @@ const PAGE_THEMES: { id: PageThemeType; label: string; className: string }[] = [
   { id: 'sunset', label: 'Sunset', className: 'theme-sunset' }
 ];
 
-export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlanetDesign }) => {
+export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlanetDesign, onSubmitted }) => {
   const { activeModal, setActiveModal, addStory, currentUser, wishes, stories, voiceNotes, secretStars } = useSky();
 
-  const [activeTab, setActiveTab] = useState<'content' | 'layout-theme' | 'stickers'>('content');
+  const [activeTab, setActiveTab] = useState<'layout' | 'content' | 'theme' | 'stickers'>('layout');
   const [storyTitle, setStoryTitle] = useState('Relive a Day ✨');
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
@@ -49,6 +50,18 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
 
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
+  const [showPreview, setShowPreview] = useState(false);
+
+  useEffect(() => {
+    if (activeModal === 'story-studio') {
+      setActiveTab('layout');
+      setCurrentPageIndex(0);
+      setSelectedStickerId(null);
+      setShowPreview(false);
+      setStoryTitle('Relive a Day ✨');
+      setPages([{ id: `page-${Date.now()}`, layout: 1, text: '', textStyle: { font: 'handwritten', color: '#ffffff', size: 18, bold: false, italic: false, underline: false }, imageUrl: '', stickers: [], theme: 'midnight' }]);
+    }
+  }, [activeModal]);
   const imageInputRef = useRef<HTMLInputElement>(null);
 
   if (activeModal !== 'story-studio') return null;
@@ -160,6 +173,7 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
     };
 
     addStory(newStory);
+    onSubmitted?.();
     setActiveModal(null);
 
     confetti({
@@ -184,24 +198,31 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
           <div className="studio-tab-switches">
             <button
               type="button"
-              className={`studio-tab-pill ${activeTab === 'content' ? 'active' : ''}`}
-              onClick={() => setActiveTab('content')}
+              className={`studio-tab-pill ${activeTab === 'layout' ? 'active' : ''}`}
+              onClick={() => setActiveTab('layout')}
             >
-              1. Story Content
+              1. Layout
             </button>
             <button
               type="button"
-              className={`studio-tab-pill ${activeTab === 'layout-theme' ? 'active' : ''}`}
-              onClick={() => setActiveTab('layout-theme')}
+              className={`studio-tab-pill ${activeTab === 'content' ? 'active' : ''}`}
+              onClick={() => setActiveTab('content')}
             >
-              2. Layout & Theme
+              2. Story Content
+            </button>
+            <button
+              type="button"
+              className={`studio-tab-pill ${activeTab === 'theme' ? 'active' : ''}`}
+              onClick={() => setActiveTab('theme')}
+            >
+              3. Theme
             </button>
             <button
               type="button"
               className={`studio-tab-pill ${activeTab === 'stickers' ? 'active' : ''}`}
               onClick={() => setActiveTab('stickers')}
             >
-              3. Stickers
+              4. Stickers
             </button>
           </div>
 
@@ -326,8 +347,9 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
             )}
 
             {/* TAB 2: Layout & Themes */}
-            {activeTab === 'layout-theme' && (
+            {(activeTab === 'layout' || activeTab === 'theme') && (
               <div className="compact-tab-pane animate-fade-in">
+                {activeTab === 'layout' && <>
                 <label className="input-label">Page Layout (4 Options)</label>
                 <div className="layout-selector-row compact">
                   {[
@@ -345,10 +367,10 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
                       {ly.label}
                     </button>
                   ))}
-                </div>
+                </div></>}
 
-                <label className="input-label" style={{ marginTop: '12px' }}>Page Theme</label>
-                <div className="theme-options-grid compact">
+                {activeTab === 'theme' && <label className="input-label" style={{ marginTop: '12px' }}>Page Theme</label>}
+                {activeTab === 'theme' && <div className="theme-options-grid compact">
                   {PAGE_THEMES.map((th) => (
                     <button
                       key={th.id}
@@ -360,11 +382,11 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
                       <span>{th.label}</span>
                     </button>
                   ))}
-                </div>
+                </div>}
               </div>
             )}
 
-            {/* TAB 3: Stickers */}
+            {/* TAB 4: Stickers */}
             {activeTab === 'stickers' && (
               <div className="compact-tab-pane animate-fade-in">
                 <StickerBar
@@ -494,8 +516,12 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
         {/* Footer */}
         <div className="compact-studio-footer">
           <span className="footer-info">
-            All pages remain editable until submission ✦
+            {showPreview ? `Previewing page ${currentPageIndex + 1} of ${pages.length}` : 'All pages remain editable until submission ✦'}
           </span>
+          <div className="story-footer-actions">
+          <button type="button" className="secondary-action-btn" onClick={() => setShowPreview((prev) => !prev)}>
+            {showPreview ? 'Back to Edit' : 'Preview'}
+          </button>
           <button
             type="button"
             className="continue-button"
@@ -504,6 +530,7 @@ export const StoryStudioModal: React.FC<StoryStudioModalProps> = ({ initialPlane
             <span>Submit Story</span>
             <Check size={16} />
           </button>
+          </div>
         </div>
       </div>
     </div>
