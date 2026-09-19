@@ -3,7 +3,7 @@ export type FontType = 'elegant' | 'modern' | 'playful' | 'handwritten' | 'cursi
 export interface UserAccount {
   id: string;
   username: string;
-  password: string;
+  password?: string;
   avatarUrl: string;
   createdAt: number;
   uploadedStickers?: string[];

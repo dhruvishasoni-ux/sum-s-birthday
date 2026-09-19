@@ -11,25 +11,22 @@ function getSslConfig() {
   const sslMode = url.searchParams.get('sslmode');
   const rootCertPath = url.searchParams.get('sslrootcert');
 
-  if (sslMode !== 'verify-full' || !rootCertPath) {
-    return { rejectUnauthorized: false };
-  }
-
-  return {
-    rejectUnauthorized: true,
-    ca: fs.readFileSync(rootCertPath, 'utf8'),
-  };
+  const ca = process.env.AIVEN_CA_CERT || (rootCertPath && fs.existsSync(rootCertPath) ? fs.readFileSync(rootCertPath, 'utf8') : undefined);
+  if (sslMode !== 'verify-full' || !ca) return { rejectUnauthorized: false };
+  return { rejectUnauthorized: true, ca };
 }
 
 let pool: pg.Pool | undefined;
 
 export function getPool() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not configured. Add the Aiven PostgreSQL connection string.');
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    console.error('[api] database configuration missing', { hasDatabaseUrl: false, hasAivenCaCert: Boolean(process.env.AIVEN_CA_CERT) });
+    throw new Error('DATABASE_URL is not configured. Add the Aiven PostgreSQL connection string to the Vercel environment.');
   }
 
   pool ??= new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString,
     ssl: getSslConfig(),
     max: 10,
     connectionTimeoutMillis: 10_000,
@@ -40,7 +37,9 @@ export function getPool() {
 }
 
 export async function query<T extends pg.QueryResultRow>(text: string, values: unknown[] = []) {
+  const operation = text.trim().split(/\s+/)[0]?.toUpperCase() ?? 'UNKNOWN';
   const client = await getPool().connect();
+  console.log('[api] database connection succeeded', { operation });
   try {
     return await client.query<T>(text, values);
   } finally {

@@ -38,18 +38,18 @@ interface SkyContextType {
     username: string,
     password: string,
     avatarUrl: string
-  ) => {
+  ) => Promise<{
     success: boolean;
     error?: string;
-  };
+  }>;
 
   login: (
     username: string,
     password: string
-  ) => {
+  ) => Promise<{
     success: boolean;
     error?: string;
-  };
+  }>;
 
   logout: () => void;
 
@@ -231,6 +231,7 @@ export const SkyProvider: React.FC<{
 
   const [registeredAccounts, setRegisteredAccounts] =
     useState<UserAccount[]>([]);
+  const [sharedStats, setSharedStats] = useState({ friends: 0, unopened: 0 });
 
   const [authNotice, setAuthNotice] =
     useState<string | null>(null);
@@ -298,26 +299,13 @@ export const SkyProvider: React.FC<{
 
     async function loadFromDb() {
       try {
-        // ── Accounts: migrate from localStorage if needed ──
+        const session = await db.currentSession();
+        const stats = await db.getStats();
+        if (session.user) setCurrentUser(session.user);
+        setSharedStats(stats);
+        // Accounts are read from PostgreSQL; legacy browser accounts are not authoritative.
         const dbAccounts = await db.getAll(STORES.accounts);
         let accounts = dbAccounts;
-
-        if (dbAccounts.length === 0) {
-          // One-time migration from old localStorage key
-          try {
-            const raw = window.localStorage.getItem(LEGACY_ACCOUNT_KEY);
-            if (raw) {
-              const legacy: UserAccount[] = JSON.parse(raw);
-              if (legacy.length > 0) {
-                await Promise.all(legacy.map((a) => db.put(STORES.accounts, a)));
-                accounts = legacy;
-                window.localStorage.removeItem(LEGACY_ACCOUNT_KEY);
-              }
-            }
-          } catch {
-            // ignore migration errors
-          }
-        }
 
         // ── Content collections ────────────────────────
         const [
@@ -427,85 +415,39 @@ export const SkyProvider: React.FC<{
   // ─────────────────────────────────────────────────────
 
   const signUp = useCallback(
-    (username: string, password: string, avatarUrl: string) => {
-      const trimmedUsername = username.trim();
-
-      if (!avatarUrl || !avatarUrl.trim()) {
-        return { success: false, error: 'A profile picture is required to sign up.' };
+    async (username: string, password: string, avatarUrl: string) => {
+      if (!avatarUrl.trim()) return { success: false, error: 'A profile picture is required to sign up.' };
+      if (!username.trim()) return { success: false, error: 'A username is required to sign up.' };
+      if (password.length < 4) return { success: false, error: 'Password must be at least 4 characters.' };
+      try {
+        const result = await db.signUpAccount(username.trim(), password, avatarUrl.trim());
+        setCurrentUser(result.user);
+        setRegisteredAccounts((prev) => [...prev, result.user]);
+        setAuthNotice(null);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : 'Unable to create account.' };
       }
-      if (!trimmedUsername) {
-        return { success: false, error: 'A username is required to sign up.' };
-      }
-      if (!password || !password.trim()) {
-        return { success: false, error: 'A password is required to sign up.' };
-      }
-
-      const exists = registeredAccounts.some(
-        (acc) => acc.username.toLowerCase() === trimmedUsername.toLowerCase()
-      );
-
-      if (exists) {
-        return {
-          success: false,
-          error: 'This username is already taken in this session. Please choose another.',
-        };
-      }
-
-      const newAccount: UserAccount = {
-        id: `usr-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-        username: trimmedUsername,
-        password: password.trim(),
-        avatarUrl: avatarUrl.trim(),
-        createdAt: Date.now(),
-      };
-
-      setRegisteredAccounts((prev) => [...prev, newAccount]);
-      setCurrentUser(newAccount);
-      setAuthNotice(null);
-
-      // Persist to DB
-      db.put(STORES.accounts, newAccount).catch(console.error);
-
-      return { success: true };
-    },
-    [registeredAccounts]
+    }, []
   );
 
   const login = useCallback(
-    (username: string, password: string) => {
-      const trimmedUsername = username.trim();
-
-      if (!trimmedUsername) {
-        return { success: false, error: 'Please enter your username.' };
+    async (username: string, password: string) => {
+      if (!username.trim()) return { success: false, error: 'Please enter your username.' };
+      if (!password) return { success: false, error: 'Please enter your password.' };
+      try {
+        const result = await db.loginAccount(username.trim(), password);
+        setCurrentUser(result.user);
+        setAuthNotice(null);
+        return { success: true };
+      } catch (error) {
+        return { success: false, error: error instanceof Error ? error.message : 'Invalid credentials.' };
       }
-      if (!password) {
-        return { success: false, error: 'Please enter your password.' };
-      }
-
-      const matchedAccount = registeredAccounts.find(
-        (acc) => acc.username.toLowerCase() === trimmedUsername.toLowerCase()
-      );
-
-      if (!matchedAccount) {
-        return {
-          success: false,
-          error: 'No account found with this username. Please sign up first.',
-        };
-      }
-
-      if (matchedAccount.password !== password.trim()) {
-        return { success: false, error: 'Incorrect password. Please try again.' };
-      }
-
-      setCurrentUser(matchedAccount);
-      setAuthNotice(null);
-
-      return { success: true };
-    },
-    [registeredAccounts]
+    }, []
   );
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    await db.logoutAccount().catch((error) => console.error('[v0] Logout failed', error));
     setCurrentUser(null);
   }, []);
 
@@ -879,15 +821,8 @@ export const SkyProvider: React.FC<{
   // DERIVED
   // ─────────────────────────────────────────────────────
 
-  const friendsCount = registeredAccounts.length;
-
-  const unopenedCount =
-    wishes.filter((w) => w.unopened).length +
-    stories.filter((s) => s.unopened).length +
-    voiceNotes.filter((v) => !v.heard).length +
-    (isMoonOpened ? 0 : 1) +
-    (isNebulaOpened ? 0 : 1) +
-    secretStars.filter((s) => !s.discovered).length;
+  const friendsCount = sharedStats.friends;
+  const unopenedCount = sharedStats.unopened;
 
   // ─────────────────────────────────────────────────────
 

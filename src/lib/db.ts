@@ -74,4 +74,10 @@ async function setFlag(key: string, value: boolean | number) {
   await put(STORES.flags, { id: key, value });
 }
 
-export const db = { getAll, get, put, remove, clear, getFlag, setFlag };
+async function authRequest<T>(path: string, init?: RequestInit) { return request<T>(`/api/auth/${path}`, init); }
+async function currentSession() { return authRequest<{ user: UserAccount | null }>('me'); }
+async function signUpAccount(username: string, password: string, avatarUrl: string) { return authRequest<{ user: UserAccount }>('signup', { method: 'POST', body: JSON.stringify({ username, password, avatarUrl }) }); }
+async function loginAccount(username: string, password: string) { return authRequest<{ user: UserAccount }>('login', { method: 'POST', body: JSON.stringify({ username, password }) }); }
+async function logoutAccount() { await authRequest<void>('logout', { method: 'POST' }); }
+async function getStats() { return request<{ friends: number; unopened: number }>('/api/stats'); }
+export const db = { getAll, get, put, remove, clear, getFlag, setFlag, currentSession, signUpAccount, loginAccount, logoutAccount, getStats };
