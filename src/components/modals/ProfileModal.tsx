@@ -146,7 +146,7 @@ export const ProfileModal: React.FC = () => {
     e.target.value = '';
   };
 
-  const handleSignUpSubmit = async (e: React.FormEvent) => {
+  const handleSignUpSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     setErrorMessage(null);
@@ -173,7 +173,7 @@ export const ProfileModal: React.FC = () => {
       return;
     }
 
-    const res = await signUp(
+    const res = signUp(
       signupUsername,
       signupPassword,
       signupAvatar
@@ -195,7 +195,7 @@ export const ProfileModal: React.FC = () => {
     }
   };
 
-  const handleLoginSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     setErrorMessage(null);
@@ -211,7 +211,7 @@ export const ProfileModal: React.FC = () => {
       return;
     }
 
-    const res = await login(
+    const res = login(
       loginUsername,
       loginPassword
     );
