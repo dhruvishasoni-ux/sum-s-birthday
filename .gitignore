@@ -1,5 +1,7 @@
 .env
 .env.*
 !.env.example
+ca.pem
+*.pem
 node_modules
 dist

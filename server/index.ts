@@ -5,7 +5,7 @@ const app = express();
 const port = Number(process.env.PORT ?? 8787);
 const validStores = new Set(['accounts', 'wishes', 'stories', 'nebulaWords', 'voiceNotes', 'blackHoleWishes', 'discoveredStars', 'flags']);
 
-app.use(express.json({ limit: '2mb' }));
+app.use(express.json({ limit: '10mb' }));
 
 function storeName(value: unknown) {
   if (typeof value !== 'string' || !validStores.has(value)) throw new Error('Invalid store');
@@ -159,4 +159,8 @@ app.delete('/api/records/:store/:id', async (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`[api] PostgreSQL API listening on :${port}`));
+if (!process.env.VERCEL) {
+  app.listen(port, () => console.log(`[api] PostgreSQL API listening on :${port}`));
+}
+
+export default app;
