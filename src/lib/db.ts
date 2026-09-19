@@ -19,7 +19,9 @@ type StoreRecordMap = {
   flags: { id: string; value: boolean | number };
 };
 
-const apiUrl = (store: string, id?: string) => `/api/records/${encodeURIComponent(store)}${id ? `/${encodeURIComponent(id)}` : ''}`;
+const apiUrl = (store: string, id?: string) => store === STORES.wishes
+  ? `/api/wishes${id ? `/${encodeURIComponent(id)}` : ''}`
+  : `/api/records/${encodeURIComponent(store)}${id ? `/${encodeURIComponent(id)}` : ''}`;
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const response = await fetch(url, { ...init, headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) } });
