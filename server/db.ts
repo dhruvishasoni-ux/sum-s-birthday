@@ -11,14 +11,9 @@ function getSslConfig() {
   const sslMode = url.searchParams.get('sslmode');
   const rootCertPath = url.searchParams.get('sslrootcert');
 
-  if (sslMode !== 'verify-full' || !rootCertPath) {
-    return { rejectUnauthorized: false };
-  }
-
-  return {
-    rejectUnauthorized: true,
-    ca: fs.readFileSync(rootCertPath, 'utf8'),
-  };
+  const ca = process.env.AIVEN_CA_CERT || (rootCertPath && fs.existsSync(rootCertPath) ? fs.readFileSync(rootCertPath, 'utf8') : undefined);
+  if (sslMode !== 'verify-full' || !ca) return { rejectUnauthorized: false };
+  return { rejectUnauthorized: true, ca };
 }
 
 let pool: pg.Pool | undefined;
