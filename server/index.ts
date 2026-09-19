@@ -159,4 +159,8 @@ app.delete('/api/records/:store/:id', async (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`[api] PostgreSQL API listening on :${port}`));
+if (!process.env.VERCEL) {
+  app.listen(port, () => console.log(`[api] PostgreSQL API listening on :${port}`));
+}
+
+export default app;
