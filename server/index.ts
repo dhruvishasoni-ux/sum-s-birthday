@@ -19,6 +19,68 @@ function record(value: unknown) {
   return value;
 }
 
+app.get('/api/wishes', async (_req, res) => {
+  try {
+    const result = await query<{ id: string; title: string; constellation_data: unknown; created_at: string }>(
+      'SELECT id, title, constellation_data, created_at FROM wish_cards ORDER BY created_at ASC',
+    );
+    console.log('[api] SELECT wish_cards succeeded', { count: result.rowCount });
+    res.json(result.rows.map((row) => ({ ...((row.constellation_data as object) ?? {}), id: row.id, title: row.title, createdAt: row.created_at })));
+  } catch (error) {
+    console.error('[api] SELECT wish_cards failed', error);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unable to list wishes' });
+  }
+});
+
+app.post('/api/wishes', async (req, res) => {
+  try {
+    const data = record(req.body) as Record<string, unknown>;
+    const title = typeof data.title === 'string' ? data.title : '';
+    const userId = typeof data.userId === 'string' ? data.userId : null;
+    const { id, title: _title, userId: _userId, createdAt: _createdAt, ...payload } = data;
+    const result = await query<{ id: string; title: string; constellation_data: unknown; created_at: string }>(
+      `INSERT INTO wish_cards (id, user_id, title, constellation_data, created_at, updated_at)
+       VALUES ($1, $2, $3, $4::jsonb, now(), now())
+       ON CONFLICT (id) DO UPDATE SET user_id = EXCLUDED.user_id, title = EXCLUDED.title,
+         constellation_data = EXCLUDED.constellation_data, updated_at = now()
+       RETURNING id, title, constellation_data, created_at`,
+      [id, userId, title, JSON.stringify(payload)],
+    );
+    console.log('[api] INSERT wish_cards succeeded', { id, rowCount: result.rowCount });
+    const row = result.rows[0];
+    res.status(201).json({ ...((row.constellation_data as object) ?? {}), id: row.id, title: row.title, createdAt: row.created_at });
+  } catch (error) {
+    console.error('[api] INSERT wish_cards failed', error);
+    res.status(400).json({ error: error instanceof Error ? error.message : 'Unable to save wish' });
+  }
+});
+
+app.get('/api/wishes/:id', async (req, res) => {
+  try {
+    const result = await query<{ id: string; title: string; constellation_data: unknown; created_at: string }>(
+      'SELECT id, title, constellation_data, created_at FROM wish_cards WHERE id = $1', [req.params.id],
+    );
+    if (!result.rowCount) return res.status(404).json({ error: 'Wish not found' });
+    const row = result.rows[0];
+    console.log('[api] SELECT wish_cards/:id succeeded', { id: req.params.id });
+    res.json({ ...((row.constellation_data as object) ?? {}), id: row.id, title: row.title, createdAt: row.created_at });
+  } catch (error) {
+    console.error('[api] SELECT wish_cards/:id failed', error);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unable to get wish' });
+  }
+});
+
+app.delete('/api/wishes/:id', async (req, res) => {
+  try {
+    const result = await query('DELETE FROM wish_cards WHERE id = $1', [req.params.id]);
+    console.log('[api] DELETE wish_cards succeeded', { id: req.params.id, rowCount: result.rowCount });
+    res.status(204).end();
+  } catch (error) {
+    console.error('[api] DELETE wish_cards failed', error);
+    res.status(500).json({ error: error instanceof Error ? error.message : 'Unable to delete wish' });
+  }
+});
+
 app.get('/api/records/:store', async (req, res) => {
   try {
     const store = storeName(req.params.store);
