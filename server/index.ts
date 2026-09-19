@@ -47,6 +47,7 @@ async function requireUser(req: express.Request, res: express.Response) {
 
 app.post('/api/auth/signup', async (req, res) => {
   try {
+    console.log('[api] signup request reached', { hasUsername: typeof req.body?.username === 'string', hasPassword: typeof req.body?.password === 'string', hasAvatar: typeof req.body?.avatarUrl === 'string' });
     const username = typeof req.body?.username === 'string' ? req.body.username.trim() : '';
     const password = typeof req.body?.password === 'string' ? req.body.password : '';
     const avatarUrl = typeof req.body?.avatarUrl === 'string' ? req.body.avatarUrl : '';
@@ -63,8 +64,12 @@ app.post('/api/auth/signup', async (req, res) => {
     console.log('[api] signup succeeded', { userId: id });
     res.status(201).json({ user: publicUser(inserted.rows[0]) });
   } catch (error) {
-    console.error('[api] signup failed', error);
-    res.status(400).json({ error: 'That username may already be taken.' });
+    const code = error && typeof error === 'object' && 'code' in error ? String((error as { code?: unknown }).code) : 'UNKNOWN';
+    console.error('[api] signup failed', { code, errorType: error instanceof Error ? error.name : typeof error });
+    if (code === '23505') return res.status(409).json({ error: 'That username already exists.' });
+    if (code === '23503' || code === '23514' || code === '23502') return res.status(500).json({ error: 'The database schema is not ready for signup.' });
+    if (code === 'ECONNREFUSED' || code === 'ENOTFOUND' || code === 'SELF_SIGNED_CERT_IN_CHAIN' || code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE') return res.status(503).json({ error: 'The database is unavailable. Check the production database configuration.' });
+    res.status(500).json({ error: 'Unable to create the account right now.' });
   }
 });
 
