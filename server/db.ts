@@ -1,6 +1,25 @@
+import fs from 'node:fs';
 import pg from 'pg';
 
 const { Pool } = pg;
+
+function getSslConfig() {
+  const databaseUrl = process.env.DATABASE_URL;
+  if (!databaseUrl || process.env.NODE_ENV !== 'production') return undefined;
+
+  const url = new URL(databaseUrl);
+  const sslMode = url.searchParams.get('sslmode');
+  const rootCertPath = url.searchParams.get('sslrootcert');
+
+  if (sslMode !== 'verify-full' || !rootCertPath) {
+    return { rejectUnauthorized: false };
+  }
+
+  return {
+    rejectUnauthorized: true,
+    ca: fs.readFileSync(rootCertPath, 'utf8'),
+  };
+}
 
 let pool: pg.Pool | undefined;
 
@@ -11,7 +30,7 @@ export function getPool() {
 
   pool ??= new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+    ssl: getSslConfig(),
     max: 10,
     connectionTimeoutMillis: 10_000,
     idleTimeoutMillis: 30_000,
