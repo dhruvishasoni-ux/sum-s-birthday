@@ -31,7 +31,10 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 async function getAll<K extends keyof StoreRecordMap>(store: K) {
-  return request<StoreRecordMap[K][]>(apiUrl(store));
+  console.log('[v0] Fetching records', { store });
+  const records = await request<StoreRecordMap[K][]>(apiUrl(store));
+  console.log('[v0] Fetched records', { store, count: records.length });
+  return records;
 }
 
 async function get<K extends keyof StoreRecordMap>(store: K, id: string) {
@@ -40,7 +43,15 @@ async function get<K extends keyof StoreRecordMap>(store: K, id: string) {
 }
 
 async function put<K extends keyof StoreRecordMap>(store: K, data: StoreRecordMap[K]) {
-  await request(apiUrl(store, data.id), { method: 'PUT', body: JSON.stringify(data) });
+  console.log('[v0] Saving record', { store, id: data.id });
+  try {
+    const result = await request<StoreRecordMap[K]>(apiUrl(store), { method: 'POST', body: JSON.stringify(data) });
+    console.log('[v0] Record saved', { store, id: data.id });
+    return result;
+  } catch (error) {
+    console.error('[v0] Record save failed', { store, id: data.id, error });
+    throw error;
+  }
 }
 
 async function remove<K extends keyof StoreRecordMap>(store: K, id: string) {
