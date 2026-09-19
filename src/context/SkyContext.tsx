@@ -516,7 +516,11 @@ export const SkyProvider: React.FC<{
   const addWish = useCallback(
     (wish: WishCard) => {
       setWishes((prev) => [...prev, wish]);
-      db.put(STORES.wishes, wish).catch(console.error);
+      db.put(STORES.wishes, wish).then(() => {
+        console.log('[v0] Wish submission synced', { id: wish.id });
+      }).catch((error) => {
+        console.error('[v0] Wish submission failed', { id: wish.id, error });
+      });
 
       window.setTimeout(() => {
         focusOnCoordinates(wish.x, wish.y);
